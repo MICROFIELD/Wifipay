@@ -3,111 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiFi Voucher Store</title>
+    <title>Voucher Smart Print V12 - Admin Panel</title>
+    
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 400px; background: white; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .header { background: #007bff; color: white; padding: 20px; text-align: center; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
-        .header h2 { margin: 0; font-size: 22px; }
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 10px; margin: 0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        .section { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .section h3 { margin-top: 0; color: #007bff; font-size: 18px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; margin-top: 15px; font-size: 14px; }
+        input[type="text"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
         
-        /* Auth Screens */
-        .auth-screen { padding: 30px 20px; text-align: center; margin-top: 20px; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .btn-primary { background: #007bff; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-primary:hover { background: #0056b3; }
-        .switch-link { color: #007bff; cursor: pointer; text-decoration: underline; font-weight: bold; margin-top: 15px; display: inline-block; }
+        .slider-container { background: #e9ecef; padding: 15px; border-radius: 5px; margin-top: 10px; }
+        input[type="range"] { width: 100%; cursor: pointer; }
+        .slider-label { display: flex; justify-content: space-between; font-weight: normal; margin-bottom: 5px; color: #495057; font-size: 14px; }
+        .val-highlight { color: #d9534f; font-weight: bold; }
 
-        /* Dashboard Screen */
-        #dashboardScreen { display: none; padding: 20px; }
-        .welcome-text { font-size: 18px; color: #333; margin-bottom: 15px; font-weight: bold; }
-        .balance-card { background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 10px rgba(40,167,69,0.3); }
-        .balance-card h3 { margin: 0; font-size: 16px; font-weight: normal; }
-        .balance-card h1 { margin: 10px 0 0 0; font-size: 36px; }
-
-        .section-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        button { padding: 12px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; font-size: 16px; transition: 0.3s; }
+        button:hover { background-color: #218838; }
+        .btn-alt { background-color: #ffc107; color: #333; }
+        .btn-alt:hover { background-color: #e0a800; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-danger:hover { background-color: #c82333; }
         
-        .plan-card { background: #fff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .plan-info h4 { margin: 0 0 5px 0; font-size: 18px; color: #333; }
-        .plan-info p { margin: 0; color: #dc3545; font-weight: bold; font-size: 16px; }
-        .buy-btn { background: #ffc107; color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .buy-btn:hover { background: #e0a800; }
+        .stock-display { font-size: 15px; font-weight: bold; color: #333; margin-top: 15px; text-align: center; background: #ffeeba; padding: 10px; border-radius: 4px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .stock-item { background: #fff; padding: 5px 10px; border-radius: 4px; border: 1px solid #ffc107; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #007bff; color: white; }
+        
+        .btn-small { background-color: #17a2b8; padding: 5px 10px; font-size: 12px; margin: 0; width: auto; color: white; border: none; cursor: pointer; border-radius: 3px; }
+        .btn-small:hover { background-color: #138496; }
 
-        /* History */
-        .history-item { background: #f8f9fa; padding: 12px; border-left: 4px solid #007bff; margin-bottom: 10px; border-radius: 4px; font-size: 14px; }
-        .voucher-code { font-size: 18px; font-weight: bold; color: #28a745; margin-top: 5px; letter-spacing: 1px; }
-
-        .logout-btn { background: #dc3545; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; margin-top: 20px; cursor: pointer; font-weight: bold; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: white; margin: 10% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
+        .close-btn { color: red; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="header">
-        <h2>📡 Smart WiFi Store</h2>
+<div class="container">
+    <h2>📡 Smart WiFi Admin Panel</h2>
+
+    <div class="section">
+        <h3>၁။ ဂိုဒေါင်သို့ Code များ ဖြည့်ရန်</h3>
+        <label>Ruijie မှ Code များကို ကူးထည့်ပါ (ထပ်နေပါက ပယ်ဖျက်မည်):</label>
+        <textarea id="newCodes" rows="4" placeholder="ဥပမာ...&#10;022322   4hour   Not used   No   1000..."></textarea>
+        <button onclick="window.addStock()" style="background-color: #17a2b8;">📥 ဂိုဒေါင်ထဲ ထည့်မည်</button>
+        <div class="stock-display" id="stockStatus"></div>
+
+        <div style="display: flex; gap: 10px;">
+            <button onclick="document.getElementById('inventoryLogModal').style.display='block'" class="btn-alt" style="margin-top: 10px; font-size: 14px; padding: 8px;">📋 ဖြည့်သွင်းမှု မှတ်တမ်း</button>
+            <button onclick="document.getElementById('manageStockModal').style.display='block'; window.loadManageStock();" class="btn-danger" style="margin-top: 10px; font-size: 14px; padding: 8px;">📦 ဂိုဒေါင် စီမံရန်</button>
+        </div>
     </div>
 
-    <div id="loginScreen" class="auth-screen">
-        <h3 style="color: #333; margin-bottom: 25px;">အကောင့်ဝင်ရန်</h3>
-        <div class="input-group">
-            <label>ဖုန်းနံပါတ်</label>
-            <input type="number" id="loginPhone" placeholder="09xxxxxxxxx">
+    <div class="section" style="background-color: #e8f5e9;">
+        <h3 style="color: #28a745;">၂။ ဖောက်သည်များအား ငွေဖြည့်ရန် (Top-up)</h3>
+        <label>ဖောက်သည်၏ ဖုန်းနံပါတ်:</label>
+        <div style="display: flex; gap: 10px;">
+            <input type="number" id="topupPhone" placeholder="ဥပမာ - 09xxxxxxxxx">
+            <button onclick="window.checkCustomer()" style="width: auto; margin-top: 0; background-color: #17a2b8;">🔍 ရှာမည်</button>
         </div>
-        <div class="input-group">
-            <label>စကားဝှက် (Password)</label>
-            <input type="password" id="loginPass" placeholder="လျှို့ဝှက်နံပါတ် ထည့်ပါ">
-        </div>
-        <button class="btn-primary" onclick="window.login()">ဝင်မည်</button>
-        <p>အကောင့်မရှိသေးဘူးလား? <span class="switch-link" onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</span></p>
-    </div>
-
-    <div id="registerScreen" class="auth-screen" style="display: none;">
-        <h3 style="color: #333; margin-bottom: 25px;">အကောင့်သစ်ဖွင့်ရန်</h3>
-        <div class="input-group">
-            <label>အမည်</label>
-            <input type="text" id="regName" placeholder="သင့်အမည် ထည့်ပါ">
-        </div>
-        <div class="input-group">
-            <label>ဖုန်းနံပါတ်</label>
-            <input type="number" id="regPhone" placeholder="09xxxxxxxxx">
-        </div>
-        <div class="input-group">
-            <label>စကားဝှက်အသစ် ပေးပါ</label>
-            <input type="password" id="regPass" placeholder="လျှို့ဝှက်နံပါတ် အသစ်ပေးပါ">
-        </div>
-        <button class="btn-primary" onclick="window.register()" style="background: #28a745;">အကောင့်ဖွင့်မည်</button>
-        <p>အကောင့်ရှိပြီးသားလား? <span class="switch-link" onclick="window.showLogin()">အကောင့်ဝင်ရန်</span></p>
-    </div>
-
-    <div id="dashboardScreen">
-        <div class="welcome-text">မင်္ဂလာပါ, <span id="userNameText" style="color: #007bff;"></span> 👋</div>
-        <div class="balance-card">
-            <h3>လက်ကျန်ငွေ (Balance)</h3>
-            <h1><span id="balanceText">0</span> <span style="font-size: 20px;">Ks</span></h1>
-            <p style="margin: 10px 0 0 0; font-size: 14px;">ဖုန်းနံပါတ်: <span id="userPhoneText"></span></p>
-        </div>
-
-        <div class="section-title">🛒 Voucher ဝယ်ယူရန်</div>
         
-        <div id="plansContainer">
-            <div class="plan-card"><div class="plan-info"><h4>1 Hour</h4><p>500 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Hour', 500)">ဝယ်မည်</button></div>
-            <div class="plan-card"><div class="plan-info"><h4>4 Hours</h4><p>1,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('4 Hours', 1000)">ဝယ်မည်</button></div>
-            <div class="plan-card"><div class="plan-info"><h4>1 Day</h4><p>2,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Day', 2000)">ဝယ်မည်</button></div>
-            <div class="plan-card"><div class="plan-info"><h4>1 Week</h4><p>8,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Week', 8000)">ဝယ်မည်</button></div>
-            <div class="plan-card"><div class="plan-info"><h4>1 Month</h4><p>35,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Month', 35000)">ဝယ်မည်</button></div>
+        <div id="customerInfo" style="display: none; background: #fff; padding: 15px; border-radius: 5px; margin-top: 15px; border: 1px dashed #28a745;">
+            <p style="margin: 0 0 10px 0; font-size: 15px;">အမည်: <b id="infoNameText" style="color: #007bff;">-</b></p>
+            <p style="margin: 0 0 15px 0; font-size: 15px;">လက်ရှိ ငွေလက်ကျန်: <b id="infoBalanceText" style="color: #28a745; font-size: 20px;">0</b> Ks</p>
+            
+            <label style="margin-top: 0;">ဖြည့်သွင်းမည့် ငွေပမာဏ (Ks):</label>
+            <input type="number" id="topupAmount" placeholder="ဥပမာ - 5000">
+            <button onclick="window.addTopup()" style="background-color: #28a745;">💰 ငွေဖြည့်သွင်းမည်</button>
         </div>
+    </div>
 
-        <div class="section-title" style="margin-top: 30px;">🎟️ ဝယ်ယူထားသော Code များ</div>
-        <div id="historyContainer"></div>
+    <div class="section" style="background-color: #f9f9f9;">
+        <h3>၃။ လက်ခွဲသို့ Code များ ထုတ်ပေးရန်</h3>
+        <label>လက်ခွဲ အမည်:</label>
+        <input type="text" id="agentName" list="agentList" placeholder="အမည်ရိုက်ထည့်ပါ (ဥပမာ - Mg Mg)">
+        <datalist id="agentList"></datalist>
+        
+        <label>ထုတ်ပေးမည့် အမျိုးအစား:</label>
+        <select id="issuePlan">
+            <option value="1 Hour">1 Hour (500 Ks)</option>
+            <option value="4 Hours">4 Hours (1000 Ks)</option>
+            <option value="1 Day">1 Day (2000 Ks)</option>
+            <option value="1 Week">1 Week (8000 Ks)</option>
+            <option value="1 Month">1 Month (35000 Ks)</option>
+        </select>
+        
+        <label>အရေအတွက်:</label>
+        <input type="number" id="issueQty" placeholder="ဥပမာ - 10">
+        
+        <button onclick="window.issueAndPrintVouchers()">🖨️ ထုတ်ယူပြီး စာရင်းမှတ်မည်</button>
+        <div id="statusText" style="text-align: center; color: #007bff; font-weight: bold; margin-top: 15px;"></div>
+    </div>
 
-        <button class="logout-btn" onclick="window.logout()">အကောင့်ထွက်မည်</button>
+    <div class="section">
+        <h3>၄။ ကိုယ်စားလှယ်များ၏ ရောင်းချပြီး မှတ်တမ်း (Agents)</h3>
+        <table id="summaryTable">
+            <thead><tr><th>အမည်</th><th>အရေအတွက်</th><th>တန်ဖိုး (Ks)</th><th>လုပ်ဆောင်ချက်</th></tr></thead>
+            <tbody id="summaryBody"></tbody>
+            <tfoot><tr style="background-color: #e9ecef;"><th colspan="2" style="text-align: right; font-size: 15px;">ကိုယ်စားလှယ် စုစုပေါင်း:</th><th colspan="2" id="grandTotalText" style="text-align: left; color: #007bff; font-size: 16px;">0 Ks</th></tr></tfoot>
+        </table>
+
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button onclick="document.getElementById('manualModal').style.display='block'" class="btn-alt" style="margin: 0;">📝 Manual ထည့်ရန်</button>
+            <button onclick="window.openRecycleBin()" class="btn-danger" style="margin: 0; background-color: #6c757d;">🗑️ အမှိုက်ပုံး</button>
+            <button onclick="window.exportToCSV()" style="margin: 0; background-color: #007bff;">📥 Excel ဒေါင်းမည်</button>
+        </div>
+    </div>
+
+    <div class="section" style="background-color: #fdfdfd; border-color: #28a745;">
+        <h3 style="color: #28a745;">၅။ ဖောက်သည်များ၏ ငွေဖြည့်/ဝယ်ယူမှု မှတ်တမ်း (Direct Customers)</h3>
+        <p style="font-size: 13px; color: #666; margin-top: 0;">ဤမှတ်တမ်းတွင် Web App မှ ကိုယ်တိုင်ဝယ်ယူသူများကိုသာ သီးသန့် ပြသထားပါသည်။ ကော်မရှင် (%) ပေးရန် မလိုပါ။</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;">
+            <thead>
+                <tr><th style="background-color: #28a745;">အမည်</th><th style="background-color: #28a745;">ဖုန်းနံပါတ်</th><th style="background-color: #28a745;">ငွေဖြည့်စုစုပေါင်း</th><th style="background-color: #28a745;">ဝယ်ယူမှုစုစုပေါင်း</th><th style="background-color: #28a745;">လက်ကျန်ငွေ</th><th style="background-color: #28a745;">လုပ်ဆောင်ချက်</th></tr>
+            </thead>
+            <tbody id="customerBody"></tbody>
+        </table>
     </div>
 </div>
 
+<div id="inventoryLogModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('inventoryLogModal').style.display='none'">&times;</span><h3 style="margin-top: 0; color: #17a2b8;">📋 ဂိုဒေါင်သို့ ဖြည့်သွင်းမှု မှတ်တမ်း</h3><table style="width: 100%;"><thead><tr><th>ရက်စွဲ နှင့် အချိန်</th><th>အမျိုးအစား</th><th>အရေအတွက်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody id="inventoryLogBody"></tbody></table></div></div>
+<div id="manageStockModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('manageStockModal').style.display='none'">&times;</span><h3 style="margin-top: 0; color: #dc3545;">📦 ဂိုဒေါင်ရှိ Code များ စီမံရန်</h3><select id="stockPlanSelect" onchange="window.loadManageStock()" style="margin-bottom: 10px;"><option value="1 Hour">1 Hour</option><option value="4 Hours">4 Hours</option><option value="1 Day">1 Day</option><option value="1 Week">1 Week</option><option value="1 Month">1 Month</option></select><button class="btn-danger" style="margin-bottom:15px; background-color: #c82333;" onclick="window.clearStockPlan()">ရွေးချယ်ထားသော အမျိုးအစားအားလုံးဖျက်ရန်</button><table style="width: 100%;"><thead><tr><th>စဉ်</th><th>Code</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody id="manageStockBody"></tbody></table></div></div>
+
+<div id="detailsModal" class="modal"><div class="modal-content">
+    <span class="close-btn" onclick="document.getElementById('detailsModal').style.display='none'">&times;</span>
+    <h3 id="modalTitle" style="margin-top: 0; color: #007bff;">ကိုယ်စားလှယ် အသေးစိတ် မှတ်တမ်း</h3>
+    <table style="width: 100%;"><thead><tr><th>ရက်စွဲ</th><th>အမျိုးအစား</th><th>အရေအတွက်</th><th>တန်ဖိုး</th><th>ဖျက်ရန်</th></tr></thead><tbody id="modalBody"></tbody></table>
+    <div style="background: #f8f9fa; padding: 15px; margin-top: 15px; border-radius: 5px; border: 1px solid #ddd;">
+        <label style="margin-top: 0;">ရာခိုင်နှုန်း (%) သတ်မှတ်ရန်:</label>
+        <input type="number" id="agentCommPct" value="0" oninput="window.calcAgentCommission()" style="width: 100px; display: inline-block;"> %
+        <div style="margin-top: 15px; font-size: 15px;">
+            <p style="margin: 5px 0;">စုစုပေါင်း ရောင်းရငွေ: <b id="agentTotalSales">0</b> Ks</p>
+            <p style="margin: 5px 0;">ကိုယ်စားလှယ် ရမည့်ငွေ (<span id="agentCommLabel">0</span>%): <b id="agentCommAmount" style="color: #dc3545;">0</b> Ks</p>
+            <p style="margin: 5px 0;">မိမိ ရမည့်ငွေ (အသားတင်): <b id="ownerNetProfit" style="color: #28a745;">0</b> Ks</p>
+        </div>
+    </div>
+</div></div>
+
+<div id="customerDetailsModal" class="modal"><div class="modal-content">
+    <span class="close-btn" onclick="document.getElementById('customerDetailsModal').style.display='none'">&times;</span>
+    <h3 id="custModalTitle" style="margin-top: 0; color: #28a745;">ဖောက်သည် အသေးစိတ်</h3>
+    
+    <h4 style="color: #007bff; border-bottom: 1px solid #ddd; padding-bottom: 5px;">💰 ငွေဖြည့်မှတ်တမ်း (Top-ups)</h4>
+    <table style="width: 100%; font-size: 13px;"><thead><tr><th style="background-color: #6c757d;">ရက်စွဲ</th><th style="background-color: #6c757d;">ပမာဏ</th></tr></thead><tbody id="custTopupBody"></tbody></table>
+
+    <h4 style="color: #dc3545; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 20px;">🛒 ဝယ်ယူထားသော Voucher များ</h4>
+    <table style="width: 100%; font-size: 13px;"><thead><tr><th style="background-color: #6c757d;">ရက်စွဲ</th><th style="background-color: #6c757d;">အမျိုးအစား</th><th style="background-color: #6c757d;">Code</th><th style="background-color: #6c757d;">တန်ဖိုး</th></tr></thead><tbody id="custHistoryBody"></tbody></table>
+</div></div>
+
+<div id="recycleBinModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('recycleBinModal').style.display='none'">&times;</span><h3 style="margin-top: 0; color: #dc3545;">🗑️ အမှိုက်ပုံး (ဖျက်ထားသော စာရင်းများ)</h3><table style="width: 100%;"><thead><tr><th>ရက်စွဲ</th><th>အမည်</th><th>အရေအတွက်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody id="recycleBinBody"></tbody></table></div></div>
+<div id="manualModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('manualModal').style.display='none'">&times;</span><h3 style="margin-top: 0; color: #ff9800;">📝 Manual စာရင်းသွင်းရန်</h3><label>ရက်စွဲ:</label><input type="date" id="manDate"><label>လက်ခွဲ အမည်:</label><input type="text" id="manName" list="agentList"><label>အမျိုးအစား:</label><select id="manPlan" oninput="window.calcManualTotal()"><option value="1 Hour">1 Hour</option><option value="4 Hours">4 Hours</option><option value="1 Day">1 Day</option><option value="1 Week">1 Week</option><option value="1 Month">1 Month</option></select><label>အရေအတွက်:</label><input type="number" id="manQty" oninput="window.calcManualTotal()"><label>စုစုပေါင်း တန်ဖိုး (Ks):</label><input type="number" id="manTotal" readonly style="background-color: #e9ecef;"><button onclick="window.addManualRecord()">💾 စာရင်းသွင်းမည်</button></div></div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+    import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCqZi-PrBdzak2-vpOhqgB398DT6uIcgDE",
@@ -122,181 +175,388 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    let currentUser = null;
+    // 1. INSTANT LOCAL LOAD
+    window.inventory = JSON.parse(localStorage.getItem('smartInventory_v11')) || { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] };
+    window.records = JSON.parse(localStorage.getItem('smartRecords_v11')) || [];
+    window.trashBin = JSON.parse(localStorage.getItem('recycleBin_v11')) || [];
+    window.inventoryLog = JSON.parse(localStorage.getItem('inventoryLog_v11')) || [];
+    window.agentPercentages = JSON.parse(localStorage.getItem('agentPercentages_v11')) || {};
+    window.agentNamesList = JSON.parse(localStorage.getItem('agentNamesList_v11')) || [];
+    window.customersData = JSON.parse(localStorage.getItem('customersData_v11')) || {};
+    window.currentModalAgent = "";
+    window.currentTopupCustomer = null;
 
-    // --- UI ပြောင်းလဲရန် ---
-    window.showRegister = function() {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('registerScreen').style.display = 'block';
-    }
+    document.getElementById('manDate').valueAsDate = new Date();
 
-    window.showLogin = function() {
-        document.getElementById('registerScreen').style.display = 'none';
-        document.getElementById('loginScreen').style.display = 'block';
-    }
-
-    // --- 🌟 အကောင့်သစ်ဖွင့်ရန် (Register) ---
-    window.register = async function() {
-        const name = document.getElementById('regName').value.trim();
-        const phone = document.getElementById('regPhone').value.trim();
-        const pass = document.getElementById('regPass').value.trim();
-
-        if(!name || !phone || !pass) return alert("အချက်အလက်များကို ပြည့်စုံစွာ ထည့်သွင်းပါ။");
-        if(phone.length < 5) return alert("ဖုန်းနံပါတ် မှားယွင်းနေပါသည်။");
-
-        const userRef = ref(db, `customers/${phone}`);
-        const snapshot = await get(userRef);
-
-        if (snapshot.exists()) {
-            return alert("❌ ဤဖုန်းနံပါတ်ဖြင့် အကောင့်ဖွင့်ပြီးသား ဖြစ်နေပါသည်။ ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။");
-        } else {
-            // Password ပါ သိမ်းဆည်းမည်
-            const newUser = { name: name, phone: phone, password: pass, balance: 0 };
-            await set(userRef, newUser);
-            alert("✅ အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်။ ယခု အကောင့်ဝင်နိုင်ပါပြီ။");
-            window.showLogin();
-            document.getElementById('loginPhone').value = phone;
-        }
-    }
-
-    // --- 🌟 အကောင့်ဝင်ရန် (Login & Password Check) ---
-    window.login = async function() {
-        const phone = document.getElementById('loginPhone').value.trim();
-        const pass = document.getElementById('loginPass').value.trim();
-
-        if(!phone || !pass) return alert("ဖုန်းနံပါတ် နှင့် စကားဝှက် ထည့်ပါ။");
-
-        const userRef = ref(db, `customers/${phone}`);
-        const snapshot = await get(userRef);
-
-        if (!snapshot.exists()) {
-            return alert("❌ အကောင့်ရှာမတွေ့ပါ။ အကောင့်သစ် အရင်ဖွင့်ပါ။");
-        }
-
-        const userData = snapshot.val();
+    // --- TOP-UP FUNCTIONS ---
+    window.checkCustomer = async function() {
+        const phone = document.getElementById('topupPhone').value.trim();
+        if(!phone) return alert("ဖုန်းနံပါတ် ထည့်ပါ။");
         
-        // Password အမှန်တိုက်စစ်ခြင်း
-        if (userData.password !== pass) {
-            return alert("❌ စကားဝှက် (Password) မှားယွင်းနေပါသည်။ ပြန်လည်ကြိုးစားပါ။");
-        }
-
-        currentUser = userData;
-        localStorage.setItem('wifiCustomerPhone', phone);
-        localStorage.setItem('wifiCustomerPass', pass);
-        window.showDashboard();
-    }
-
-    // --- အကောင့်ထွက်ရန် ---
-    window.logout = function() {
-        localStorage.removeItem('wifiCustomerPhone');
-        localStorage.removeItem('wifiCustomerPass');
-        currentUser = null;
-        document.getElementById('dashboardScreen').style.display = 'none';
-        window.showLogin();
-        document.getElementById('loginPass').value = '';
-    }
-
-    // --- Dashboard ပြရန် ---
-    window.showDashboard = function() {
-        if(!currentUser) return;
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('registerScreen').style.display = 'none';
-        document.getElementById('dashboardScreen').style.display = 'block';
-        
-        document.getElementById('userNameText').innerText = currentUser.name || "Customer";
-        document.getElementById('userPhoneText').innerText = currentUser.phone;
-
-        // Balance အပြောင်းအလဲကို အမြဲစောင့်ကြည့်နေမည်
-        const userRef = ref(db, `customers/${currentUser.phone}`);
-        onValue(userRef, (snapshot) => {
+        try {
+            const userRef = ref(db, `customers/${phone}`);
+            const snapshot = await get(userRef);
             if(snapshot.exists()) {
-                currentUser = snapshot.val();
-                document.getElementById('balanceText').innerText = currentUser.balance || 0;
-                window.renderHistory();
+                window.currentTopupCustomer = snapshot.val();
+                document.getElementById('infoNameText').innerText = window.currentTopupCustomer.name;
+                document.getElementById('infoBalanceText').innerText = window.currentTopupCustomer.balance || 0;
+                document.getElementById('customerInfo').style.display = 'block';
+            } else {
+                alert("❌ ဤဖုန်းနံပါတ်ဖြင့် အကောင့် ဖွင့်ထားသူ မတွေ့ပါ။");
+                document.getElementById('customerInfo').style.display = 'none';
+                window.currentTopupCustomer = null;
             }
-        });
+        } catch(e) { console.error(e); alert("စနစ်ချို့ယွင်းနေပါသည်။"); }
     }
 
-    // --- Voucher ဝယ်ရန် ---
-    window.buyVoucher = async function(plan, price) {
-        if(currentUser.balance < price) {
-            return alert("❌ ငွေလက်ကျန် မလောက်ပါ။ ကျေးဇူးပြု၍ ငွေဖြည့်ပါ။");
-        }
-
-        if(!confirm(`${plan} Voucher ကို ${price} ကျပ်ဖြင့် ဝယ်ယူမှာ သေချာပါသလား?`)) return;
+    window.addTopup = async function() {
+        if(!window.currentTopupCustomer) return;
+        const amount = parseInt(document.getElementById('topupAmount').value);
+        if(!amount || amount <= 0) return alert("ငွေပမာဏ မှန်ကန်စွာ ထည့်ပါ။");
+        
+        if(!confirm(`${window.currentTopupCustomer.name} ထံသို့ ${amount} ကျပ် သေချာပေါက် ဖြည့်သွင်းမည်လား?`)) return;
 
         try {
-            const invRef = ref(db, `inventory/${plan}`);
-            const invSnap = await get(invRef);
-            let vouchers = invSnap.exists() ? invSnap.val() : [];
-
-            if(vouchers.length === 0) {
-                return alert("❌ တောင်းပန်ပါတယ်။ လောလောဆယ် ကဒ်များ ကုန်နေပါတယ်။");
-            }
-
-            let purchasedVoucher = vouchers.shift();
-            let newBalance = currentUser.balance - price;
-            let purchaseId = "buy_" + Date.now();
-            let dateStr = new Date().toLocaleString();
+            const phone = window.currentTopupCustomer.phone;
+            const newBalance = (window.currentTopupCustomer.balance || 0) + amount;
             
             let updates = {};
-            updates[`inventory/${plan}`] = vouchers; 
-            updates[`customers/${currentUser.phone}/balance`] = newBalance; 
-            updates[`customers/${currentUser.phone}/history/${purchaseId}`] = {
-                plan: plan, price: price, code: purchasedVoucher.code, date: dateStr
-            }; 
-            
-            let recordId = "web_" + Date.now();
-            updates[`records/${recordId}`] = {
-                id: recordId, date: new Date().toLocaleDateString(), name: currentUser.name + " (" + currentUser.phone + ")",
-                plan: plan, qty: 1, totalPrice: price, codes: [purchasedVoucher.code], isManual: false
-            };
+            updates[`customers/${phone}/balance`] = newBalance;
+            let topupId = "topup_" + Date.now();
+            let dateStr = new Date().toLocaleString();
+            updates[`customers/${phone}/topups/${topupId}`] = { amount: amount, date: dateStr };
 
             await update(ref(db), updates);
             
-            alert(`✅ ဝယ်ယူမှု အောင်မြင်ပါသည်!\n\nသင့် Code မှာ: ${purchasedVoucher.code}\nယခု Code ကို ပေးထားသော မှတ်တမ်းတွင် အချိန်မရွေး ပြန်ကြည့်နိုင်ပါသည်။`);
-
-        } catch(e) {
-            console.error(e);
-            alert("စနစ်ချို့ယွင်းနေပါသည်။ ခဏနေမှ ထပ်စမ်းကြည့်ပါ။");
-        }
+            alert(`✅ ငွေဖြည့်သွင်းမှု အောင်မြင်ပါသည်!\nယခု လက်ကျန်ငွေ: ${newBalance} Ks`);
+            document.getElementById('topupAmount').value = '';
+            window.checkCustomer(); 
+        } catch(e) { console.error(e); alert("ငွေဖြည့်သွင်းရာတွင် အမှားဖြစ်နေပါသည်။"); }
     }
 
-    // --- ဝယ်ထားသော မှတ်တမ်းများ ပြရန် ---
-    window.renderHistory = function() {
-        const container = document.getElementById('historyContainer');
-        container.innerHTML = '';
-        
-        if(!currentUser.history) {
-            container.innerHTML = '<p style="text-align:center; color:#888;">ဝယ်ယူထားသော မှတ်တမ်း မရှိသေးပါ။</p>';
-            return;
+    // --- HELPER FUNCTIONS ---
+    window.updateAgentList = function() {
+        const agentList = document.getElementById('agentList');
+        agentList.innerHTML = '';
+        let allNames = window.agentNamesList.concat();
+        if (window.records) {
+            window.records.forEach(function(r) { 
+                // ဖောက်သည်နာမည် (ဖုန်းနံပါတ်ပါသော) များကို List ထဲ မထည့်ပါ
+                if (!r.name.match(/\(\d{5,}\)$/) && !r.name.startsWith("Customer_")) {
+                    allNames.push(r.name); 
+                }
+            });
         }
-
-        let historyArray = Object.values(currentUser.history).reverse();
-        
-        historyArray.forEach(item => {
-            container.innerHTML += `
-                <div class="history-item">
-                    <div style="display: flex; justify-content: space-between;">
-                        <b>${item.plan}</b> <span style="color: #666; font-size: 12px;">${item.date}</span>
-                    </div>
-                    <div class="voucher-code">Code: ${item.code}</div>
-                </div>
-            `;
+        let uniqueNames = [...new Set(allNames)];
+        window.agentNamesList = uniqueNames;
+        uniqueNames.forEach(function(name) {
+            if (name && name.trim() !== '') {
+                let option = document.createElement('option'); option.value = name; agentList.appendChild(option);
+            }
         });
     }
 
-    // Auto Login Check (Saved Password)
-    window.onload = async function() {
-        const savedPhone = localStorage.getItem('wifiCustomerPhone');
-        const savedPass = localStorage.getItem('wifiCustomerPass');
+    window.updateStockDisplay = function() {
+        const plans = ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"];
+        let html = '';
+        plans.forEach(function(p) {
+            const count = (window.inventory && window.inventory[p]) ? window.inventory[p].length : 0;
+            html += `<div class="stock-item">${p}: <b>${count}</b></div>`;
+        });
+        document.getElementById('stockStatus').innerHTML = html;
+        if(document.getElementById('inventoryLogModal').style.display === 'block') window.updateInventoryLogTable();
+    }
+
+    // 🌟 အခန်း (၄) ကိုယ်စားလှယ်များ ဇယား (ဖောက်သည်များကို ဖယ်ထုတ်ထားသည်)
+    window.updateTable = function() {
+        const summaryBody = document.getElementById('summaryBody');
+        summaryBody.innerHTML = '';
+        let groupedData = {};
+        let grandTotal = 0;
         
-        if(savedPhone && savedPass) {
-            document.getElementById('loginPhone').value = savedPhone;
-            document.getElementById('loginPass').value = savedPass;
-            window.login();
+        if (window.records) {
+            window.records.forEach(function(r) {
+                // 🌟 အရေးကြီး: (09xxxx) လို့ပါတဲ့ Web App က ဖောက်သည်တွေကို ကိုယ်စားလှယ်စာရင်းထဲ မထည့်ပါ
+                if (r.name.match(/\(\d{5,}\)$/) || r.name.startsWith("Customer_")) return;
+
+                if(!groupedData[r.name]) groupedData[r.name] = { qty: 0, total: 0 };
+                groupedData[r.name].qty += r.qty;
+                groupedData[r.name].total += r.totalPrice;
+                grandTotal += r.totalPrice;
+            });
+        }
+
+        for (let name in groupedData) {
+            summaryBody.innerHTML += `<tr>
+                <td><strong>${name}</strong></td>
+                <td>${groupedData[name].qty} ခု</td>
+                <td>${groupedData[name].total} Ks</td>
+                <td><button class="btn-small" onclick="window.openModal('${name}')">အသေးစိတ်</button></td>
+            </tr>`;
+        }
+        document.getElementById('grandTotalText').innerText = grandTotal + " Ks";
+        window.updateAgentList();
+    }
+
+    // 🌟 အခန်း (၅) ဖောက်သည်များ ဇယားအသစ်
+    window.updateCustomerTable = function() {
+        const custBody = document.getElementById('customerBody');
+        custBody.innerHTML = '';
+
+        for (let phone in window.customersData) {
+            let cust = window.customersData[phone];
+            
+            let totalTopup = 0;
+            if(cust.topups) Object.values(cust.topups).forEach(t => totalTopup += parseInt(t.amount || 0));
+
+            let totalSpent = 0;
+            if(cust.history) Object.values(cust.history).forEach(h => totalSpent += parseInt(h.price || 0));
+
+            custBody.innerHTML += `<tr>
+                <td><strong>${cust.name || "Unknown"}</strong></td>
+                <td>${cust.phone}</td>
+                <td style="color:#28a745;">+${totalTopup} Ks</td>
+                <td style="color:#dc3545;">-${totalSpent} Ks</td>
+                <td><b>${cust.balance || 0} Ks</b></td>
+                <td><button class="btn-small" style="background-color: #28a745;" onclick="window.openCustomerModal('${cust.phone}')">အသေးစိတ်</button></td>
+            </tr>`;
         }
     }
+
+    // 🌟 ဖောက်သည် အသေးစိတ် Modal
+    window.openCustomerModal = function(phone) {
+        let cust = window.customersData[phone];
+        if(!cust) return;
+
+        document.getElementById('custModalTitle').innerText = `${cust.name} ၏ မှတ်တမ်း`;
+
+        const topupBody = document.getElementById('custTopupBody');
+        topupBody.innerHTML = '';
+        if(cust.topups) {
+            Object.values(cust.topups).reverse().forEach(t => {
+                topupBody.innerHTML += `<tr><td>${t.date}</td><td style="color:#28a745;">+${t.amount} Ks</td></tr>`;
+            });
+        } else {
+            topupBody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#999;">မှတ်တမ်း မရှိပါ</td></tr>';
+        }
+
+        const histBody = document.getElementById('custHistoryBody');
+        histBody.innerHTML = '';
+        if(cust.history) {
+            Object.values(cust.history).reverse().forEach(h => {
+                histBody.innerHTML += `<tr><td>${h.date}</td><td>${h.plan}</td><td>${h.code}</td><td style="color:#dc3545;">-${h.price} Ks</td></tr>`;
+            });
+        } else {
+            histBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999;">မှတ်တမ်း မရှိပါ</td></tr>';
+        }
+
+        document.getElementById('customerDetailsModal').style.display = 'block';
+    }
+
+    // --- OTHER MODALS ---
+    window.openModal = function(name) {
+        window.currentModalAgent = name;
+        document.getElementById('modalTitle').innerText = `${name} ၏ မှတ်တမ်း`;
+        const modalBody = document.getElementById('modalBody');
+        modalBody.innerHTML = '';
+        
+        let agentRecords = window.records.filter(function(r) { return r.name === name; });
+        let agentTotal = 0;
+
+        agentRecords.forEach(function(r) {
+            agentTotal += r.totalPrice;
+            modalBody.innerHTML += `<tr>
+                <td>${r.date}</td><td>${r.plan}</td><td>${r.qty}</td><td>${r.totalPrice}</td>
+                <td><button class="btn-small" style="background-color: #dc3545;" onclick="window.deleteRecord('${r.id}')">🗑️</button></td>
+            </tr>`;
+        });
+        
+        document.getElementById('agentTotalSales').innerText = agentTotal;
+        document.getElementById('agentCommPct').value = (window.agentPercentages && window.agentPercentages[name]) ? window.agentPercentages[name] : 0;
+        window.calcAgentCommission();
+        document.getElementById('detailsModal').style.display = "block";
+    }
+
+    window.calcAgentCommission = function() {
+        let name = window.currentModalAgent;
+        if (!name) return;
+        let pct = parseFloat(document.getElementById('agentCommPct').value) || 0;
+        if (!window.agentPercentages) window.agentPercentages = {};
+        window.agentPercentages[name] = pct;
+        let total = parseFloat(document.getElementById('agentTotalSales').innerText) || 0;
+        let comm = (total * pct) / 100;
+        
+        document.getElementById('agentCommLabel').innerText = pct;
+        document.getElementById('agentCommAmount').innerText = comm.toFixed(0);
+        document.getElementById('ownerNetProfit').innerText = (total - comm).toFixed(0);
+        localStorage.setItem('agentPercentages_v11', JSON.stringify(window.agentPercentages));
+    }
+
+    window.deleteRecord = function(id) {
+        if(!confirm("ဤမှတ်တမ်းကို ဖျက်ရန် သေချာပါသလား?")) return;
+        const index = window.records.findIndex(function(r) { return r.id === id; });
+        if(index > -1) {
+            window.trashBin.push(window.records[index]);
+            window.records.splice(index, 1);
+            window.saveToFirebase();
+            window.updateTable();
+            window.openModal(window.currentModalAgent);
+        }
+    }
+
+    window.openRecycleBin = function() {
+        const rBinBody = document.getElementById('recycleBinBody');
+        rBinBody.innerHTML = '';
+        if(!window.trashBin || window.trashBin.length === 0) {
+            rBinBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">အမှိုက်ပုံး လွတ်နေပါသည်</td></tr>`;
+        } else {
+            window.trashBin.forEach(function(r) {
+                rBinBody.innerHTML += `<tr><td>${r.date}</td><td>${r.name}</td><td>${r.qty}</td>
+                    <td>
+                        <button class="btn-small" style="background-color:#28a745;" onclick="window.restoreRecord('${r.id}')">Restore</button>
+                        <button class="btn-small" style="background-color:#dc3545;" onclick="window.permanentDeleteRecord('${r.id}')">Delete</button>
+                    </td></tr>`;
+            });
+        }
+        document.getElementById('recycleBinModal').style.display = 'block';
+    }
+
+    window.restoreRecord = function(id) {
+        const index = window.trashBin.findIndex(r => r.id === id);
+        if(index > -1) { window.records.push(window.trashBin[index]); window.trashBin.splice(index, 1); window.saveToFirebase(); window.updateTable(); window.openRecycleBin(); }
+    }
+
+    window.permanentDeleteRecord = function(id) {
+        if(!confirm("အပြီးတိုင် ဖျက်ရန် သေချာပါသလား?")) return;
+        const index = window.trashBin.findIndex(r => r.id === id);
+        if(index > -1) { window.trashBin.splice(index, 1); window.saveToFirebase(); window.openRecycleBin(); }
+    }
+
+    // --- OTHER CORE ACTIONS ---
+    window.addManualRecord = function() {
+        const date = document.getElementById('manDate').value;
+        const name = document.getElementById('manName').value;
+        const plan = document.getElementById('manPlan').value;
+        const qty = parseInt(document.getElementById('manQty').value);
+        const total = parseInt(document.getElementById('manTotal').value);
+
+        if(!name || !qty || !total) return alert("အချက်အလက်များကို ပြည့်စုံစွာ ထည့်ပါ။");
+
+        window.records.push({ id: Date.now().toString(), date: date, name: name, plan: plan, qty: qty, totalPrice: total, codes: [], isManual: true });
+        if (!window.agentNamesList.includes(name) && !name.match(/\(\d{5,}\)$/)) window.agentNamesList.push(name);
+        window.saveToFirebase(); window.updateTable(); document.getElementById('manualModal').style.display = 'none';
+        alert("အောင်မြင်စွာ စာရင်းသွင်းပြီးပါပြီ။");
+    }
+
+    window.exportToCSV = function() {
+        let csvContent = "data:text/csv;charset=utf-8,Date,Agent Name,Plan,Quantity,Total Price (Ks)\n";
+        window.records.forEach(function(r) { 
+            // 🌟 Excel ထဲကိုလည်း ကိုယ်စားလှယ် သီးသန့်ပဲ ထည့်ပေးပါမယ်
+            if (!r.name.match(/\(\d{5,}\)$/) && !r.name.startsWith("Customer_")) {
+                csvContent += `${r.date},${r.name},${r.plan},${r.qty},${r.totalPrice}\n`; 
+            }
+        });
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", "Agent_Sales_Record.csv");
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+
+    window.addStock = function() {
+        const text = document.getElementById('newCodes').value;
+        if (!text.trim()) return alert("စာသားများ ထည့်သွင်းပေးပါ။");
+
+        let existingCodes = new Set();
+        for (let key in window.inventory) { window.inventory[key].forEach(i => existingCodes.add(String(i.code).trim())); }
+        window.records.forEach(r => { if(r.codes) r.codes.forEach(c => existingCodes.add(String(c).trim())); });
+        window.trashBin.forEach(r => { if(r.codes) r.codes.forEach(c => existingCodes.add(String(c).trim())); });
+
+        const lines = text.split('\n');
+        let addedCounts = { "1 Hour": 0, "4 Hours": 0, "1 Day": 0, "1 Week": 0, "1 Month": 0 };
+        let duplicateCount = 0;
+
+        lines.forEach(function(line) {
+            let cols = line.trim().split(/\t+/); if(cols.length < 5) cols = line.trim().split(/\s+/); 
+            if (cols.length >= 2 && cols[0] !== "") {
+                const code = String(cols[0]).trim(); const planRaw = String(cols[1]).trim().toLowerCase();
+                let tp = "";
+                if (planRaw.includes('1hour') || planRaw.includes('1hr')) tp = "1 Hour";
+                else if (planRaw.includes('4hour') || planRaw.includes('4hr')) tp = "4 Hours";
+                else if (planRaw.includes('1day')) tp = "1 Day";
+                else if (planRaw.includes('1week')) tp = "1 Week";
+                else if (planRaw.includes('1month')) tp = "1 Month";
+
+                if (tp !== "") {
+                    if (!existingCodes.has(code)) {
+                        if (!window.inventory[tp]) window.inventory[tp] = [];
+                        window.inventory[tp].push({ code: code, price: cols.length >= 5 ? cols[4] : "0" });
+                        existingCodes.add(code); addedCounts[tp]++;
+                    } else duplicateCount++; 
+                }
+            }
+        });
+        
+        let cDate = new Date().toLocaleString();
+        for (let p in addedCounts) if (addedCounts[p] > 0) window.inventoryLog.unshift({ datetime: cDate, plan: p, qty: addedCounts[p] }); 
+        window.saveToFirebase(); window.updateStockDisplay(); document.getElementById('newCodes').value = '';
+        alert("စာရင်းသွင်းပြီးပါပြီ!\n\nအသစ်ထည့်သွင်းမှုများ:\n" + Object.entries(addedCounts).map(([k,v]) => v>0?`${k}: ${v} ခု`:'').filter(Boolean).join('\n') + (duplicateCount>0 ? `\n\n⚠️ ထပ်နေသော Code: ${duplicateCount} ခု` : ''));
+    }
+
+    window.saveToFirebase = function() {
+        localStorage.setItem('smartInventory_v11', JSON.stringify(window.inventory));
+        localStorage.setItem('smartRecords_v11', JSON.stringify(window.records));
+        localStorage.setItem('recycleBin_v11', JSON.stringify(window.trashBin));
+        localStorage.setItem('inventoryLog_v11', JSON.stringify(window.inventoryLog));
+        localStorage.setItem('agentNamesList_v11', JSON.stringify(window.agentNamesList));
+
+        const safeRecords = window.records.reduce((acc, curr) => { acc[curr.id] = curr; return acc; }, {});
+        const safeTrash = window.trashBin.reduce((acc, curr) => { acc[curr.id] = curr; return acc; }, {});
+        const safeInvLog = window.inventoryLog.reduce((acc, curr, index) => { acc['log_'+index] = curr; return acc; }, {});
+
+        set(ref(db, '/'), {
+            inventory: window.inventory, records: safeRecords, trashBin: safeTrash,
+            inventoryLog: safeInvLog, agentPercentages: window.agentPercentages, agentNamesList: window.agentNamesList,
+            customers: window.customersData // Preserve customer data
+        });
+    };
+
+    // 🌟 INITIALIZE AND SYNC 
+    window.updateStockDisplay();
+    window.updateTable();
+    window.updateCustomerTable();
+
+    onValue(ref(db, '/'), (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            window.inventory = {
+                "1 Hour": data.inventory?.["1 Hour"] || [], "4 Hours": data.inventory?.["4 Hours"] || [],
+                "1 Day": data.inventory?.["1 Day"] || [], "1 Week": data.inventory?.["1 Week"] || [],
+                "1 Month": data.inventory?.["1 Month"] || []
+            };
+            window.records = data.records ? Object.values(data.records) : [];
+            window.trashBin = data.trashBin ? Object.values(data.trashBin) : [];
+            window.inventoryLog = data.inventoryLog ? Object.values(data.inventoryLog) : [];
+            window.agentPercentages = data.agentPercentages || {};
+            window.agentNamesList = data.agentNamesList || [];
+            
+            // 🌟 ဖောက်သည်ဒေတာများကိုပါ ယူမည်
+            window.customersData = data.customers || {};
+
+            localStorage.setItem('smartInventory_v11', JSON.stringify(window.inventory));
+            localStorage.setItem('smartRecords_v11', JSON.stringify(window.records));
+            localStorage.setItem('recycleBin_v11', JSON.stringify(window.trashBin));
+            localStorage.setItem('inventoryLog_v11', JSON.stringify(window.inventoryLog));
+            localStorage.setItem('agentPercentages_v11', JSON.stringify(window.agentPercentages));
+            localStorage.setItem('agentNamesList_v11', JSON.stringify(window.agentNamesList));
+            localStorage.setItem('customersData_v11', JSON.stringify(window.customersData));
+
+            window.updateStockDisplay();
+            window.updateTable();          // ကိုယ်စားလှယ်များ Update
+            window.updateCustomerTable();  // ဖောက်သည်များ Update
+            
+            if(document.getElementById('customerDetailsModal').style.display === 'block') window.openCustomerModal(window.currentTopupCustomer?.phone);
+        }
+    });
+
 </script>
 
 </body>
