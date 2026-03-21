@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WiFi Voucher Store</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 400px; background: white; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
+        .header { background: #007bff; color: white; padding: 20px; text-align: center; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
+        .header h2 { margin: 0; font-size: 22px; }
+        
+        /* Auth Screens */
+        .auth-screen { padding: 30px 20px; text-align: center; margin-top: 20px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .btn-primary { background: #007bff; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { background: #0056b3; }
+        .switch-link { color: #007bff; cursor: pointer; text-decoration: underline; font-weight: bold; margin-top: 15px; display: inline-block; }
+
+        /* Dashboard Screen */
+        #dashboardScreen { display: none; padding: 20px; }
+        .welcome-text { font-size: 18px; color: #333; margin-bottom: 15px; font-weight: bold; }
+        .balance-card { background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 10px rgba(40,167,69,0.3); }
+        .balance-card h3 { margin: 0; font-size: 16px; font-weight: normal; }
+        .balance-card h1 { margin: 10px 0 0 0; font-size: 36px; }
+
+        .section-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        
+        .plan-card { background: #fff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .plan-info h4 { margin: 0 0 5px 0; font-size: 18px; color: #333; }
+        .plan-info p { margin: 0; color: #dc3545; font-weight: bold; font-size: 16px; }
+        .buy-btn { background: #ffc107; color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .buy-btn:hover { background: #e0a800; }
+
+        /* History */
+        .history-item { background: #f8f9fa; padding: 12px; border-left: 4px solid #007bff; margin-bottom: 10px; border-radius: 4px; font-size: 14px; }
+        .voucher-code { font-size: 18px; font-weight: bold; color: #28a745; margin-top: 5px; letter-spacing: 1px; }
+
+        .logout-btn { background: #dc3545; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; margin-top: 20px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h2>📡 Smart WiFi Store</h2>
+    </div>
+
+    <div id="loginScreen" class="auth-screen">
+        <h3 style="color: #333; margin-bottom: 25px;">အကောင့်ဝင်ရန်</h3>
+        <div class="input-group">
+            <label>ဖုန်းနံပါတ်</label>
+            <input type="number" id="loginPhone" placeholder="09xxxxxxxxx">
+        </div>
+        <div class="input-group">
+            <label>စကားဝှက် (Password)</label>
+            <input type="password" id="loginPass" placeholder="လျှို့ဝှက်နံပါတ် ထည့်ပါ">
+        </div>
+        <button class="btn-primary" onclick="window.login()">ဝင်မည်</button>
+        <p>အကောင့်မရှိသေးဘူးလား? <span class="switch-link" onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</span></p>
+    </div>
+
+    <div id="registerScreen" class="auth-screen" style="display: none;">
+        <h3 style="color: #333; margin-bottom: 25px;">အကောင့်သစ်ဖွင့်ရန်</h3>
+        <div class="input-group">
+            <label>အမည်</label>
+            <input type="text" id="regName" placeholder="သင့်အမည် ထည့်ပါ">
+        </div>
+        <div class="input-group">
+            <label>ဖုန်းနံပါတ်</label>
+            <input type="number" id="regPhone" placeholder="09xxxxxxxxx">
+        </div>
+        <div class="input-group">
+            <label>စကားဝှက်အသစ် ပေးပါ</label>
+            <input type="password" id="regPass" placeholder="လျှို့ဝှက်နံပါတ် အသစ်ပေးပါ">
+        </div>
+        <button class="btn-primary" onclick="window.register()" style="background: #28a745;">အကောင့်ဖွင့်မည်</button>
+        <p>အကောင့်ရှိပြီးသားလား? <span class="switch-link" onclick="window.showLogin()">အကောင့်ဝင်ရန်</span></p>
+    </div>
+
+    <div id="dashboardScreen">
+        <div class="welcome-text">မင်္ဂလာပါ, <span id="userNameText" style="color: #007bff;"></span> 👋</div>
+        <div class="balance-card">
+            <h3>လက်ကျန်ငွေ (Balance)</h3>
+            <h1><span id="balanceText">0</span> <span style="font-size: 20px;">Ks</span></h1>
+            <p style="margin: 10px 0 0 0; font-size: 14px;">ဖုန်းနံပါတ်: <span id="userPhoneText"></span></p>
+        </div>
+
+        <div class="section-title">🛒 Voucher ဝယ်ယူရန်</div>
+        
+        <div id="plansContainer">
+            <div class="plan-card"><div class="plan-info"><h4>1 Hour</h4><p>500 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Hour', 500)">ဝယ်မည်</button></div>
+            <div class="plan-card"><div class="plan-info"><h4>4 Hours</h4><p>1,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('4 Hours', 1000)">ဝယ်မည်</button></div>
+            <div class="plan-card"><div class="plan-info"><h4>1 Day</h4><p>2,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Day', 2000)">ဝယ်မည်</button></div>
+            <div class="plan-card"><div class="plan-info"><h4>1 Week</h4><p>8,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Week', 8000)">ဝယ်မည်</button></div>
+            <div class="plan-card"><div class="plan-info"><h4>1 Month</h4><p>35,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Month', 35000)">ဝယ်မည်</button></div>
+        </div>
+
+        <div class="section-title" style="margin-top: 30px;">🎟️ ဝယ်ယူထားသော Code များ</div>
+        <div id="historyContainer"></div>
+
+        <button class="logout-btn" onclick="window.logout()">အကောင့်ထွက်မည်</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCqZi-PrBdzak2-vpOhqgB398DT6uIcgDE",
+        authDomain: "voucher-system-7890.firebaseapp.com",
+        projectId: "voucher-system-7890",
+        storageBucket: "voucher-system-7890.firebasestorage.app",
+        messagingSenderId: "691932496625",
+        appId: "1:691932496625:web:0a99af369e4a8fb6b6df50",
+        databaseURL: "https://voucher-system-7890-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let currentUser = null;
+
+    // --- UI ပြောင်းလဲရန် ---
+    window.showRegister = function() {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('registerScreen').style.display = 'block';
+    }
+
+    window.showLogin = function() {
+        document.getElementById('registerScreen').style.display = 'none';
+        document.getElementById('loginScreen').style.display = 'block';
+    }
+
+    // --- 🌟 အကောင့်သစ်ဖွင့်ရန် (Register) ---
+    window.register = async function() {
+        const name = document.getElementById('regName').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const pass = document.getElementById('regPass').value.trim();
+
+        if(!name || !phone || !pass) return alert("အချက်အလက်များကို ပြည့်စုံစွာ ထည့်သွင်းပါ။");
+        if(phone.length < 5) return alert("ဖုန်းနံပါတ် မှားယွင်းနေပါသည်။");
+
+        const userRef = ref(db, `customers/${phone}`);
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+            return alert("❌ ဤဖုန်းနံပါတ်ဖြင့် အကောင့်ဖွင့်ပြီးသား ဖြစ်နေပါသည်။ ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။");
+        } else {
+            // Password ပါ သိမ်းဆည်းမည်
+            const newUser = { name: name, phone: phone, password: pass, balance: 0 };
+            await set(userRef, newUser);
+            alert("✅ အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်။ ယခု အကောင့်ဝင်နိုင်ပါပြီ။");
+            window.showLogin();
+            document.getElementById('loginPhone').value = phone;
+        }
+    }
+
+    // --- 🌟 အကောင့်ဝင်ရန် (Login & Password Check) ---
+    window.login = async function() {
+        const phone = document.getElementById('loginPhone').value.trim();
+        const pass = document.getElementById('loginPass').value.trim();
+
+        if(!phone || !pass) return alert("ဖုန်းနံပါတ် နှင့် စကားဝှက် ထည့်ပါ။");
+
+        const userRef = ref(db, `customers/${phone}`);
+        const snapshot = await get(userRef);
+
+        if (!snapshot.exists()) {
+            return alert("❌ အကောင့်ရှာမတွေ့ပါ။ အကောင့်သစ် အရင်ဖွင့်ပါ။");
+        }
+
+        const userData = snapshot.val();
+        
+        // Password အမှန်တိုက်စစ်ခြင်း
+        if (userData.password !== pass) {
+            return alert("❌ စကားဝှက် (Password) မှားယွင်းနေပါသည်။ ပြန်လည်ကြိုးစားပါ။");
+        }
+
+        currentUser = userData;
+        localStorage.setItem('wifiCustomerPhone', phone);
+        localStorage.setItem('wifiCustomerPass', pass);
+        window.showDashboard();
+    }
+
+    // --- အကောင့်ထွက်ရန် ---
+    window.logout = function() {
+        localStorage.removeItem('wifiCustomerPhone');
+        localStorage.removeItem('wifiCustomerPass');
+        currentUser = null;
+        document.getElementById('dashboardScreen').style.display = 'none';
+        window.showLogin();
+        document.getElementById('loginPass').value = '';
+    }
+
+    // --- Dashboard ပြရန် ---
+    window.showDashboard = function() {
+        if(!currentUser) return;
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('registerScreen').style.display = 'none';
+        document.getElementById('dashboardScreen').style.display = 'block';
+        
+        document.getElementById('userNameText').innerText = currentUser.name || "Customer";
+        document.getElementById('userPhoneText').innerText = currentUser.phone;
+
+        // Balance အပြောင်းအလဲကို အမြဲစောင့်ကြည့်နေမည်
+        const userRef = ref(db, `customers/${currentUser.phone}`);
+        onValue(userRef, (snapshot) => {
+            if(snapshot.exists()) {
+                currentUser = snapshot.val();
+                document.getElementById('balanceText').innerText = currentUser.balance || 0;
+                window.renderHistory();
+            }
+        });
+    }
+
+    // --- Voucher ဝယ်ရန် ---
+    window.buyVoucher = async function(plan, price) {
+        if(currentUser.balance < price) {
+            return alert("❌ ငွေလက်ကျန် မလောက်ပါ။ ကျေးဇူးပြု၍ ငွေဖြည့်ပါ။");
+        }
+
+        if(!confirm(`${plan} Voucher ကို ${price} ကျပ်ဖြင့် ဝယ်ယူမှာ သေချာပါသလား?`)) return;
+
+        try {
+            const invRef = ref(db, `inventory/${plan}`);
+            const invSnap = await get(invRef);
+            let vouchers = invSnap.exists() ? invSnap.val() : [];
+
+            if(vouchers.length === 0) {
+                return alert("❌ တောင်းပန်ပါတယ်။ လောလောဆယ် ကဒ်များ ကုန်နေပါတယ်။");
+            }
+
+            let purchasedVoucher = vouchers.shift();
+            let newBalance = currentUser.balance - price;
+            let purchaseId = "buy_" + Date.now();
+            let dateStr = new Date().toLocaleString();
+            
+            let updates = {};
+            updates[`inventory/${plan}`] = vouchers; 
+            updates[`customers/${currentUser.phone}/balance`] = newBalance; 
+            updates[`customers/${currentUser.phone}/history/${purchaseId}`] = {
+                plan: plan, price: price, code: purchasedVoucher.code, date: dateStr
+            }; 
+            
+            let recordId = "web_" + Date.now();
+            updates[`records/${recordId}`] = {
+                id: recordId, date: new Date().toLocaleDateString(), name: currentUser.name + " (" + currentUser.phone + ")",
+                plan: plan, qty: 1, totalPrice: price, codes: [purchasedVoucher.code], isManual: false
+            };
+
+            await update(ref(db), updates);
+            
+            alert(`✅ ဝယ်ယူမှု အောင်မြင်ပါသည်!\n\nသင့် Code မှာ: ${purchasedVoucher.code}\nယခု Code ကို ပေးထားသော မှတ်တမ်းတွင် အချိန်မရွေး ပြန်ကြည့်နိုင်ပါသည်။`);
+
+        } catch(e) {
+            console.error(e);
+            alert("စနစ်ချို့ယွင်းနေပါသည်။ ခဏနေမှ ထပ်စမ်းကြည့်ပါ။");
+        }
+    }
+
+    // --- ဝယ်ထားသော မှတ်တမ်းများ ပြရန် ---
+    window.renderHistory = function() {
+        const container = document.getElementById('historyContainer');
+        container.innerHTML = '';
+        
+        if(!currentUser.history) {
+            container.innerHTML = '<p style="text-align:center; color:#888;">ဝယ်ယူထားသော မှတ်တမ်း မရှိသေးပါ။</p>';
+            return;
+        }
+
+        let historyArray = Object.values(currentUser.history).reverse();
+        
+        historyArray.forEach(item => {
+            container.innerHTML += `
+                <div class="history-item">
+                    <div style="display: flex; justify-content: space-between;">
+                        <b>${item.plan}</b> <span style="color: #666; font-size: 12px;">${item.date}</span>
+                    </div>
+                    <div class="voucher-code">Code: ${item.code}</div>
+                </div>
+            `;
+        });
+    }
+
+    // Auto Login Check (Saved Password)
+    window.onload = async function() {
+        const savedPhone = localStorage.getItem('wifiCustomerPhone');
+        const savedPass = localStorage.getItem('wifiCustomerPass');
+        
+        if(savedPhone && savedPass) {
+            document.getElementById('loginPhone').value = savedPhone;
+            document.getElementById('loginPass').value = savedPass;
+            window.login();
+        }
+    }
+</script>
+
+</body>
+</html>
