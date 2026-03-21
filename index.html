@@ -14,97 +14,94 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap');
 
-        /* 🌟 Full Screen Mobile App Fix 🌟 */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
         html, body { 
             height: 100%; height: 100dvh; overflow: hidden; 
-            background-color: #f4f7fa; /* App နဲ့ တစ်သားတည်း အရောင် */
+            background-color: #eef2f7; 
             display: flex; justify-content: center; color: #333;
         }
 
+        /* 🌟 App အကျယ်ကို ဆွဲဆန့်လိုက်ပါပြီ (max-width: 600px ထိ) 🌟 */
         .app-container { 
-            width: 100%; max-width: 500px; /* ဖုန်းအကြီးတွေမှာပါ အပြည့်ပေါ်ရန် */
+            width: 100%; max-width: 600px; 
             background: #f4f7fa; height: 100%; 
             display: flex; flex-direction: column; position: relative; 
-            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
         }
 
-        /* Scroll Area */
         .tab-content { 
             flex-grow: 1; overflow-y: auto; overflow-x: hidden;
             display: none; animation: fadeIn 0.3s ease;
-            padding-bottom: 100px; /* Bottom Nav မကွယ်စေရန် */
+            padding-bottom: 100px; 
         }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 🌟 Glassmorphism Card (Wifipay) 🌟 */
+        /* Top Header - ပိုကျယ်သွားအောင် ဘေးဘောင်တွေ ညှိထားသည် */
+        .top-header { background: #1a2b4c; color: white; padding: 25px 15px 70px 15px; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; }
+        .balance-label { font-size: 14px; opacity: 0.8; letter-spacing: 1px; }
+        .balance-amount { font-size: 40px; font-weight: 700; margin: 5px 0; }
+        .card-number { font-size: 15px; letter-spacing: 3px; opacity: 0.7; margin-top: 15px; }
+
         .glass-card {
             background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            border-radius: 20px; padding: 25px; color: white; margin: 20px;
+            border-radius: 20px; padding: 25px 20px; color: white; margin: 15px 10px;
             position: relative; overflow: hidden;
         }
-        .wifipay-logo { font-size: 22px; font-weight: 900; font-style: italic; letter-spacing: 1.5px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
+        .wifipay-logo { font-size: 24px; font-weight: 900; font-style: italic; letter-spacing: 1px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
 
-        /* Top Header */
-        .top-header { background: #1a2b4c; color: white; padding: 30px 20px 70px 20px; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; }
-        .balance-label { font-size: 13px; opacity: 0.8; letter-spacing: 1px; }
-        .balance-amount { font-size: 38px; font-weight: 700; margin: 5px 0; }
-        .card-number { font-size: 14px; letter-spacing: 3px; opacity: 0.7; margin-top: 15px; }
-
-        /* Quick Actions */
-        .action-row { display: flex; justify-content: space-around; margin: -40px 20px 20px 20px; position: relative; z-index: 10; }
+        /* Quick Actions - ခလုတ်လေးတွေ ပိုကြီးပိုကျယ်သွားမည် */
+        .action-row { display: flex; justify-content: space-around; margin: -40px 15px 25px 15px; position: relative; z-index: 10; gap: 10px; }
         .action-btn { 
-            background: white; width: 65px; height: 65px; border-radius: 18px; 
+            background: white; flex-grow: 1; height: 75px; border-radius: 18px; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             box-shadow: 0 8px 15px rgba(0,0,0,0.06); cursor: pointer; border: none; transition: 0.2s;
         }
         .action-btn:active { transform: scale(0.95); }
-        .action-btn i { font-size: 22px; margin-bottom: 5px; }
-        .action-btn span { font-size: 11px; font-weight: 600; color: #555; }
+        .action-btn i { font-size: 24px; margin-bottom: 8px; }
+        .action-btn span { font-size: 12px; font-weight: 600; color: #555; }
         
         .icon-blue { color: #007bff; } .icon-green { color: #28a745; } .icon-gift { color: #8e44ad; }
 
         /* Sections & Forms */
-        .section-title { font-size: 16px; font-weight: 700; color: #1a2b4c; margin: 25px 20px 15px 20px; }
-        .form-box { background: white; padding: 20px; border-radius: 18px; margin: 0 20px 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 12px; color: #777; font-weight: 600; margin-bottom: 8px; }
-        .input-group input { width: 100%; padding: 14px; border: 1.5px solid #eee; border-radius: 12px; font-size: 14px; outline: none; background: #fafafa; transition: 0.3s; }
+        .section-title { font-size: 17px; font-weight: 700; color: #1a2b4c; margin: 25px 15px 15px 15px; }
+        .form-box { background: white; padding: 25px 20px; border-radius: 18px; margin: 0 15px 20px 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .input-group { margin-bottom: 18px; }
+        .input-group label { display: block; font-size: 13px; color: #777; font-weight: 600; margin-bottom: 8px; }
+        .input-group input { width: 100%; padding: 15px; border: 1.5px solid #eee; border-radius: 12px; font-size: 15px; outline: none; background: #fafafa; transition: 0.3s; }
         .input-group input:focus { border-color: #1a2b4c; background: white; }
         
-        .btn-main { background: #1a2b4c; color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(26,43,76,0.2); transition: 0.2s; }
+        .btn-main { background: #1a2b4c; color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(26,43,76,0.2); transition: 0.2s; }
         .btn-main:active { transform: scale(0.98); }
 
         /* Vouchers */
-        .plan-card { background: white; margin: 0 20px 12px 20px; border-radius: 15px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .plan-info h4 { font-size: 16px; color: #222; margin-bottom: 4px; }
-        .plan-info p { font-size: 14px; color: #28a745; font-weight: 600; }
-        .btn-buy { background: #1a2b4c; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 600; font-size: 12px; cursor: pointer; }
+        .plan-card { background: white; margin: 0 15px 15px 15px; border-radius: 16px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .plan-info h4 { font-size: 17px; color: #222; margin-bottom: 5px; }
+        .plan-info p { font-size: 15px; color: #28a745; font-weight: 600; }
+        .btn-buy { background: #1a2b4c; color: white; border: none; padding: 10px 22px; border-radius: 20px; font-weight: 600; font-size: 13px; cursor: pointer; }
 
         /* Transactions */
-        .tx-list { margin: 0 20px; }
-        .tx-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-        .tx-icon { width: 42px; height: 42px; border-radius: 12px; background: #f0f4f8; display: flex; justify-content: center; align-items: center; font-size: 18px; margin-right: 15px; }
-        .tx-title { font-size: 13px; font-weight: 600; color: #222; }
-        .tx-date { font-size: 11px; color: #999; margin-top: 3px; }
-        .tx-amount { font-size: 14px; font-weight: 700; }
+        .tx-list { margin: 0 15px; }
+        .tx-item { background: white; padding: 16px; border-radius: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .tx-icon { width: 45px; height: 45px; border-radius: 12px; background: #f0f4f8; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-right: 15px; }
+        .tx-title { font-size: 14px; font-weight: 600; color: #222; }
+        .tx-date { font-size: 12px; color: #999; margin-top: 4px; }
+        .tx-amount { font-size: 15px; font-weight: 700; }
         .tx-minus { color: #222; } .tx-plus { color: #28a745; }
 
-        /* 🌟 Premium Gift Box Selector 🌟 */
-        .gift-selector { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
+        /* Premium Gift Box Selector */
+        .gift-selector { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
         .gift-selector::-webkit-scrollbar { display: none; }
         .gift-card-option { 
-            min-width: 100px; height: 60px; border-radius: 10px; display: flex; justify-content: center; align-items: center; 
-            color: white; font-weight: bold; font-size: 12px; cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: 0.3s;
+            min-width: 110px; height: 65px; border-radius: 12px; display: flex; justify-content: center; align-items: center; 
+            color: white; font-weight: bold; font-size: 13px; cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: 0.3s;
         }
         .gift-card-option.selected { opacity: 1; border-color: #333; transform: scale(1.05); }
         
-        /* Premium Themes */
         .theme-gold { background: linear-gradient(135deg, #f6d365, #fda085); }
         .theme-neon { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
         .theme-dark { background: linear-gradient(135deg, #232526, #414345); }
@@ -115,30 +112,30 @@
         .bottom-nav { 
             position: absolute; bottom: 0; left: 0; right: 0; background: white; 
             display: flex; justify-content: space-around; padding: 15px 0 20px 0; 
-            border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -5px 20px rgba(0,0,0,0.03); z-index: 100;
+            border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
         }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #a0a5ba; cursor: pointer; transition: 0.3s; width: 25%; }
-        .nav-item i { font-size: 20px; margin-bottom: 4px; }
-        .nav-item span { font-size: 10px; font-weight: 600; }
+        .nav-item i { font-size: 22px; margin-bottom: 5px; }
+        .nav-item span { font-size: 11px; font-weight: 600; }
         .nav-item.active { color: #1a2b4c; }
 
         /* Auth */
         .auth-container { display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 20px; }
-        .auth-card { background: white; border-radius: 25px; padding: 30px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        .auth-card { background: white; border-radius: 25px; padding: 35px 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
         
         /* Settings Footer */
-        .settings-footer { text-align: center; margin-top: 30px; margin-bottom: 20px; }
-        .hmh-text { font-size: 13px; color: #888; font-weight: 600; letter-spacing: 1px; }
+        .settings-footer { text-align: center; margin-top: 40px; margin-bottom: 20px; }
+        .hmh-text { font-size: 14px; color: #888; font-weight: 600; letter-spacing: 1px; }
         .hmh-text span { color: #1a2b4c; font-weight: 800; font-style: italic; }
 
-        /* 🌟 Premium Gift Modal (Surprise Box) 🌟 */
+        /* Premium Gift Modal (The Surprise Box) */
         .gift-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .gift-box-modal { background: white; width: 85%; max-width: 320px; border-radius: 25px; padding: 40px 20px 30px 20px; text-align: center; position: relative; animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .gift-box-icon { font-size: 50px; position: absolute; top: -45px; left: calc(50% - 45px); background: white; width: 90px; height: 90px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .gift-box-modal { background: white; width: 85%; max-width: 350px; border-radius: 25px; padding: 50px 20px 30px 20px; text-align: center; position: relative; animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .gift-box-icon { font-size: 55px; position: absolute; top: -50px; left: calc(50% - 50px); background: white; width: 100px; height: 100px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         @keyframes popUp { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .gift-amount-reveal { font-size: 36px; font-weight: 900; margin: 10px 0; }
-        .gift-msg-reveal { font-style: italic; color: #555; margin-bottom: 25px; font-size: 15px; font-weight: 600; line-height: 1.5; padding: 0 10px; }
-        .btn-close-gift { background: #1a2b4c; color: white; border: none; padding: 12px 35px; border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .gift-amount-reveal { font-size: 40px; font-weight: 900; margin: 15px 0; }
+        .gift-msg-reveal { font-style: italic; color: #555; margin-bottom: 30px; font-size: 16px; font-weight: 600; line-height: 1.5; padding: 0 10px; }
+        .btn-close-gift { background: #1a2b4c; color: white; border: none; padding: 14px 40px; border-radius: 25px; font-weight: bold; font-size: 15px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -147,24 +144,24 @@
 
     <div id="loginScreen" class="auth-container">
         <div class="auth-card">
-            <h2 style="text-align: center; color: #1a2b4c; font-weight: 900; font-style: italic; margin-bottom: 5px;">Wifipay</h2>
-            <p style="text-align: center; color: #888; font-size: 13px; margin-bottom: 30px;">Digital Wallet သို့ အကောင့်ဝင်ပါ</p>
+            <h2 style="text-align: center; color: #1a2b4c; font-weight: 900; font-style: italic; margin-bottom: 5px; font-size: 32px;">Wifipay</h2>
+            <p style="text-align: center; color: #888; font-size: 14px; margin-bottom: 35px;">Digital Wallet သို့ အကောင့်ဝင်ပါ</p>
             
             <div class="input-group"><label>ဖုန်းနံပါတ်</label><input type="number" id="loginPhone" placeholder="09xxxxxxxxx"></div>
             <div class="input-group"><label>စကားဝှက်</label><input type="password" id="loginPass" placeholder="••••••••"></div>
             <button class="btn-main" onclick="window.login()">အကောင့်ဝင်မည်</button>
-            <p style="text-align: center; margin-top: 20px; font-size: 13px; color: #666;">အကောင့်မရှိသေးဘူးလား? <b style="color:#1a2b4c; cursor:pointer;" onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</b></p>
+            <p style="text-align: center; margin-top: 25px; font-size: 14px; color: #666;">အကောင့်မရှိသေးဘူးလား? <b style="color:#1a2b4c; cursor:pointer;" onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</b></p>
         </div>
     </div>
 
     <div id="registerScreen" class="auth-container" style="display:none;">
         <div class="auth-card">
-            <h2 style="text-align: center; color: #1a2b4c; margin-bottom: 25px;">အကောင့်သစ်ဖွင့်ရန်</h2>
+            <h2 style="text-align: center; color: #1a2b4c; margin-bottom: 30px; font-size: 26px;">အကောင့်သစ်ဖွင့်ရန်</h2>
             <div class="input-group"><label>အမည်</label><input type="text" id="regName" placeholder="ဥပမာ - ကျော်ကျော်"></div>
             <div class="input-group"><label>ဖုန်းနံပါတ်</label><input type="number" id="regPhone" placeholder="09xxxxxxxxx"></div>
             <div class="input-group"><label>စကားဝှက်အသစ်</label><input type="password" id="regPass" placeholder="လျှို့ဝှက်နံပါတ် ပေးပါ"></div>
             <button class="btn-main" onclick="window.register()">အကောင့်ဖွင့်မည်</button>
-            <p style="text-align: center; margin-top: 20px; font-size: 13px; color: #666;">အကောင့်ရှိပြီးသားလား? <b style="color:#1a2b4c; cursor:pointer;" onclick="window.showLogin()">အကောင့်ဝင်ရန်</b></p>
+            <p style="text-align: center; margin-top: 25px; font-size: 14px; color: #666;">အကောင့်ရှိပြီးသားလား? <b style="color:#1a2b4c; cursor:pointer;" onclick="window.showLogin()">အကောင့်ဝင်ရန်</b></p>
         </div>
     </div>
 
@@ -172,9 +169,9 @@
         
         <div id="tab-home" class="tab-content active">
             <div class="top-header">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <div><span style="opacity: 0.7; font-size: 12px;">Hello,</span><h3 id="userNameDisplay" style="margin:0; font-size: 18px;">-</h3></div>
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center;"><i class="fa-regular fa-bell"></i></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div><span style="opacity: 0.7; font-size: 13px;">Hello,</span><h3 id="userNameDisplay" style="margin:0; font-size: 20px;">-</h3></div>
+                    <div style="width: 45px; height: 45px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center;"><i class="fa-regular fa-bell" style="font-size: 20px;"></i></div>
                 </div>
                 <div class="glass-card">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -203,21 +200,21 @@
         </div>
 
         <div id="tab-transfer" class="tab-content">
-            <div class="section-title" style="margin-top: 20px;">Money Transfer</div>
+            <div class="section-title" style="margin-top: 25px;">Money Transfer</div>
             <div class="form-box">
-                <p style="font-size: 12px; color:#888; margin-bottom: 20px; text-align: center;">အခမဲ့ ငွေလွှဲဝန်ဆောင်မှု</p>
+                <p style="font-size: 13px; color:#888; margin-bottom: 25px; text-align: center;">အခမဲ့ ငွေလွှဲဝန်ဆောင်မှု</p>
                 <div class="input-group"><label>လက်ခံမည့်သူ၏ ဖုန်းနံပါတ်</label><input type="number" id="txPhone" placeholder="09xxxxxxxxx"></div>
                 <div class="input-group"><label>လွှဲမည့် ပမာဏ (Ks)</label><input type="number" id="txAmount" placeholder="1000"></div>
-                <button class="btn-main" style="background:#28a745;" onclick="window.sendTransfer()">ငွေလွှဲမည်</button>
+                <button class="btn-main" style="background:#28a745; margin-top: 10px;" onclick="window.sendTransfer()">ငွေလွှဲမည်</button>
             </div>
         </div>
 
         <div id="tab-gift" class="tab-content">
-            <div class="section-title" style="margin-top: 20px;">Send Premium Gift</div>
+            <div class="section-title" style="margin-top: 25px;">Send Premium Gift</div>
             <div class="form-box">
-                <p style="font-size: 11px; color:#888; margin-bottom: 15px; text-align: center;">အမိုက်စား Gift Box ဖြင့် ငွေလွှဲပါ။<br><b style="color:#d9534f;">(ဝန်ဆောင်ခ 10 Ks ကျသင့်ပါမည်)</b></p>
+                <p style="font-size: 12px; color:#888; margin-bottom: 20px; text-align: center; line-height: 1.6;">အမိုက်စား Gift Box ဖြင့် ငွေလွှဲပါ။<br><b style="color:#d9534f;">(ဝန်ဆောင်ခ 10 Ks ကျသင့်ပါမည်)</b></p>
                 
-                <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 8px; display: block;">Design ရွေးချယ်ရန်</label>
+                <label style="font-size: 13px; font-weight: 600; color: #777; margin-bottom: 10px; display: block;">Design ရွေးချယ်ရန်</label>
                 <div class="gift-selector">
                     <div class="gift-card-option theme-gold selected" onclick="window.selectGift('gold', this)">Gold</div>
                     <div class="gift-card-option theme-neon" onclick="window.selectGift('neon', this)">Neon</div>
@@ -229,31 +226,31 @@
                 <div class="input-group"><label>လက်ခံမည့် ဖုန်းနံပါတ်</label><input type="number" id="giftPhone" placeholder="09xxxxxxxxx"></div>
                 <div class="input-group"><label>လွှဲမည့် ပမာဏ (Ks)</label><input type="number" id="giftAmount" placeholder="2000"></div>
                 <div class="input-group"><label>မှတ်စုတို ရေးရန်</label><input type="text" id="giftMsg" placeholder="Surprise!"></div>
-                <button class="btn-main" style="background:linear-gradient(135deg, #8E2DE2, #4A00E0);" onclick="window.sendGift()">Gift ပို့မည်</button>
+                <button class="btn-main" style="background:linear-gradient(135deg, #8E2DE2, #4A00E0); margin-top: 10px;" onclick="window.sendGift()">Gift ပို့မည်</button>
             </div>
         </div>
 
         <div id="tab-history" class="tab-content">
-            <div class="section-title" style="margin-top: 20px;">Transactions</div>
+            <div class="section-title" style="margin-top: 25px;">Transactions</div>
             <div class="tx-list" id="historyContainer"></div>
         </div>
 
         <div id="tab-settings" class="tab-content">
-            <div class="section-title" style="margin-top: 20px;">Settings</div>
+            <div class="section-title" style="margin-top: 25px;">Settings</div>
             <div class="form-box">
-                <h4 style="margin-bottom: 15px; color:#222; font-size: 14px;">Change Password</h4>
+                <h4 style="margin-bottom: 20px; color:#222; font-size: 15px;">Change Password</h4>
                 <div class="input-group"><label>စကားဝှက် အဟောင်း</label><input type="password" id="oldPass"></div>
                 <div class="input-group"><label>စကားဝှက် အသစ်</label><input type="password" id="newPass"></div>
-                <button class="btn-main" onclick="window.changePassword()">ပြောင်းမည်</button>
+                <button class="btn-main" style="margin-top: 10px;" onclick="window.changePassword()">ပြောင်းမည်</button>
             </div>
 
-            <div style="padding: 0 20px;">
+            <div style="padding: 0 15px;">
                 <button class="btn-main" style="background: #eef2f7; color: #dc3545; box-shadow: none;" onclick="window.logout()">Log Out</button>
             </div>
 
             <div class="settings-footer">
                 <div class="hmh-text">Powered by <span>HMH</span></div>
-                <div style="font-size: 11px; color: #aaa; margin-top: 5px;">Copyright &copy; 2026. All rights reserved.</div>
+                <div style="font-size: 12px; color: #aaa; margin-top: 8px;">Copyright &copy; 2026. All rights reserved.</div>
             </div>
         </div>
 
@@ -270,8 +267,8 @@
 <div id="giftOverlay" class="gift-overlay" style="display:none;">
     <div class="gift-box-modal">
         <div class="gift-box-icon" id="giftModalIcon"><i class="fa-solid fa-gift"></i></div>
-        <h3 style="color:#1a2b4c; margin-top:10px;">Gift Received!</h3>
-        <p id="giftModalSender" style="color:#777; font-size:13px; margin-bottom:10px;"></p>
+        <h3 style="color:#1a2b4c; margin-top:15px; font-size: 22px;">Gift Received!</h3>
+        <p id="giftModalSender" style="color:#777; font-size:14px; margin-bottom:15px;"></p>
         <div id="giftModalAmount" class="gift-amount-reveal"></div>
         <p id="giftModalMsg" class="gift-msg-reveal"></p>
         <button class="btn-close-gift" onclick="window.closeGift()">Let's Go!</button>
@@ -378,7 +375,7 @@
         } catch(e) { console.error(e); }
     }
 
-    // 🌟 Regular Transfer (No Fee)
+    // Regular Transfer (No Fee)
     window.sendTransfer = async function() {
         const targetPhone = document.getElementById('txPhone').value.trim();
         const amount = parseInt(document.getElementById('txAmount').value);
@@ -402,7 +399,7 @@
         } catch(e) { console.error(e); }
     }
 
-    // 🌟 Premium Gift (10 Ks Fee)
+    // Premium Gift (10 Ks Fee)
     window.sendGift = async function() {
         const targetPhone = document.getElementById('giftPhone').value.trim();
         const amount = parseInt(document.getElementById('giftAmount').value);
@@ -430,7 +427,7 @@
         } catch(e) { console.error(e); }
     }
 
-    // 🌟 Open Gift Modal
+    // Open Gift Modal
     window.openGift = function(sender, amount, msg, theme) {
         let colors = { 'gold': '#f39c12', 'neon': '#8E2DE2', 'dark': '#333', 'ocean': '#2193b0', 'ruby': '#ff0844' };
         let color = colors[theme] || colors['gold'];
@@ -453,26 +450,25 @@
         document.getElementById('oldPass').value=''; document.getElementById('newPass').value='';
     }
 
-    // 🌟 Render History & Interactivity 
+    // Render History
     window.renderHistory = function() {
         const cont = document.getElementById('historyContainer'); cont.innerHTML = '';
-        if(!currentUser.history) return cont.innerHTML = '<p style="text-align:center; color:#999; font-size:13px; margin-top:20px;">မှတ်တမ်း မရှိသေးပါ</p>';
+        if(!currentUser.history) return cont.innerHTML = '<p style="text-align:center; color:#999; font-size:14px; margin-top:30px;">မှတ်တမ်း မရှိသေးပါ</p>';
 
         Object.values(currentUser.history).reverse().forEach(tx => {
             let icon = '', htmlClass = '', sign = '', extraHtml = '';
             
             if(tx.type === 'buy') {
                 icon = '<i class="fa-solid fa-wifi" style="color:#007bff;"></i>'; htmlClass = 'tx-minus'; sign = '-';
-                extraHtml = `<div style="color:#28a745; font-size:12px; font-weight:bold; margin-top:3px;">Code: ${tx.extra}</div>`;
+                extraHtml = `<div style="color:#28a745; font-size:13px; font-weight:bold; margin-top:3px;">Code: ${tx.extra}</div>`;
             } else if(tx.type === 'tx_out') {
                 icon = '<i class="fa-solid fa-arrow-up" style="color:#dc3545;"></i>'; htmlClass = 'tx-minus'; sign = '-';
             } else if(tx.type === 'tx_in') {
                 icon = '<i class="fa-solid fa-arrow-down" style="color:#28a745;"></i>'; htmlClass = 'tx-plus'; sign = '+';
             } else if(tx.type === 'gift_out') {
                 icon = '<i class="fa-solid fa-gift" style="color:#8E2DE2;"></i>'; htmlClass = 'tx-minus'; sign = '-';
-                extraHtml = `<div style="color:#dc3545; font-size:11px; margin-top:2px;">${tx.extra}</div>`;
+                extraHtml = `<div style="color:#dc3545; font-size:12px; margin-top:2px;">${tx.extra}</div>`;
             } else if(tx.type === 'gift_in') {
-                // 🌟 လက်ခံရရှိတဲ့ Gift Box လေး 🌟
                 let bgColors = {
                     'gold': 'linear-gradient(135deg, #f6d365, #fda085)', 'neon': 'linear-gradient(135deg, #8E2DE2, #4A00E0)',
                     'dark': 'linear-gradient(135deg, #232526, #414345)', 'ocean': 'linear-gradient(135deg, #2193b0, #6dd5ed)',
@@ -485,15 +481,15 @@
                     <div class="tx-item" style="background: ${bg}; color: white; border: none; cursor: pointer; transform: scale(1); transition: 0.2s;" 
                          onclick="window.openGift('${safeSender}', ${tx.amount}, '${safeMsg}', '${tx.theme}')" onactive="this.style.transform='scale(0.95)'">
                         <div style="display:flex; align-items:center;">
-                            <div class="tx-icon" style="background: rgba(255,255,255,0.25); color:white; font-size: 22px;"><i class="fa-solid fa-gift fa-bounce"></i></div>
+                            <div class="tx-icon" style="background: rgba(255,255,255,0.25); color:white; font-size: 24px;"><i class="fa-solid fa-gift fa-bounce"></i></div>
                             <div class="tx-details">
-                                <div class="tx-title" style="color:white; font-size: 14px;">🎁 လက်ဆောင်ရောက်နေပါတယ်</div>
-                                <div class="tx-date" style="color:rgba(255,255,255,0.8);">${tx.date}</div>
-                                <div style="font-size:11px; margin-top:4px; font-weight: bold; opacity: 0.9;">ဖွင့်ကြည့်ရန် နှိပ်ပါ <i class="fa-solid fa-hand-pointer"></i></div>
+                                <div class="tx-title" style="color:white; font-size: 15px;">🎁 လက်ဆောင်ရောက်နေပါတယ်</div>
+                                <div class="tx-date" style="color:rgba(255,255,255,0.8); font-size: 12px;">${tx.date}</div>
+                                <div style="font-size:12px; margin-top:5px; font-weight: bold; opacity: 0.9;">ဖွင့်ကြည့်ရန် နှိပ်ပါ <i class="fa-solid fa-hand-pointer"></i></div>
                             </div>
                         </div>
                     </div>`;
-                return; // အောက်က ပုံမှန် render ကို ကျော်သွားမည်
+                return;
             }
 
             cont.innerHTML += `
