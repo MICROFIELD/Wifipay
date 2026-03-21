@@ -14,57 +14,58 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap');
 
-        /* 🌟 App Size ကို ဖုန်း Screen အတိဖြစ်အောင် ထိန်းချုပ်ခြင်း 🌟 */
+        /* 🌟 Full Screen Mobile App Fix 🌟 */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
         html, body { 
-            height: 100%; overflow: hidden; /* အပြင်ဘက်ကြီး Scroll မဖြစ်အောင် ပိတ်ထားသည် */
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            height: 100%; height: 100dvh; overflow: hidden; 
+            background-color: #f4f7fa; /* App နဲ့ တစ်သားတည်း အရောင် */
             display: flex; justify-content: center; color: #333;
         }
 
         .app-container { 
-            width: 100%; max-width: 414px; background: #f4f7fa; 
-            height: 100%; display: flex; flex-direction: column; 
-            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            width: 100%; max-width: 500px; /* ဖုန်းအကြီးတွေမှာပါ အပြည့်ပေါ်ရန် */
+            background: #f4f7fa; height: 100%; 
+            display: flex; flex-direction: column; position: relative; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
         }
 
-        /* Scroll လုပ်လို့ရမည့် အတွင်းပိုင်း */
+        /* Scroll Area */
         .tab-content { 
             flex-grow: 1; overflow-y: auto; overflow-x: hidden;
             display: none; animation: fadeIn 0.3s ease;
-            padding-bottom: 90px; /* Bottom Nav ကို မကွယ်အောင် */
+            padding-bottom: 100px; /* Bottom Nav မကွယ်စေရန် */
         }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* 🌟 Glassmorphism Card (Wifipay) 🌟 */
         .glass-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05));
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             border-radius: 20px; padding: 25px; color: white; margin: 20px;
             position: relative; overflow: hidden;
         }
-        .wifipay-logo { font-size: 20px; font-weight: 900; font-style: italic; letter-spacing: 1px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+        .wifipay-logo { font-size: 22px; font-weight: 900; font-style: italic; letter-spacing: 1.5px; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
 
         /* Top Header */
         .top-header { background: #1a2b4c; color: white; padding: 30px 20px 70px 20px; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; }
         .balance-label { font-size: 13px; opacity: 0.8; letter-spacing: 1px; }
-        .balance-amount { font-size: 36px; font-weight: 700; margin: 5px 0; }
-        .card-number { font-size: 14px; letter-spacing: 2px; opacity: 0.7; margin-top: 15px; }
+        .balance-amount { font-size: 38px; font-weight: 700; margin: 5px 0; }
+        .card-number { font-size: 14px; letter-spacing: 3px; opacity: 0.7; margin-top: 15px; }
 
         /* Quick Actions */
         .action-row { display: flex; justify-content: space-around; margin: -40px 20px 20px 20px; position: relative; z-index: 10; }
         .action-btn { 
             background: white; width: 65px; height: 65px; border-radius: 18px; 
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05); cursor: pointer; border: none; transition: 0.2s;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.06); cursor: pointer; border: none; transition: 0.2s;
         }
         .action-btn:active { transform: scale(0.95); }
         .action-btn i { font-size: 22px; margin-bottom: 5px; }
-        .action-btn span { font-size: 10px; font-weight: 600; color: #555; }
+        .action-btn span { font-size: 11px; font-weight: 600; color: #555; }
         
         .icon-blue { color: #007bff; } .icon-green { color: #28a745; } .icon-gift { color: #8e44ad; }
 
@@ -112,7 +113,7 @@
 
         /* Bottom Nav */
         .bottom-nav { 
-            position: absolute; bottom: 0; width: 100%; background: white; 
+            position: absolute; bottom: 0; left: 0; right: 0; background: white; 
             display: flex; justify-content: space-around; padding: 15px 0 20px 0; 
             border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -5px 20px rgba(0,0,0,0.03); z-index: 100;
         }
@@ -127,8 +128,17 @@
         
         /* Settings Footer */
         .settings-footer { text-align: center; margin-top: 30px; margin-bottom: 20px; }
-        .hmh-text { font-size: 12px; color: #888; font-weight: 600; letter-spacing: 1px; }
-        .hmh-text span { color: #1a2b4c; font-weight: 700; }
+        .hmh-text { font-size: 13px; color: #888; font-weight: 600; letter-spacing: 1px; }
+        .hmh-text span { color: #1a2b4c; font-weight: 800; font-style: italic; }
+
+        /* 🌟 Premium Gift Modal (Surprise Box) 🌟 */
+        .gift-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .gift-box-modal { background: white; width: 85%; max-width: 320px; border-radius: 25px; padding: 40px 20px 30px 20px; text-align: center; position: relative; animation: popUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .gift-box-icon { font-size: 50px; position: absolute; top: -45px; left: calc(50% - 45px); background: white; width: 90px; height: 90px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        @keyframes popUp { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .gift-amount-reveal { font-size: 36px; font-weight: 900; margin: 10px 0; }
+        .gift-msg-reveal { font-style: italic; color: #555; margin-bottom: 25px; font-size: 15px; font-weight: 600; line-height: 1.5; padding: 0 10px; }
+        .btn-close-gift { background: #1a2b4c; color: white; border: none; padding: 12px 35px; border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -195,6 +205,7 @@
         <div id="tab-transfer" class="tab-content">
             <div class="section-title" style="margin-top: 20px;">Money Transfer</div>
             <div class="form-box">
+                <p style="font-size: 12px; color:#888; margin-bottom: 20px; text-align: center;">အခမဲ့ ငွေလွှဲဝန်ဆောင်မှု</p>
                 <div class="input-group"><label>လက်ခံမည့်သူ၏ ဖုန်းနံပါတ်</label><input type="number" id="txPhone" placeholder="09xxxxxxxxx"></div>
                 <div class="input-group"><label>လွှဲမည့် ပမာဏ (Ks)</label><input type="number" id="txAmount" placeholder="1000"></div>
                 <button class="btn-main" style="background:#28a745;" onclick="window.sendTransfer()">ငွေလွှဲမည်</button>
@@ -204,9 +215,9 @@
         <div id="tab-gift" class="tab-content">
             <div class="section-title" style="margin-top: 20px;">Send Premium Gift</div>
             <div class="form-box">
-                <p style="font-size: 11px; color:#888; margin-bottom: 15px; text-align: center;">အမိုက်စား Gift Design များဖြင့် ငွေလွှဲပါ။<br><b style="color:#d9534f;">(ဝန်ဆောင်ခ 10 Ks ကျသင့်ပါမည်)</b></p>
+                <p style="font-size: 11px; color:#888; margin-bottom: 15px; text-align: center;">အမိုက်စား Gift Box ဖြင့် ငွေလွှဲပါ။<br><b style="color:#d9534f;">(ဝန်ဆောင်ခ 10 Ks ကျသင့်ပါမည်)</b></p>
                 
-                <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 8px; display: block;">ဒီဇိုင်း ရွေးချယ်ရန်</label>
+                <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 8px; display: block;">Design ရွေးချယ်ရန်</label>
                 <div class="gift-selector">
                     <div class="gift-card-option theme-gold selected" onclick="window.selectGift('gold', this)">Gold</div>
                     <div class="gift-card-option theme-neon" onclick="window.selectGift('neon', this)">Neon</div>
@@ -217,7 +228,7 @@
 
                 <div class="input-group"><label>လက်ခံမည့် ဖုန်းနံပါတ်</label><input type="number" id="giftPhone" placeholder="09xxxxxxxxx"></div>
                 <div class="input-group"><label>လွှဲမည့် ပမာဏ (Ks)</label><input type="number" id="giftAmount" placeholder="2000"></div>
-                <div class="input-group"><label>မှတ်စုတို ရေးရန်</label><input type="text" id="giftMsg" placeholder="Good Luck!"></div>
+                <div class="input-group"><label>မှတ်စုတို ရေးရန်</label><input type="text" id="giftMsg" placeholder="Surprise!"></div>
                 <button class="btn-main" style="background:linear-gradient(135deg, #8E2DE2, #4A00E0);" onclick="window.sendGift()">Gift ပို့မည်</button>
             </div>
         </div>
@@ -242,7 +253,7 @@
 
             <div class="settings-footer">
                 <div class="hmh-text">Powered by <span>HMH</span></div>
-                <div style="font-size: 10px; color: #aaa; margin-top: 5px;">Copyright &copy; 2026. All rights reserved.</div>
+                <div style="font-size: 11px; color: #aaa; margin-top: 5px;">Copyright &copy; 2026. All rights reserved.</div>
             </div>
         </div>
 
@@ -253,6 +264,17 @@
             <div class="nav-item" onclick="window.switchTab('settings', this)"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
         </div>
 
+    </div>
+</div>
+
+<div id="giftOverlay" class="gift-overlay" style="display:none;">
+    <div class="gift-box-modal">
+        <div class="gift-box-icon" id="giftModalIcon"><i class="fa-solid fa-gift"></i></div>
+        <h3 style="color:#1a2b4c; margin-top:10px;">Gift Received!</h3>
+        <p id="giftModalSender" style="color:#777; font-size:13px; margin-bottom:10px;"></p>
+        <div id="giftModalAmount" class="gift-amount-reveal"></div>
+        <p id="giftModalMsg" class="gift-msg-reveal"></p>
+        <button class="btn-close-gift" onclick="window.closeGift()">Let's Go!</button>
     </div>
 </div>
 
@@ -275,7 +297,7 @@
     let currentUser = null;
     let selectedGiftTheme = 'gold';
 
-    // --- UI Logic ---
+    // --- UI Navigation ---
     window.switchTab = function(tabName, element = null) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -384,8 +406,8 @@
     window.sendGift = async function() {
         const targetPhone = document.getElementById('giftPhone').value.trim();
         const amount = parseInt(document.getElementById('giftAmount').value);
-        const msg = document.getElementById('giftMsg').value.trim() || "A Gift For You!";
-        const totalCost = amount + 10; // 🌟 10 Ks ဖြတ်မည်
+        const msg = document.getElementById('giftMsg').value.trim() || "Surprise Gift For You!";
+        const totalCost = amount + 10;
 
         if(!targetPhone || !amount) return alert("ဖြည့်ပါ။");
         if(targetPhone === currentUser.phone) return alert("မိမိကိုယ်တိုင် ပြန်လွှဲမရပါ။");
@@ -401,13 +423,26 @@
             updates[`customers/${currentUser.phone}/balance`] = currentUser.balance - totalCost;
             updates[`customers/${currentUser.phone}/history/tx_out_${Date.now()}`] = { type: 'gift_out', title: `Gift to: ${target.name}`, amount: amount, extra: `Fee: 10 Ks`, date: now };
             updates[`customers/${targetPhone}/balance`] = (target.balance || 0) + amount;
-            // လက်ခံသူဆီမှာ Theme ကိုပါ ထည့်ပေးလိုက်မယ်
-            updates[`customers/${targetPhone}/history/tx_in_${Date.now()}`] = { type: 'gift_in', title: `Gift from: ${currentUser.name}`, amount: amount, extra: `"${msg}"`, theme: selectedGiftTheme, date: now };
+            updates[`customers/${targetPhone}/history/tx_in_${Date.now()}`] = { type: 'gift_in', title: `Gift from: ${currentUser.name}`, amount: amount, extra: msg, theme: selectedGiftTheme, date: now };
             
             await update(ref(db), updates); alert("Gift ပို့လိုက်ပါပြီ! 🎉");
             document.getElementById('giftPhone').value=''; document.getElementById('giftAmount').value=''; document.getElementById('giftMsg').value='';
         } catch(e) { console.error(e); }
     }
+
+    // 🌟 Open Gift Modal
+    window.openGift = function(sender, amount, msg, theme) {
+        let colors = { 'gold': '#f39c12', 'neon': '#8E2DE2', 'dark': '#333', 'ocean': '#2193b0', 'ruby': '#ff0844' };
+        let color = colors[theme] || colors['gold'];
+        
+        document.getElementById('giftModalIcon').style.color = color;
+        document.getElementById('giftModalSender').innerText = sender;
+        document.getElementById('giftModalAmount').innerText = `${amount} Ks`;
+        document.getElementById('giftModalAmount').style.color = color;
+        document.getElementById('giftModalMsg').innerText = `"${msg}"`;
+        document.getElementById('giftOverlay').style.display = 'flex';
+    }
+    window.closeGift = function() { document.getElementById('giftOverlay').style.display = 'none'; }
 
     window.changePassword = async function() {
         const oldP = document.getElementById('oldPass').value; const newP = document.getElementById('newPass').value;
@@ -418,6 +453,7 @@
         document.getElementById('oldPass').value=''; document.getElementById('newPass').value='';
     }
 
+    // 🌟 Render History & Interactivity 
     window.renderHistory = function() {
         const cont = document.getElementById('historyContainer'); cont.innerHTML = '';
         if(!currentUser.history) return cont.innerHTML = '<p style="text-align:center; color:#999; font-size:13px; margin-top:20px;">မှတ်တမ်း မရှိသေးပါ</p>';
@@ -436,26 +472,26 @@
                 icon = '<i class="fa-solid fa-gift" style="color:#8E2DE2;"></i>'; htmlClass = 'tx-minus'; sign = '-';
                 extraHtml = `<div style="color:#dc3545; font-size:11px; margin-top:2px;">${tx.extra}</div>`;
             } else if(tx.type === 'gift_in') {
-                // လက်ခံရရှိတဲ့ Gift ဆိုရင် Theme နဲ့ လှလှလေး ပြပေးမယ်
+                // 🌟 လက်ခံရရှိတဲ့ Gift Box လေး 🌟
                 let bgColors = {
-                    'gold': 'linear-gradient(135deg, #f6d365, #fda085)',
-                    'neon': 'linear-gradient(135deg, #8E2DE2, #4A00E0)',
-                    'dark': 'linear-gradient(135deg, #232526, #414345)',
-                    'ocean': 'linear-gradient(135deg, #2193b0, #6dd5ed)',
+                    'gold': 'linear-gradient(135deg, #f6d365, #fda085)', 'neon': 'linear-gradient(135deg, #8E2DE2, #4A00E0)',
+                    'dark': 'linear-gradient(135deg, #232526, #414345)', 'ocean': 'linear-gradient(135deg, #2193b0, #6dd5ed)',
                     'ruby': 'linear-gradient(135deg, #ff0844, #ffb199)'
                 };
                 let bg = bgColors[tx.theme] || bgColors['gold'];
+                let safeSender = tx.title.replace(/'/g, "\\'"); let safeMsg = tx.extra.replace(/'/g, "\\'");
+                
                 cont.innerHTML += `
-                    <div class="tx-item" style="background: ${bg}; color: white; border: none;">
+                    <div class="tx-item" style="background: ${bg}; color: white; border: none; cursor: pointer; transform: scale(1); transition: 0.2s;" 
+                         onclick="window.openGift('${safeSender}', ${tx.amount}, '${safeMsg}', '${tx.theme}')" onactive="this.style.transform='scale(0.95)'">
                         <div style="display:flex; align-items:center;">
-                            <div class="tx-icon" style="background: rgba(255,255,255,0.2); color:white;"><i class="fa-solid fa-gift"></i></div>
+                            <div class="tx-icon" style="background: rgba(255,255,255,0.25); color:white; font-size: 22px;"><i class="fa-solid fa-gift fa-bounce"></i></div>
                             <div class="tx-details">
-                                <div class="tx-title" style="color:white;">${tx.title}</div>
-                                <div class="tx-date" style="color:rgba(255,255,255,0.7);">${tx.date}</div>
-                                <div style="font-size:12px; font-style:italic; margin-top:4px;">${tx.extra}</div>
+                                <div class="tx-title" style="color:white; font-size: 14px;">🎁 လက်ဆောင်ရောက်နေပါတယ်</div>
+                                <div class="tx-date" style="color:rgba(255,255,255,0.8);">${tx.date}</div>
+                                <div style="font-size:11px; margin-top:4px; font-weight: bold; opacity: 0.9;">ဖွင့်ကြည့်ရန် နှိပ်ပါ <i class="fa-solid fa-hand-pointer"></i></div>
                             </div>
                         </div>
-                        <div class="tx-amount" style="color:white;">+${tx.amount} Ks</div>
                     </div>`;
                 return; // အောက်က ပုံမှန် render ကို ကျော်သွားမည်
             }
