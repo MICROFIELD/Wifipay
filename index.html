@@ -2,113 +2,257 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WiFi Voucher Store</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart WiFi - Digital Wallet</title>
     <link rel="icon" type="image/png" href="icon.png">
-    
     <link rel="apple-touch-icon" href="icon.png">
-    
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#007bff">
+    <meta name="theme-color" content="#1a2b4c">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 400px; background: white; min-height: 100vh; box-shadow: 0 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .header { background: #007bff; color: white; padding: 20px; text-align: center; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; }
-        .header h2 { margin: 0; font-size: 22px; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;900&display=swap');
+
+        /* 🌟 App Size ကို ဖုန်း Screen အတိဖြစ်အောင် ထိန်းချုပ်ခြင်း 🌟 */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         
-        /* Auth Screens */
-        .auth-screen { padding: 30px 20px; text-align: center; margin-top: 20px; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .btn-primary { background: #007bff; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-primary:hover { background: #0056b3; }
-        .switch-link { color: #007bff; cursor: pointer; text-decoration: underline; font-weight: bold; margin-top: 15px; display: inline-block; }
+        html, body { 
+            height: 100%; overflow: hidden; /* အပြင်ဘက်ကြီး Scroll မဖြစ်အောင် ပိတ်ထားသည် */
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex; justify-content: center; color: #333;
+        }
 
-        /* Dashboard Screen */
-        #dashboardScreen { display: none; padding: 20px; }
-        .welcome-text { font-size: 18px; color: #333; margin-bottom: 15px; font-weight: bold; }
-        .balance-card { background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 10px rgba(40,167,69,0.3); }
-        .balance-card h3 { margin: 0; font-size: 16px; font-weight: normal; }
-        .balance-card h1 { margin: 10px 0 0 0; font-size: 36px; }
+        .app-container { 
+            width: 100%; max-width: 414px; background: #f4f7fa; 
+            height: 100%; display: flex; flex-direction: column; 
+            position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
 
-        .section-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 15px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        /* Scroll လုပ်လို့ရမည့် အတွင်းပိုင်း */
+        .tab-content { 
+            flex-grow: 1; overflow-y: auto; overflow-x: hidden;
+            display: none; animation: fadeIn 0.3s ease;
+            padding-bottom: 90px; /* Bottom Nav ကို မကွယ်အောင် */
+        }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 🌟 Glassmorphism Card (Wifipay) 🌟 */
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 20px; padding: 25px; color: white; margin: 20px;
+            position: relative; overflow: hidden;
+        }
+        .wifipay-logo { font-size: 20px; font-weight: 900; font-style: italic; letter-spacing: 1px; color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+
+        /* Top Header */
+        .top-header { background: #1a2b4c; color: white; padding: 30px 20px 70px 20px; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; }
+        .balance-label { font-size: 13px; opacity: 0.8; letter-spacing: 1px; }
+        .balance-amount { font-size: 36px; font-weight: 700; margin: 5px 0; }
+        .card-number { font-size: 14px; letter-spacing: 2px; opacity: 0.7; margin-top: 15px; }
+
+        /* Quick Actions */
+        .action-row { display: flex; justify-content: space-around; margin: -40px 20px 20px 20px; position: relative; z-index: 10; }
+        .action-btn { 
+            background: white; width: 65px; height: 65px; border-radius: 18px; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05); cursor: pointer; border: none; transition: 0.2s;
+        }
+        .action-btn:active { transform: scale(0.95); }
+        .action-btn i { font-size: 22px; margin-bottom: 5px; }
+        .action-btn span { font-size: 10px; font-weight: 600; color: #555; }
         
-        .plan-card { background: #fff; border: 1px solid #e0e0e0; padding: 15px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .plan-info h4 { margin: 0 0 5px 0; font-size: 18px; color: #333; }
-        .plan-info p { margin: 0; color: #dc3545; font-weight: bold; font-size: 16px; }
-        .buy-btn { background: #ffc107; color: #000; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .buy-btn:hover { background: #e0a800; }
+        .icon-blue { color: #007bff; } .icon-green { color: #28a745; } .icon-gift { color: #8e44ad; }
 
-        /* History */
-        .history-item { background: #f8f9fa; padding: 12px; border-left: 4px solid #007bff; margin-bottom: 10px; border-radius: 4px; font-size: 14px; }
-        .voucher-code { font-size: 18px; font-weight: bold; color: #28a745; margin-top: 5px; letter-spacing: 1px; }
+        /* Sections & Forms */
+        .section-title { font-size: 16px; font-weight: 700; color: #1a2b4c; margin: 25px 20px 15px 20px; }
+        .form-box { background: white; padding: 20px; border-radius: 18px; margin: 0 20px 20px 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 12px; color: #777; font-weight: 600; margin-bottom: 8px; }
+        .input-group input { width: 100%; padding: 14px; border: 1.5px solid #eee; border-radius: 12px; font-size: 14px; outline: none; background: #fafafa; transition: 0.3s; }
+        .input-group input:focus { border-color: #1a2b4c; background: white; }
+        
+        .btn-main { background: #1a2b4c; color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(26,43,76,0.2); transition: 0.2s; }
+        .btn-main:active { transform: scale(0.98); }
 
-        .logout-btn { background: #dc3545; color: white; border: none; padding: 10px; width: 100%; border-radius: 8px; margin-top: 20px; cursor: pointer; font-weight: bold; }
+        /* Vouchers */
+        .plan-card { background: white; margin: 0 20px 12px 20px; border-radius: 15px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .plan-info h4 { font-size: 16px; color: #222; margin-bottom: 4px; }
+        .plan-info p { font-size: 14px; color: #28a745; font-weight: 600; }
+        .btn-buy { background: #1a2b4c; color: white; border: none; padding: 8px 18px; border-radius: 20px; font-weight: 600; font-size: 12px; cursor: pointer; }
+
+        /* Transactions */
+        .tx-list { margin: 0 20px; }
+        .tx-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .tx-icon { width: 42px; height: 42px; border-radius: 12px; background: #f0f4f8; display: flex; justify-content: center; align-items: center; font-size: 18px; margin-right: 15px; }
+        .tx-title { font-size: 13px; font-weight: 600; color: #222; }
+        .tx-date { font-size: 11px; color: #999; margin-top: 3px; }
+        .tx-amount { font-size: 14px; font-weight: 700; }
+        .tx-minus { color: #222; } .tx-plus { color: #28a745; }
+
+        /* 🌟 Premium Gift Box Selector 🌟 */
+        .gift-selector { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
+        .gift-selector::-webkit-scrollbar { display: none; }
+        .gift-card-option { 
+            min-width: 100px; height: 60px; border-radius: 10px; display: flex; justify-content: center; align-items: center; 
+            color: white; font-weight: bold; font-size: 12px; cursor: pointer; border: 2px solid transparent; opacity: 0.6; transition: 0.3s;
+        }
+        .gift-card-option.selected { opacity: 1; border-color: #333; transform: scale(1.05); }
+        
+        /* Premium Themes */
+        .theme-gold { background: linear-gradient(135deg, #f6d365, #fda085); }
+        .theme-neon { background: linear-gradient(135deg, #8E2DE2, #4A00E0); }
+        .theme-dark { background: linear-gradient(135deg, #232526, #414345); }
+        .theme-ocean { background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+        .theme-ruby { background: linear-gradient(135deg, #ff0844, #ffb199); }
+
+        /* Bottom Nav */
+        .bottom-nav { 
+            position: absolute; bottom: 0; width: 100%; background: white; 
+            display: flex; justify-content: space-around; padding: 15px 0 20px 0; 
+            border-top-left-radius: 25px; border-top-right-radius: 25px; box-shadow: 0 -5px 20px rgba(0,0,0,0.03); z-index: 100;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #a0a5ba; cursor: pointer; transition: 0.3s; width: 25%; }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+        .nav-item span { font-size: 10px; font-weight: 600; }
+        .nav-item.active { color: #1a2b4c; }
+
+        /* Auth */
+        .auth-container { display: flex; flex-direction: column; justify-content: center; height: 100%; padding: 20px; }
+        .auth-card { background: white; border-radius: 25px; padding: 30px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
+        
+        /* Settings Footer */
+        .settings-footer { text-align: center; margin-top: 30px; margin-bottom: 20px; }
+        .hmh-text { font-size: 12px; color: #888; font-weight: 600; letter-spacing: 1px; }
+        .hmh-text span { color: #1a2b4c; font-weight: 700; }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="header">
-        <h2>📡 Smart WiFi Store</h2>
+
+    <div id="loginScreen" class="auth-container">
+        <div class="auth-card">
+            <h2 style="text-align: center; color: #1a2b4c; font-weight: 900; font-style: italic; margin-bottom: 5px;">Wifipay</h2>
+            <p style="text-align: center; color: #888; font-size: 13px; margin-bottom: 30px;">Digital Wallet သို့ အကောင့်ဝင်ပါ</p>
+            
+            <div class="input-group"><label>ဖုန်းနံပါတ်</label><input type="number" id="loginPhone" placeholder="09xxxxxxxxx"></div>
+            <div class="input-group"><label>စကားဝှက်</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+            <button class="btn-main" onclick="window.login()">အကောင့်ဝင်မည်</button>
+            <p style="text-align: center; margin-top: 20px; font-size: 13px; color: #666;">အကောင့်မရှိသေးဘူးလား? <b style="color:#1a2b4c; cursor:pointer;" onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</b></p>
+        </div>
     </div>
 
-    <div id="loginScreen" class="auth-screen">
-        <h3 style="color: #333; margin-bottom: 25px;">အကောင့်ဝင်ရန်</h3>
-        <div class="input-group">
-            <label>ဖုန်းနံပါတ်</label>
-            <input type="number" id="loginPhone" placeholder="09xxxxxxxxx">
+    <div id="registerScreen" class="auth-container" style="display:none;">
+        <div class="auth-card">
+            <h2 style="text-align: center; color: #1a2b4c; margin-bottom: 25px;">အကောင့်သစ်ဖွင့်ရန်</h2>
+            <div class="input-group"><label>အမည်</label><input type="text" id="regName" placeholder="ဥပမာ - ကျော်ကျော်"></div>
+            <div class="input-group"><label>ဖုန်းနံပါတ်</label><input type="number" id="regPhone" placeholder="09xxxxxxxxx"></div>
+            <div class="input-group"><label>စကားဝှက်အသစ်</label><input type="password" id="regPass" placeholder="လျှို့ဝှက်နံပါတ် ပေးပါ"></div>
+            <button class="btn-main" onclick="window.register()">အကောင့်ဖွင့်မည်</button>
+            <p style="text-align: center; margin-top: 20px; font-size: 13px; color: #666;">အကောင့်ရှိပြီးသားလား? <b style="color:#1a2b4c; cursor:pointer;" onclick="window.showLogin()">အကောင့်ဝင်ရန်</b></p>
         </div>
-        <div class="input-group">
-            <label>စကားဝှက် (Password)</label>
-            <input type="password" id="loginPass" placeholder="လျှို့ဝှက်နံပါတ် ထည့်ပါ">
-        </div>
-        <button class="btn-primary" onclick="window.login()">ဝင်မည်</button>
-        <p>အကောင့်မရှိသေးဘူးလား? <span class="switch-link" onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</span></p>
     </div>
 
-    <div id="registerScreen" class="auth-screen" style="display: none;">
-        <h3 style="color: #333; margin-bottom: 25px;">အကောင့်သစ်ဖွင့်ရန်</h3>
-        <div class="input-group">
-            <label>အမည်</label>
-            <input type="text" id="regName" placeholder="သင့်အမည် ထည့်ပါ">
-        </div>
-        <div class="input-group">
-            <label>ဖုန်းနံပါတ်</label>
-            <input type="number" id="regPhone" placeholder="09xxxxxxxxx">
-        </div>
-        <div class="input-group">
-            <label>စကားဝှက်အသစ် ပေးပါ</label>
-            <input type="password" id="regPass" placeholder="လျှို့ဝှက်နံပါတ် အသစ်ပေးပါ">
-        </div>
-        <button class="btn-primary" onclick="window.register()" style="background: #28a745;">အကောင့်ဖွင့်မည်</button>
-        <p>အကောင့်ရှိပြီးသားလား? <span class="switch-link" onclick="window.showLogin()">အကောင့်ဝင်ရန်</span></p>
-    </div>
-
-    <div id="dashboardScreen">
-        <div class="welcome-text">မင်္ဂလာပါ, <span id="userNameText" style="color: #007bff;"></span> 👋</div>
-        <div class="balance-card">
-            <h3>လက်ကျန်ငွေ (Balance)</h3>
-            <h1><span id="balanceText">0</span> <span style="font-size: 20px;">Ks</span></h1>
-            <p style="margin: 10px 0 0 0; font-size: 14px;">ဖုန်းနံပါတ်: <span id="userPhoneText"></span></p>
-        </div>
-
-        <div class="section-title">🛒 Voucher ဝယ်ယူရန်</div>
+    <div id="mainApp" style="display:none; height: 100%; display: flex; flex-direction: column;">
         
-        <div id="plansContainer">
-            <div class="plan-card"><div class="plan-info"><h4>1 Hour</h4><p>500 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Hour', 500)">ဝယ်မည်</button></div>
-            <div class="plan-card"><div class="plan-info"><h4>4 Hours</h4><p>1,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('4 Hours', 1000)">ဝယ်မည်</button></div>
-            <div class="plan-card"><div class="plan-info"><h4>1 Day</h4><p>2,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Day', 2000)">ဝယ်မည်</button></div>
-            <div class="plan-card"><div class="plan-info"><h4>1 Week</h4><p>8,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Week', 8000)">ဝယ်မည်</button></div>
-            <div class="plan-card"><div class="plan-info"><h4>1 Month</h4><p>35,000 Ks</p></div><button class="buy-btn" onclick="window.buyVoucher('1 Month', 35000)">ဝယ်မည်</button></div>
+        <div id="tab-home" class="tab-content active">
+            <div class="top-header">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div><span style="opacity: 0.7; font-size: 12px;">Hello,</span><h3 id="userNameDisplay" style="margin:0; font-size: 18px;">-</h3></div>
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center;"><i class="fa-regular fa-bell"></i></div>
+                </div>
+                <div class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="balance-label">Total Balance</div>
+                        <div class="wifipay-logo">Wifipay</div>
+                    </div>
+                    <div class="balance-amount">Ks <span id="balanceText">0</span></div>
+                    <div class="card-number">**** **** **** <span id="userPhoneTail">0000</span></div>
+                </div>
+            </div>
+
+            <div class="action-row">
+                <button class="action-btn" onclick="alert('ငွေဖြည့်သွင်းရန် ဆိုင်သို့ဆက်သွယ်ပါ။\nဖုန်း: 09-XXXXXXXXX')"><i class="fa-solid fa-wallet icon-blue"></i><span>Top Up</span></button>
+                <button class="action-btn" onclick="window.switchTab('transfer')"><i class="fa-solid fa-money-bill-transfer icon-green"></i><span>Transfer</span></button>
+                <button class="action-btn" onclick="window.switchTab('gift')"><i class="fa-solid fa-gift icon-gift"></i><span>Gift</span></button>
+            </div>
+
+            <div class="section-title">WiFi Vouchers</div>
+            <div id="plansContainer">
+                <div class="plan-card"><div class="plan-info"><h4>1 Hour</h4><p>500 Ks</p></div><button class="btn-buy" onclick="window.buyVoucher('1 Hour', 500)">ဝယ်မည်</button></div>
+                <div class="plan-card"><div class="plan-info"><h4>4 Hours</h4><p>1,000 Ks</p></div><button class="btn-buy" onclick="window.buyVoucher('4 Hours', 1000)">ဝယ်မည်</button></div>
+                <div class="plan-card"><div class="plan-info"><h4>1 Day</h4><p>2,000 Ks</p></div><button class="btn-buy" onclick="window.buyVoucher('1 Day', 2000)">ဝယ်မည်</button></div>
+                <div class="plan-card"><div class="plan-info"><h4>1 Week</h4><p>8,000 Ks</p></div><button class="btn-buy" onclick="window.buyVoucher('1 Week', 8000)">ဝယ်မည်</button></div>
+                <div class="plan-card"><div class="plan-info"><h4>1 Month</h4><p>35,000 Ks</p></div><button class="btn-buy" onclick="window.buyVoucher('1 Month', 35000)">ဝယ်မည်</button></div>
+            </div>
         </div>
 
-        <div class="section-title" style="margin-top: 30px;">🎟️ ဝယ်ယူထားသော Code များ</div>
-        <div id="historyContainer"></div>
+        <div id="tab-transfer" class="tab-content">
+            <div class="section-title" style="margin-top: 20px;">Money Transfer</div>
+            <div class="form-box">
+                <div class="input-group"><label>လက်ခံမည့်သူ၏ ဖုန်းနံပါတ်</label><input type="number" id="txPhone" placeholder="09xxxxxxxxx"></div>
+                <div class="input-group"><label>လွှဲမည့် ပမာဏ (Ks)</label><input type="number" id="txAmount" placeholder="1000"></div>
+                <button class="btn-main" style="background:#28a745;" onclick="window.sendTransfer()">ငွေလွှဲမည်</button>
+            </div>
+        </div>
 
-        <button class="logout-btn" onclick="window.logout()">အကောင့်ထွက်မည်</button>
+        <div id="tab-gift" class="tab-content">
+            <div class="section-title" style="margin-top: 20px;">Send Premium Gift</div>
+            <div class="form-box">
+                <p style="font-size: 11px; color:#888; margin-bottom: 15px; text-align: center;">အမိုက်စား Gift Design များဖြင့် ငွေလွှဲပါ။<br><b style="color:#d9534f;">(ဝန်ဆောင်ခ 10 Ks ကျသင့်ပါမည်)</b></p>
+                
+                <label style="font-size: 12px; font-weight: 600; color: #777; margin-bottom: 8px; display: block;">ဒီဇိုင်း ရွေးချယ်ရန်</label>
+                <div class="gift-selector">
+                    <div class="gift-card-option theme-gold selected" onclick="window.selectGift('gold', this)">Gold</div>
+                    <div class="gift-card-option theme-neon" onclick="window.selectGift('neon', this)">Neon</div>
+                    <div class="gift-card-option theme-dark" onclick="window.selectGift('dark', this)">Dark</div>
+                    <div class="gift-card-option theme-ocean" onclick="window.selectGift('ocean', this)">Ocean</div>
+                    <div class="gift-card-option theme-ruby" onclick="window.selectGift('ruby', this)">Ruby</div>
+                </div>
+
+                <div class="input-group"><label>လက်ခံမည့် ဖုန်းနံပါတ်</label><input type="number" id="giftPhone" placeholder="09xxxxxxxxx"></div>
+                <div class="input-group"><label>လွှဲမည့် ပမာဏ (Ks)</label><input type="number" id="giftAmount" placeholder="2000"></div>
+                <div class="input-group"><label>မှတ်စုတို ရေးရန်</label><input type="text" id="giftMsg" placeholder="Good Luck!"></div>
+                <button class="btn-main" style="background:linear-gradient(135deg, #8E2DE2, #4A00E0);" onclick="window.sendGift()">Gift ပို့မည်</button>
+            </div>
+        </div>
+
+        <div id="tab-history" class="tab-content">
+            <div class="section-title" style="margin-top: 20px;">Transactions</div>
+            <div class="tx-list" id="historyContainer"></div>
+        </div>
+
+        <div id="tab-settings" class="tab-content">
+            <div class="section-title" style="margin-top: 20px;">Settings</div>
+            <div class="form-box">
+                <h4 style="margin-bottom: 15px; color:#222; font-size: 14px;">Change Password</h4>
+                <div class="input-group"><label>စကားဝှက် အဟောင်း</label><input type="password" id="oldPass"></div>
+                <div class="input-group"><label>စကားဝှက် အသစ်</label><input type="password" id="newPass"></div>
+                <button class="btn-main" onclick="window.changePassword()">ပြောင်းမည်</button>
+            </div>
+
+            <div style="padding: 0 20px;">
+                <button class="btn-main" style="background: #eef2f7; color: #dc3545; box-shadow: none;" onclick="window.logout()">Log Out</button>
+            </div>
+
+            <div class="settings-footer">
+                <div class="hmh-text">Powered by <span>HMH</span></div>
+                <div style="font-size: 10px; color: #aaa; margin-top: 5px;">Copyright &copy; 2026. All rights reserved.</div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="window.switchTab('home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item" onclick="window.switchTab('history', this)"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
+            <div class="nav-item" onclick="window.switchTab('transfer', this)"><i class="fa-solid fa-money-bill-transfer"></i><span>Transfer</span></div>
+            <div class="nav-item" onclick="window.switchTab('settings', this)"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
+        </div>
+
     </div>
 </div>
 
@@ -128,183 +272,216 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
     let currentUser = null;
+    let selectedGiftTheme = 'gold';
 
-    // --- UI ပြောင်းလဲရန် ---
-    window.showRegister = function() {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('registerScreen').style.display = 'block';
+    // --- UI Logic ---
+    window.switchTab = function(tabName, element = null) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+        
+        if(element) element.classList.add('active');
+        else {
+            let navTab = tabName === 'gift' ? 'transfer' : tabName; 
+            document.querySelector(`.nav-item[onclick*="${navTab}"]`)?.classList.add('active');
+        }
     }
 
-    window.showLogin = function() {
-        document.getElementById('registerScreen').style.display = 'none';
-        document.getElementById('loginScreen').style.display = 'block';
+    window.selectGift = function(theme, element) {
+        selectedGiftTheme = theme;
+        document.querySelectorAll('.gift-card-option').forEach(el => el.classList.remove('selected'));
+        element.classList.add('selected');
     }
 
-    // --- 🌟 အကောင့်သစ်ဖွင့်ရန် (Register) ---
+    window.showRegister = () => { document.getElementById('loginScreen').style.display='none'; document.getElementById('registerScreen').style.display='flex'; }
+    window.showLogin = () => { document.getElementById('registerScreen').style.display='none'; document.getElementById('loginScreen').style.display='flex'; }
+
+    // --- Auth ---
     window.register = async function() {
         const name = document.getElementById('regName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
         const pass = document.getElementById('regPass').value.trim();
-
-        if(!name || !phone || !pass) return alert("အချက်အလက်များကို ပြည့်စုံစွာ ထည့်သွင်းပါ။");
-        if(phone.length < 5) return alert("ဖုန်းနံပါတ် မှားယွင်းနေပါသည်။");
-
+        if(!name || !phone || !pass) return alert("အချက်အလက် ဖြည့်ပါ။");
         const userRef = ref(db, `customers/${phone}`);
-        const snapshot = await get(userRef);
-
-        if (snapshot.exists()) {
-            return alert("❌ ဤဖုန်းနံပါတ်ဖြင့် အကောင့်ဖွင့်ပြီးသား ဖြစ်နေပါသည်။ ကျေးဇူးပြု၍ အကောင့်ဝင်ပါ။");
-        } else {
-            // Password ပါ သိမ်းဆည်းမည်
-            const newUser = { name: name, phone: phone, password: pass, balance: 0 };
-            await set(userRef, newUser);
-            alert("✅ အကောင့်သစ်ဖွင့်ခြင်း အောင်မြင်ပါသည်။ ယခု အကောင့်ဝင်နိုင်ပါပြီ။");
-            window.showLogin();
-            document.getElementById('loginPhone').value = phone;
-        }
+        if((await get(userRef)).exists()) return alert("အကောင့်ရှိပြီးသားပါ။");
+        await set(userRef, { name, phone, password: pass, balance: 0 });
+        alert("အောင်မြင်ပါသည်။"); window.showLogin();
     }
 
-    // --- 🌟 အကောင့်ဝင်ရန် (Login & Password Check) ---
     window.login = async function() {
         const phone = document.getElementById('loginPhone').value.trim();
         const pass = document.getElementById('loginPass').value.trim();
-
-        if(!phone || !pass) return alert("ဖုန်းနံပါတ် နှင့် စကားဝှက် ထည့်ပါ။");
-
-        const userRef = ref(db, `customers/${phone}`);
-        const snapshot = await get(userRef);
-
-        if (!snapshot.exists()) {
-            return alert("❌ အကောင့်ရှာမတွေ့ပါ။ အကောင့်သစ် အရင်ဖွင့်ပါ။");
-        }
-
-        const userData = snapshot.val();
-        
-        // Password အမှန်တိုက်စစ်ခြင်း
-        if (userData.password !== pass) {
-            return alert("❌ စကားဝှက် (Password) မှားယွင်းနေပါသည်။ ပြန်လည်ကြိုးစားပါ။");
-        }
-
-        currentUser = userData;
-        localStorage.setItem('wifiCustomerPhone', phone);
-        localStorage.setItem('wifiCustomerPass', pass);
-        window.showDashboard();
+        const snap = await get(ref(db, `customers/${phone}`));
+        if(snap.exists() && snap.val().password === pass) {
+            localStorage.setItem('wifiCustomerPhone', phone);
+            localStorage.setItem('wifiCustomerPass', pass);
+            window.loadDashboard(phone);
+        } else alert("မှားယွင်းနေပါသည်။");
     }
 
-    // --- အကောင့်ထွက်ရန် ---
-    window.logout = function() {
-        localStorage.removeItem('wifiCustomerPhone');
-        localStorage.removeItem('wifiCustomerPass');
-        currentUser = null;
-        document.getElementById('dashboardScreen').style.display = 'none';
-        window.showLogin();
-        document.getElementById('loginPass').value = '';
-    }
+    window.logout = function() { localStorage.clear(); location.reload(); }
 
-    // --- Dashboard ပြရန် ---
-    window.showDashboard = function() {
-        if(!currentUser) return;
+    window.loadDashboard = function(phone) {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('registerScreen').style.display = 'none';
-        document.getElementById('dashboardScreen').style.display = 'block';
-        
-        document.getElementById('userNameText').innerText = currentUser.name || "Customer";
-        document.getElementById('userPhoneText').innerText = currentUser.phone;
+        document.getElementById('mainApp').style.display = 'flex';
 
-        // Balance အပြောင်းအလဲကို အမြဲစောင့်ကြည့်နေမည်
-        const userRef = ref(db, `customers/${currentUser.phone}`);
-        onValue(userRef, (snapshot) => {
-            if(snapshot.exists()) {
-                currentUser = snapshot.val();
+        onValue(ref(db, `customers/${phone}`), (snap) => {
+            if(snap.exists()) {
+                currentUser = snap.val();
                 document.getElementById('balanceText').innerText = currentUser.balance || 0;
+                document.getElementById('userNameDisplay').innerText = currentUser.name;
+                document.getElementById('userPhoneTail').innerText = phone.slice(-4);
                 window.renderHistory();
             }
         });
     }
 
-    // --- Voucher ဝယ်ရန် ---
+    // --- Features ---
     window.buyVoucher = async function(plan, price) {
-        if(currentUser.balance < price) {
-            return alert("❌ ငွေလက်ကျန် မလောက်ပါ။ ကျေးဇူးပြု၍ ငွေဖြည့်ပါ။");
-        }
-
-        if(!confirm(`${plan} Voucher ကို ${price} ကျပ်ဖြင့် ဝယ်ယူမှာ သေချာပါသလား?`)) return;
-
+        if(currentUser.balance < price) return alert("ငွေမလောက်ပါ။");
+        if(!confirm(`ဝယ်မည် သေချာပါသလား?`)) return;
         try {
-            const invRef = ref(db, `inventory/${plan}`);
-            const invSnap = await get(invRef);
+            const invSnap = await get(ref(db, `inventory/${plan}`));
             let vouchers = invSnap.exists() ? invSnap.val() : [];
-
-            if(vouchers.length === 0) {
-                return alert("❌ တောင်းပန်ပါတယ်။ လောလောဆယ် ကဒ်များ ကုန်နေပါတယ်။");
-            }
-
-            let purchasedVoucher = vouchers.shift();
-            let newBalance = currentUser.balance - price;
-            let purchaseId = "buy_" + Date.now();
-            let dateStr = new Date().toLocaleString();
-            
-            let updates = {};
+            if(vouchers.length === 0) return alert("Code ကုန်နေပါသည်။");
+            let p = vouchers.shift();
+            let updates = {}; let now = new Date().toLocaleString();
             updates[`inventory/${plan}`] = vouchers; 
-            updates[`customers/${currentUser.phone}/balance`] = newBalance; 
-            updates[`customers/${currentUser.phone}/history/${purchaseId}`] = {
-                plan: plan, price: price, code: purchasedVoucher.code, date: dateStr
-            }; 
-            
-            let recordId = "web_" + Date.now();
-            updates[`records/${recordId}`] = {
-                id: recordId, date: new Date().toLocaleDateString(), name: currentUser.name + " (" + currentUser.phone + ")",
-                plan: plan, qty: 1, totalPrice: price, codes: [purchasedVoucher.code], isManual: false
-            };
-
-            await update(ref(db), updates);
-            
-            alert(`✅ ဝယ်ယူမှု အောင်မြင်ပါသည်!\n\nသင့် Code မှာ: ${purchasedVoucher.code}\nယခု Code ကို ပေးထားသော မှတ်တမ်းတွင် အချိန်မရွေး ပြန်ကြည့်နိုင်ပါသည်။`);
-
-        } catch(e) {
-            console.error(e);
-            alert("စနစ်ချို့ယွင်းနေပါသည်။ ခဏနေမှ ထပ်စမ်းကြည့်ပါ။");
-        }
+            updates[`customers/${currentUser.phone}/balance`] = currentUser.balance - price; 
+            updates[`customers/${currentUser.phone}/history/tx_${Date.now()}`] = { type: 'buy', title: plan, amount: price, extra: p.code, date: now };
+            updates[`records/web_${Date.now()}`] = { id: `web_${Date.now()}`, date: new Date().toLocaleDateString(), name: `Customer_(${currentUser.phone})`, plan: plan, qty: 1, totalPrice: price, codes: [p.code] };
+            await update(ref(db), updates); alert(`Code: ${p.code}`);
+        } catch(e) { console.error(e); }
     }
 
-    // --- ဝယ်ထားသော မှတ်တမ်းများ ပြရန် ---
-    window.renderHistory = function() {
-        const container = document.getElementById('historyContainer');
-        container.innerHTML = '';
-        
-        if(!currentUser.history) {
-            container.innerHTML = '<p style="text-align:center; color:#888;">ဝယ်ယူထားသော မှတ်တမ်း မရှိသေးပါ။</p>';
-            return;
-        }
+    // 🌟 Regular Transfer (No Fee)
+    window.sendTransfer = async function() {
+        const targetPhone = document.getElementById('txPhone').value.trim();
+        const amount = parseInt(document.getElementById('txAmount').value);
+        if(!targetPhone || !amount) return alert("ဖြည့်ပါ။");
+        if(targetPhone === currentUser.phone) return alert("မိမိကိုယ်တိုင် ပြန်လွှဲမရပါ။");
+        if(currentUser.balance < amount) return alert("ငွေမလောက်ပါ။");
 
-        let historyArray = Object.values(currentUser.history).reverse();
-        
-        historyArray.forEach(item => {
-            container.innerHTML += `
-                <div class="history-item">
-                    <div style="display: flex; justify-content: space-between;">
-                        <b>${item.plan}</b> <span style="color: #666; font-size: 12px;">${item.date}</span>
+        try {
+            const snap = await get(ref(db, `customers/${targetPhone}`));
+            if(!snap.exists()) return alert("အကောင့်မရှိပါ။");
+            let target = snap.val();
+            if(!confirm(`${target.name} သို့ ${amount} Ks လွှဲမည်လား?`)) return;
+
+            let updates = {}; let now = new Date().toLocaleString();
+            updates[`customers/${currentUser.phone}/balance`] = currentUser.balance - amount;
+            updates[`customers/${currentUser.phone}/history/tx_out_${Date.now()}`] = { type: 'tx_out', title: `To: ${target.name}`, amount: amount, date: now };
+            updates[`customers/${targetPhone}/balance`] = (target.balance || 0) + amount;
+            updates[`customers/${targetPhone}/history/tx_in_${Date.now()}`] = { type: 'tx_in', title: `From: ${currentUser.name}`, amount: amount, date: now };
+            await update(ref(db), updates); alert("အောင်မြင်ပါသည်။");
+            document.getElementById('txPhone').value=''; document.getElementById('txAmount').value='';
+        } catch(e) { console.error(e); }
+    }
+
+    // 🌟 Premium Gift (10 Ks Fee)
+    window.sendGift = async function() {
+        const targetPhone = document.getElementById('giftPhone').value.trim();
+        const amount = parseInt(document.getElementById('giftAmount').value);
+        const msg = document.getElementById('giftMsg').value.trim() || "A Gift For You!";
+        const totalCost = amount + 10; // 🌟 10 Ks ဖြတ်မည်
+
+        if(!targetPhone || !amount) return alert("ဖြည့်ပါ။");
+        if(targetPhone === currentUser.phone) return alert("မိမိကိုယ်တိုင် ပြန်လွှဲမရပါ။");
+        if(currentUser.balance < totalCost) return alert("လက်ကျန်ငွေ မလောက်ပါ။ (ဝန်ဆောင်ခ 10 Ks ကျသင့်ပါမည်)");
+
+        try {
+            const snap = await get(ref(db, `customers/${targetPhone}`));
+            if(!snap.exists()) return alert("အကောင့်မရှိပါ။");
+            let target = snap.val();
+            if(!confirm(`${target.name} သို့ Gift ပို့မည်လား? စုစုပေါင်း: ${totalCost} Ks ဖြတ်ပါမည်။`)) return;
+
+            let updates = {}; let now = new Date().toLocaleString();
+            updates[`customers/${currentUser.phone}/balance`] = currentUser.balance - totalCost;
+            updates[`customers/${currentUser.phone}/history/tx_out_${Date.now()}`] = { type: 'gift_out', title: `Gift to: ${target.name}`, amount: amount, extra: `Fee: 10 Ks`, date: now };
+            updates[`customers/${targetPhone}/balance`] = (target.balance || 0) + amount;
+            // လက်ခံသူဆီမှာ Theme ကိုပါ ထည့်ပေးလိုက်မယ်
+            updates[`customers/${targetPhone}/history/tx_in_${Date.now()}`] = { type: 'gift_in', title: `Gift from: ${currentUser.name}`, amount: amount, extra: `"${msg}"`, theme: selectedGiftTheme, date: now };
+            
+            await update(ref(db), updates); alert("Gift ပို့လိုက်ပါပြီ! 🎉");
+            document.getElementById('giftPhone').value=''; document.getElementById('giftAmount').value=''; document.getElementById('giftMsg').value='';
+        } catch(e) { console.error(e); }
+    }
+
+    window.changePassword = async function() {
+        const oldP = document.getElementById('oldPass').value; const newP = document.getElementById('newPass').value;
+        if(oldP !== currentUser.password) return alert("စကားဝှက်အဟောင်း မှားနေပါသည်။");
+        if(newP.length < 4) return alert("အနည်းဆုံး ၄ လုံး ထည့်ပါ။");
+        await update(ref(db, `customers/${currentUser.phone}`), { password: newP });
+        localStorage.setItem('wifiCustomerPass', newP); alert("ပြောင်းလဲပြီးပါပြီ။");
+        document.getElementById('oldPass').value=''; document.getElementById('newPass').value='';
+    }
+
+    window.renderHistory = function() {
+        const cont = document.getElementById('historyContainer'); cont.innerHTML = '';
+        if(!currentUser.history) return cont.innerHTML = '<p style="text-align:center; color:#999; font-size:13px; margin-top:20px;">မှတ်တမ်း မရှိသေးပါ</p>';
+
+        Object.values(currentUser.history).reverse().forEach(tx => {
+            let icon = '', htmlClass = '', sign = '', extraHtml = '';
+            
+            if(tx.type === 'buy') {
+                icon = '<i class="fa-solid fa-wifi" style="color:#007bff;"></i>'; htmlClass = 'tx-minus'; sign = '-';
+                extraHtml = `<div style="color:#28a745; font-size:12px; font-weight:bold; margin-top:3px;">Code: ${tx.extra}</div>`;
+            } else if(tx.type === 'tx_out') {
+                icon = '<i class="fa-solid fa-arrow-up" style="color:#dc3545;"></i>'; htmlClass = 'tx-minus'; sign = '-';
+            } else if(tx.type === 'tx_in') {
+                icon = '<i class="fa-solid fa-arrow-down" style="color:#28a745;"></i>'; htmlClass = 'tx-plus'; sign = '+';
+            } else if(tx.type === 'gift_out') {
+                icon = '<i class="fa-solid fa-gift" style="color:#8E2DE2;"></i>'; htmlClass = 'tx-minus'; sign = '-';
+                extraHtml = `<div style="color:#dc3545; font-size:11px; margin-top:2px;">${tx.extra}</div>`;
+            } else if(tx.type === 'gift_in') {
+                // လက်ခံရရှိတဲ့ Gift ဆိုရင် Theme နဲ့ လှလှလေး ပြပေးမယ်
+                let bgColors = {
+                    'gold': 'linear-gradient(135deg, #f6d365, #fda085)',
+                    'neon': 'linear-gradient(135deg, #8E2DE2, #4A00E0)',
+                    'dark': 'linear-gradient(135deg, #232526, #414345)',
+                    'ocean': 'linear-gradient(135deg, #2193b0, #6dd5ed)',
+                    'ruby': 'linear-gradient(135deg, #ff0844, #ffb199)'
+                };
+                let bg = bgColors[tx.theme] || bgColors['gold'];
+                cont.innerHTML += `
+                    <div class="tx-item" style="background: ${bg}; color: white; border: none;">
+                        <div style="display:flex; align-items:center;">
+                            <div class="tx-icon" style="background: rgba(255,255,255,0.2); color:white;"><i class="fa-solid fa-gift"></i></div>
+                            <div class="tx-details">
+                                <div class="tx-title" style="color:white;">${tx.title}</div>
+                                <div class="tx-date" style="color:rgba(255,255,255,0.7);">${tx.date}</div>
+                                <div style="font-size:12px; font-style:italic; margin-top:4px;">${tx.extra}</div>
+                            </div>
+                        </div>
+                        <div class="tx-amount" style="color:white;">+${tx.amount} Ks</div>
+                    </div>`;
+                return; // အောက်က ပုံမှန် render ကို ကျော်သွားမည်
+            }
+
+            cont.innerHTML += `
+                <div class="tx-item">
+                    <div style="display:flex; align-items:center;">
+                        <div class="tx-icon">${icon}</div>
+                        <div class="tx-details">
+                            <div class="tx-title">${tx.title}</div>
+                            <div class="tx-date">${tx.date}</div>
+                            ${extraHtml}
+                        </div>
                     </div>
-                    <div class="voucher-code">Code: ${item.code}</div>
-                </div>
-            `;
+                    <div class="tx-amount ${htmlClass}">${sign}${tx.amount}</div>
+                </div>`;
         });
     }
 
-    // Auto Login Check (Saved Password)
-    window.onload = async function() {
-        const savedPhone = localStorage.getItem('wifiCustomerPhone');
-        const savedPass = localStorage.getItem('wifiCustomerPass');
-        
-        if(savedPhone && savedPass) {
-            document.getElementById('loginPhone').value = savedPhone;
-            document.getElementById('loginPass').value = savedPass;
-            window.login();
+    window.onload = () => { document.getElementById('mainApp').style.display='none'; 
+        if(localStorage.getItem('wifiCustomerPhone')) {
+            document.getElementById('loginPhone').value = localStorage.getItem('wifiCustomerPhone');
+            document.getElementById('loginPass').value = localStorage.getItem('wifiCustomerPass'); window.login();
         }
     }
 </script>
-
 </body>
 </html>
+
