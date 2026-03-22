@@ -322,13 +322,37 @@
 
     window.updateOrderStatus = async function(id, status) {
         if(status === 'cancelled') {
-            if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား? Wallet ငွေဖြတ်ထားလျှင် ဖောက်သည်ထံ ငွေပြန်အမ်းပေးရန် လိုအပ်နိုင်ပါသည်။")) return;
+            if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား? Wallet ငွေဖြတ်ထားလျှင် ဖောက်သည်ထံ ငွေပြန်အမ်းပေးပါမည်။")) return;
         }
         try {
-            await update(ref(db, `food_orders/${id}`), { status: status });
+            let updates = {};
+            updates[`food_orders/${id}/status`] = status;
+
+            // 🌟 Order Cancel လျှင် ငွေအလိုလို ပြန်အမ်းမည့် စနစ် (Refund)
+            if (status === 'cancelled') {
+                let order = window.foodOrders[id];
+                // Wallet ဖြင့် ရှင်းထားသော အော်ဒါဖြစ်မှသာ ပြန်အမ်းမည်
+                if (order && order.payment_method === 'wallet') {
+                    let phone = order.phone;
+                    let currentBal = window.customersData[phone]?.balance || 0;
+                    let refundAmt = order.total;
+                    
+                    // Customer ၏ လက်ကျန်ငွေထဲသို့ ပြန်ပေါင်းထည့်မည်
+                    updates[`customers/${phone}/balance`] = currentBal + refundAmt;
+                    
+                    // မှတ်တမ်း (History) တွင် Refund ပြန်ဝင်ကြောင်း ရေးမှတ်မည်
+                    let refundId = 'refund_' + Date.now();
+                    updates[`customers/${phone}/history/${refundId}`] = {
+                        type: 'tx_in', 
+                        title: 'Order Cancelled (Refund)', 
+                        amount: refundAmt, 
+                        date: new Date().toLocaleString()
+                    };
+                }
+            }
+            await update(ref(db), updates);
         } catch(e) { console.log(e); }
     }
-
     // --- FOOD MENU MANAGEMENT ---
     window.openMenuManage = function() {
         document.getElementById('menuManageModal').style.display = 'block';
