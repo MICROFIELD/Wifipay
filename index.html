@@ -202,6 +202,8 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 <body>
 <div class="bg-orbs"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
 
+<audio id="coinSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
+
 <div id="installPrompt" class="install-banner">
   <div class="install-info"><div class="install-icon"><i class="fa-solid fa-download"></i></div><div class="install-text"><h4>Wifipay App</h4><p>ဖုန်းထဲသို့ Install လုပ်ပါ</p></div></div>
   <button class="btn-install" onclick="installPWA()">Install</button>
@@ -323,6 +325,13 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
       <div id="profileSection" style="display:none;" class="form-card">
         <div class="field" style="margin-bottom:16px;"><label>အမည်သစ်</label><input type="text" id="editNameInput" style="width:100%;padding:13px 15px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;font-size:14px;color:var(--text);outline:none;font-family:var(--font);" placeholder="နာမည်သစ်ရိုက်ထည့်ပါ"></div>
         <button class="btn btn-green" onclick="window.updateProfileName()">နာမည်ပြောင်းမည်</button>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Notifications</div>
+      <div class="s-item" onclick="window.requestNotiPermission()">
+        <div class="s-ico" style="background:rgba(96,165,250,0.12);color:#60a5fa;"><i class="fa-solid fa-bell"></i></div>
+        <div><div class="s-title">ဖုန်း Noti ဖွင့်မည်</div><div class="s-sub">ငွေဝင်လျှင် အသိပေးရန် နှိပ်ပါ</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
       </div>
 
       <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Security</div>
@@ -455,27 +464,14 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-app
 import{getDatabase,ref,get,set,update,onValue}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 const fc={apiKey:"AIzaSyCqZi-PrBdzak2-vpOhqgB398DT6uIcgDE",authDomain:"voucher-system-7890.firebaseapp.com",projectId:"voucher-system-7890",storageBucket:"voucher-system-7890.firebasestorage.app",messagingSenderId:"691932496625",appId:"1:691932496625:web:0a99af369e4a8fb6b6df50",databaseURL:"https://voucher-system-7890-default-rtdb.asia-southeast1.firebasedatabase.app/"};
 const app=initializeApp(fc);const db=getDatabase(app);
-let cu=null;
+
+let cu = null;
 let pendingTxType = null; 
+let prevBalance = null; // 🌟 For Top-up Notification
 
 // 🌟 FOOD ORDER SYSTEM VARIABLES 🌟
-let foodMenu = [
-  { id: 'f1', name: 'မာလာရှမ်းကော', price: 3500, icon: '🍲' },
-  { id: 'f2', name: 'ခေါက်ဆွဲကြော်', price: 2000, icon: '🍝' },
-  { id: 'f3', name: 'Spicy ခေါက်ဆွဲ', price: 1500, icon: '🍜' },
-  { id: 'f4', name: 'မုန့်ဟင်းခါး', price: 1500, icon: '🍜' },
-  { id: 'f5', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true },
-  { id: 'f6', name: 'French Fries', price: 1500, icon: '🍟' }
-];
-
-let drinkOptions = [
-  { id: 'd1', name: 'Vita max yellow', price: 1300 },
-  { id: 'd2', name: 'Vita max blue', price: 1300 },
-  { id: 'd3', name: 'Horn', price: 1200 },
-  { id: 'd4', name: 'Royal D', price: 1800 },
-  { id: 'd5', name: 'Zora', price: 2500 },
-  { id: 'd6', name: 'VeVe မကျီး', price: 1300 }
-];
+window.foodMenu = [];
+window.drinkOptions = [];
 
 let cart = [];
 let deliveryType = 'pickup';
@@ -528,6 +524,21 @@ window.setQ=(id,v)=>{ document.getElementById(id).value=(parseInt(document.getEl
 window.showRegister=()=>{document.getElementById('loginScreen').style.display='none';document.getElementById('registerScreen').style.display='block';};
 window.showLogin=()=>{document.getElementById('registerScreen').style.display='none';document.getElementById('loginScreen').style.display='block';};
 
+// 🌟 REQUEST PHONE NOTIFICATION 🌟
+window.requestNotiPermission = function() {
+    if (!("Notification" in window)) {
+        window.showToast("သင့်ဖုန်းသည် Notification စနစ်ကို မထောက်ပံ့ပါ။", "error");
+        return;
+    }
+    Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+            window.showToast("✅ Notification ဖွင့်ပြီးပါပြီ။", "success");
+        } else {
+            window.showToast("❌ Notification ပိတ်ထားပါသည်။", "error");
+        }
+    });
+}
+
 // --- AUTH & PROFILE ---
 window.register=async function(){
   const n=document.getElementById('regName').value.trim(); const p=document.getElementById('regPhone').value.trim(); const pw=document.getElementById('regPass').value.trim();
@@ -544,19 +555,36 @@ window.login=async function(){
   else window.showToast('ဖုန်း သို့မဟုတ် စကားဝှက် မှားနေပါ','error');
 };
 window.logout=function(){if(confirm('Log out လုပ်မည်လား?')){localStorage.clear();location.reload();}};
+
 window.loadDash=function(ph){
   document.getElementById('loginScreen').style.display='none'; document.getElementById('registerScreen').style.display='none';
   const ma=document.getElementById('mainApp');ma.style.display='flex';ma.style.flexDirection='column';ma.style.height='100%';
-  onValue(ref(db,'customers/'+ph),snap=>{
+  
+  // 🌟 REAL-TIME CUSTOMER SYNC & TOPUP NOTIFICATION 🌟
+  onValue(ref(db,'customers/'+ph), snap=>{
     if(!snap.exists())return; cu=snap.val();
-    document.getElementById('balanceText').textContent=(cu.balance||0).toLocaleString();
+    
+    let currentBal = cu.balance || 0;
+    document.getElementById('balanceText').textContent=currentBal.toLocaleString();
+    
+    // Top-up Notification Logic
+    if (prevBalance !== null && currentBal > prevBalance) {
+        let diff = currentBal - prevBalance;
+        let msg = `💰 အကောင့်ထဲသို့ ငွေ ${diff.toLocaleString()} Ks ဝင်လာပါပြီ!`;
+        window.showToast(msg, 'success');
+        document.getElementById('coinSound')?.play().catch(e=>console.log(e));
+        
+        // Push Notification on Phone
+        if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("Wifipay ငွေဝင်လာပါပြီ", { body: msg, icon: "icon.png" });
+        }
+    }
+    prevBalance = currentBal;
+
     document.getElementById('userNameDisplay').textContent=cu.name; document.getElementById('userPhoneTail').textContent=ph.slice(-4);
-    
-    // Set Name in Settings
     document.getElementById('settingsName').textContent=cu.name; document.getElementById('settingsPhone').textContent=ph;
-    document.getElementById('editNameInput').value=cu.name; // pre-fill edit input
+    document.getElementById('editNameInput').value=cu.name; 
     
-    // Set Avatar or Initial
     if(cu.avatar) {
       document.getElementById('avatarEl').innerHTML = `<img src="${cu.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"><div class="notif-dot"></div>`;
       document.getElementById('settingsAvatar').innerHTML = `<img src="${cu.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"><div style="position:absolute;bottom:-4px;right:-4px;background:var(--accent);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--surface);"><i class="fa-solid fa-camera"></i></div>`;
@@ -565,6 +593,23 @@ window.loadDash=function(ph){
       document.getElementById('avatarEl').innerHTML = `<span id="avatarInitial">${init}</span><div class="notif-dot"></div>`;
       document.getElementById('settingsAvatar').innerHTML = `${init}<div style="position:absolute;bottom:-4px;right:-4px;background:var(--accent);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--surface);"><i class="fa-solid fa-camera"></i></div>`;
     }
+  });
+
+  // 🌟 REAL-TIME MENU SYNC FROM ADMIN 🌟
+  onValue(ref(db, 'food_menu'), snap => {
+    if(snap.exists()) {
+      window.foodMenu = Object.values(snap.val());
+      // အအေး Option button အမြဲတမ်း ပါအောင် ထည့်ပေးမည်
+      let hasDrinks = window.foodMenu.find(f => f.isOptions);
+      if(!hasDrinks) { window.foodMenu.push({ id: 'f_drinks', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true }); }
+    } else {
+      window.foodMenu = [{ id: 'f_drinks', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true }];
+    }
+    if(document.getElementById('tab-food').classList.contains('active')) window.renderFood();
+  });
+
+  onValue(ref(db, 'drink_options'), snap => {
+    if(snap.exists()) { window.drinkOptions = Object.values(snap.val()); }
   });
 };
 
@@ -585,7 +630,6 @@ window.handleAvatarChange=function(e){
   reader.onload = function(event) {
     const img = new Image();
     img.onload = function() {
-      // Resize image down to 150px to save database size
       const canvas = document.createElement('canvas');
       const MAX_SIZE = 150; let width = img.width; let height = img.height;
       if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
@@ -594,7 +638,6 @@ window.handleAvatarChange=function(e){
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-      // Update Firebase
       update(ref(db, 'customers/' + cu.phone), { avatar: dataUrl }).then(() => {
         window.showToast('✓ Profile ပုံ ပြောင်းလဲပြီးပါပြီ', 'success');
       });
@@ -607,7 +650,7 @@ window.handleAvatarChange=function(e){
 // --- FOOD ORDER LOGIC ---
 window.renderFood = function() {
   const fg = document.getElementById('foodGrid'); fg.innerHTML = '';
-  foodMenu.forEach(f => {
+  window.foodMenu.forEach(f => {
     let priceDisplay = f.isOptions ? f.price : f.price.toLocaleString() + ' Ks';
     let action = f.isOptions ? `window.openDrinkModal()` : `window.addToCart('${f.id}', '${f.name}', ${f.price}, '${f.icon}')`;
     
@@ -624,7 +667,10 @@ window.renderFood = function() {
 
 window.openDrinkModal = function() {
   const dl = document.getElementById('drinkList'); dl.innerHTML = '';
-  drinkOptions.forEach(d => {
+  if(window.drinkOptions.length === 0) {
+      dl.innerHTML = '<p style="text-align:center;font-size:12px;color:gray;">အအေး မရှိသေးပါ</p>';
+  }
+  window.drinkOptions.forEach(d => {
     dl.innerHTML += `<div class="drink-item" onclick="window.addToCart('${d.id}', '${d.name}', ${d.price}, '🥤'); document.getElementById('drinkOverlay').style.display='none';">
       <div class="d-name">${d.name}</div>
       <div class="d-price">${d.price.toLocaleString()} Ks</div>
@@ -824,7 +870,7 @@ window.changePassword=async function(){
 window.renderHistory=function(){
   const cont=document.getElementById('historyContainer');cont.innerHTML='';
   if(!cu?.history){ cont.innerHTML='<div class="empty-state"><i class="fa-regular fa-clock"></i><p>မှတ်တမ်း မရှိသေးပါ</p></div>';return; }
-  const txns=Object.values(cu.history).reverse(); let tIn=0,tOut=0;
+  const txns=Object.values(cu.history).sort((a,b)=>new Date(b.date)-new Date(a.date)); let tIn=0,tOut=0;
   document.getElementById('statCount').textContent=txns.length;
   txns.forEach(tx=>{
     if(tx.type==='tx_in')tIn+=tx.amount||0;
