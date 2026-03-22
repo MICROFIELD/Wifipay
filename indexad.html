@@ -328,29 +328,36 @@
             let updates = {};
             updates[`food_orders/${id}/status`] = status;
 
-            // 🌟 Order Cancel လျှင် ငွေအလိုလို ပြန်အမ်းမည့် စနစ် (Refund)
+            // 🌟 Order Cancel လျှင် ငွေအလိုလို ပြန်အမ်းမည့် စနစ် (Refund) အသစ် 🌟
             if (status === 'cancelled') {
                 let order = window.foodOrders[id];
                 // Wallet ဖြင့် ရှင်းထားသော အော်ဒါဖြစ်မှသာ ပြန်အမ်းမည်
                 if (order && order.payment_method === 'wallet') {
                     let phone = order.phone;
-                    let currentBal = window.customersData[phone]?.balance || 0;
-                    let refundAmt = order.total;
+                    let refundAmt = parseInt(order.total) || 0;
                     
-                    // Customer ၏ လက်ကျန်ငွေထဲသို့ ပြန်ပေါင်းထည့်မည်
-                    updates[`customers/${phone}/balance`] = currentBal + refundAmt;
-                    
-                    // မှတ်တမ်း (History) တွင် Refund ပြန်ဝင်ကြောင်း ရေးမှတ်မည်
-                    let refundId = 'refund_' + Date.now();
-                    updates[`customers/${phone}/history/${refundId}`] = {
-                        type: 'tx_in', 
-                        title: 'Order Cancelled (Refund)', 
-                        amount: refundAmt, 
-                        date: new Date().toLocaleString()
-                    };
+                    // Database ဆီကနေ လက်ရှိငွေ အတိအကျကို အရင်လှမ်းဖတ်မည် (အရေးကြီးဆုံး အဆင့်)
+                    const snap = await get(ref(db, `customers/${phone}`));
+                    if (snap.exists()) {
+                        let currentBal = parseInt(snap.val().balance) || 0;
+                        
+                        // လက်ရှိငွေအစစ် + ပြန်အမ်းငွေ
+                        updates[`customers/${phone}/balance`] = currentBal + refundAmt;
+                        
+                        // မှတ်တမ်း (History) တွင် Refund ပြန်ဝင်ကြောင်း ရေးမှတ်မည်
+                        let refundId = 'refund_' + Date.now();
+                        updates[`customers/${phone}/history/${refundId}`] = {
+                            type: 'tx_in', 
+                            title: 'Order Cancelled (Refund)', 
+                            amount: refundAmt, 
+                            date: new Date().toLocaleString()
+                        };
+                    }
                 }
             }
+            
             await update(ref(db), updates);
+            
         } catch(e) { console.log(e); }
     }
     // --- FOOD MENU MANAGEMENT ---
