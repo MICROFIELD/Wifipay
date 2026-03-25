@@ -47,6 +47,11 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 .install-text p{font-size:10px;color:var(--text-sub);margin:0;}
 .btn-install{background:white;color:var(--bg);border:none;padding:6px 14px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;}
 
+/* AD ANNOUNCEMENT BANNER */
+.ad-banner { background: linear-gradient(90deg, rgba(124,106,255,0.15), rgba(167,139,250,0.15)); border: 1px solid var(--accent); border-radius: 14px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 12px; display: none; }
+.ad-banner i { color: var(--gold); font-size: 18px; margin-top: 2px; }
+.ad-banner p { font-size: 12px; color: var(--text); line-height: 1.5; margin: 0; }
+
 /* AUTH & FIELDS */
 .auth-wrap{display:flex;flex-direction:column;min-height:100%;padding:40px 24px 30px;position:relative;z-index:2;overflow-y:auto;}
 .auth-logo{text-align:center;margin-bottom:36px;margin-top:auto;}
@@ -215,7 +220,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
   <div class="auth-logo"><span class="logo-mark">Wifipay</span><p>Digital Wallet</p></div>
   <div class="auth-card">
     <h2>ကြိုဆိုပါတယ် 👋</h2><p class="sub">အကောင့်ဝင်ပြီး ဆက်ရှေ့ဆောင်ရွက်ပါ</p>
-    <div class="field"><label>ဖုန်းနံပါတ်</label><div class="fi"><input type="tel" id="loginPhone" placeholder="09xxxxxxxxx"><i class="fa-solid fa-phone"></i></div></div>
+    <div class="field"><label>ဖုန်းနံပါတ် (သို့) အမည်</label><div class="fi"><input type="tel" id="loginPhone" list="savedUsers" placeholder="09xxxxxxxxx သို့ အမည်ရိုက်ပါ"><i class="fa-solid fa-phone"></i></div><datalist id="savedUsers"></datalist></div>
     <div class="field"><label>စကားဝှက်</label><div class="fi"><input type="password" id="loginPass" placeholder="••••••••"><i class="fa-solid fa-eye btn-eye" onclick="window.togglePw('loginPass', this)"></i></div></div>
     <button class="btn btn-primary" onclick="window.login()"><i class="fa-solid fa-arrow-right-to-bracket"></i> &nbsp;အကောင့်ဝင်မည်</button>
     <p class="auth-link">အကောင့်မရှိသေးဘူးလား? <b onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</b></p>
@@ -253,7 +258,13 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
         <div class="bc-bot"><div class="bc-cardno">**** **** <span id="userPhoneTail">0000</span></div><div class="bc-status"><div class="bc-dot"></div>Active</div></div>
       </div>
     </div>
+    
     <div class="home-inner">
+      <div id="adBannerBox" class="ad-banner">
+        <i class="fa-solid fa-bullhorn"></i>
+        <p id="adBannerText">ကြိုဆိုပါတယ်...</p>
+      </div>
+
       <div class="qa-row">
         <div class="qa-btn" onclick="window.openTopup()"><div class="qa-ico blue"><i class="fa-solid fa-wallet"></i></div><span class="qa-lbl">Top Up</span></div>
         <div class="qa-btn" onclick="window.switchTab('transfer')"><div class="qa-ico green"><i class="fa-solid fa-money-bill-transfer"></i></div><span class="qa-lbl">Transfer</span></div>
@@ -443,6 +454,8 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
   <div class="drink-modal" style="text-align:center; padding:35px 20px;">
     <div style="font-size:46px; margin-bottom:12px; color:var(--green);"><i class="fa-solid fa-building-columns"></i></div>
     <h3 style="color:var(--text); margin-bottom:8px; font-size:20px;">ငွေဖြည့်ရန်</h3>
+    <p style="font-size:12px; color:var(--gold); margin-bottom:8px; font-weight:bold;">🎉 ပထမဆုံးအကြိမ် 5000 Ks ဖြည့်သွင်းပါက 500 Ks Bonus ရရှိပါမည်!</p>
+    
     <p style="font-size:13px; color:var(--text-sub); margin-bottom:24px; line-height:1.6;">အောက်ပါ <b>KPay</b> သို့ ငွေလွှဲပြီး<br>Viber / Messenger မှ Screenshot ပြပါ</p>
     <div style="background:var(--surface2); border:1px solid var(--border); border-radius:18px; padding:20px; margin-bottom:24px;">
       <p style="font-size:11px; color:var(--text-sub); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">KPay Account Name</p>
@@ -462,22 +475,41 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import{getDatabase,ref,get,set,update,onValue}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-const fc={apiKey:"AIzaSyCqZi-PrBdzak2-vpOhqgB398DT6uIcgDE",authDomain:"voucher-system-7890.firebaseapp.com",projectId:"voucher-system-7890",storageBucket:"voucher-system-7890.firebasestorage.app",messagingSenderId:"691932496625",appId:"1:691932496625:web:0a99af369e4a8fb6b6df50",databaseURL:"https://voucher-system-7890-default-rtdb.asia-southeast1.firebasedatabase.app/"};
+// NEW FIREBASE CONFIG (wifipay-ff292)
+const fc={apiKey:"AIzaSyCWtLbUKGHG6ZHXzU69YLwNvH2Z5EWOyV4",authDomain:"wifipay-ff292.firebaseapp.com",projectId:"wifipay-ff292",storageBucket:"wifipay-ff292.firebasestorage.app",messagingSenderId:"429630230761",appId:"1:429630230761:web:8c7f29457326c1f0c02078",databaseURL:"https://wifipay-ff292-default-rtdb.asia-southeast1.firebasedatabase.app/"};
 const app=initializeApp(fc);const db=getDatabase(app);
 
 let cu = null;
 let pendingTxType = null; 
-let prevBalance = null; // 🌟 For Top-up Notification
+let prevBalance = null; 
+let isFirstLogin = true;
+
+// 🌟 AUTO-FILL ACCOUNTS FOR LOGIN 🌟
+window.loadSavedAccounts = function() {
+    let saved = JSON.parse(localStorage.getItem('wp_accounts') || '[]');
+    let dl = document.getElementById('savedUsers'); dl.innerHTML = '';
+    saved.forEach(acc => {
+        let opt = document.createElement('option');
+        opt.value = acc.phone; opt.text = acc.name + ' (' + acc.phone + ')';
+        dl.appendChild(opt);
+    });
+};
+window.saveAccountToLocal = function(phone, name, pw) {
+    let saved = JSON.parse(localStorage.getItem('wp_accounts') || '[]');
+    let ex = saved.find(a => a.phone === phone);
+    if(ex) { ex.name = name; ex.pw = pw; } else { saved.push({phone, name, pw}); }
+    localStorage.setItem('wp_accounts', JSON.stringify(saved));
+};
+document.getElementById('loginPhone').addEventListener('input', function(e) {
+    let val = e.target.value; let saved = JSON.parse(localStorage.getItem('wp_accounts') || '[]');
+    let match = saved.find(a => a.phone === val || a.name === val);
+    if(match) { document.getElementById('loginPhone').value = match.phone; document.getElementById('loginPass').value = match.pw; }
+});
 
 // 🌟 FOOD ORDER SYSTEM VARIABLES 🌟
-window.foodMenu = [];
-window.drinkOptions = [];
-
-let cart = [];
-let deliveryType = 'pickup';
-
-let deferredPrompt;
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+window.foodMenu = []; window.drinkOptions = [];
+let cart = []; let deliveryType = 'pickup';
+let deferredPrompt; const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
 if (!isStandalone) {
@@ -522,20 +554,13 @@ window.openTopup=()=>document.getElementById('topupOverlay').style.display='flex
 window.copyKpay=()=>{ navigator.clipboard.writeText('09977123184'); window.showToast('✓ ဖုန်းနံပါတ် Copy ကူးပြီးပါပြီ', 'success'); };
 window.setQ=(id,v)=>{ document.getElementById(id).value=(parseInt(document.getElementById(id).value)||0)+v; };
 window.showRegister=()=>{document.getElementById('loginScreen').style.display='none';document.getElementById('registerScreen').style.display='block';};
-window.showLogin=()=>{document.getElementById('registerScreen').style.display='none';document.getElementById('loginScreen').style.display='block';};
+window.showLogin=()=>{document.getElementById('registerScreen').style.display='none';document.getElementById('loginScreen').style.display='block'; window.loadSavedAccounts(); };
 
-// 🌟 REQUEST PHONE NOTIFICATION 🌟
 window.requestNotiPermission = function() {
-    if (!("Notification" in window)) {
-        window.showToast("သင့်ဖုန်းသည် Notification စနစ်ကို မထောက်ပံ့ပါ။", "error");
-        return;
-    }
+    if (!("Notification" in window)) { window.showToast("သင့်ဖုန်းသည် Notification စနစ်ကို မထောက်ပံ့ပါ။", "error"); return; }
     Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-            window.showToast("✅ Notification ဖွင့်ပြီးပါပြီ။", "success");
-        } else {
-            window.showToast("❌ Notification ပိတ်ထားပါသည်။", "error");
-        }
+        if (permission === "granted") window.showToast("✅ Notification ဖွင့်ပြီးပါပြီ။", "success");
+        else window.showToast("❌ Notification ပိတ်ထားပါသည်။", "error");
     });
 }
 
@@ -545,41 +570,63 @@ window.register=async function(){
   if(!n||!p||!pw)return window.showToast('အချက်အလက် ဖြည့်ပါ','error');
   const snap=await get(ref(db,'customers/'+p));
   if(snap.exists())return window.showToast('အကောင့်ရှိပြီးသားပါ','error');
-  await set(ref(db,'customers/'+p),{name:n,phone:p,password:pw,balance:0});
+  
+  // 🌟 ADD hasReceivedBonus FLAG TO NEW USER 🌟
+  await set(ref(db,'customers/'+p),{name:n,phone:p,password:pw,balance:0,hasReceivedBonus:false});
+  window.saveAccountToLocal(p, n, pw);
   window.showToast('အောင်မြင်ပါသည် ✓','success');window.showLogin();
 };
 window.login=async function(){
   const p=document.getElementById('loginPhone').value.trim(); const pw=document.getElementById('loginPass').value.trim();
   const snap=await get(ref(db,'customers/'+p));
-  if(snap.exists()&&snap.val().password===pw){ localStorage.setItem('wp',p);localStorage.setItem('ww',pw);window.loadDash(p); }
+  if(snap.exists()&&snap.val().password===pw){ 
+      localStorage.setItem('wp',p);localStorage.setItem('ww',pw);
+      window.saveAccountToLocal(p, snap.val().name, pw);
+      window.loadDash(p); 
+  }
   else window.showToast('ဖုန်း သို့မဟုတ် စကားဝှက် မှားနေပါ','error');
 };
-window.logout=function(){if(confirm('Log out လုပ်မည်လား?')){localStorage.clear();location.reload();}};
+window.logout=function(){if(confirm('Log out လုပ်မည်လား?')){localStorage.removeItem('wp');localStorage.removeItem('ww');location.reload();}};
 
 window.loadDash=function(ph){
   document.getElementById('loginScreen').style.display='none'; document.getElementById('registerScreen').style.display='none';
   const ma=document.getElementById('mainApp');ma.style.display='flex';ma.style.flexDirection='column';ma.style.height='100%';
   
-  // 🌟 REAL-TIME CUSTOMER SYNC & TOPUP NOTIFICATION 🌟
+  // 🌟 AD BANNER SYNC 🌟
+  onValue(ref(db, 'settings/ad_banner'), snap => {
+    let adBox = document.getElementById('adBannerBox'); let adText = document.getElementById('adBannerText');
+    if(snap.exists() && snap.val().trim() !== "") { adText.textContent = snap.val(); adBox.style.display = 'flex'; } 
+    else { adBox.style.display = 'none'; }
+  });
+
   onValue(ref(db,'customers/'+ph), snap=>{
     if(!snap.exists())return; cu=snap.val();
     
     let currentBal = cu.balance || 0;
     document.getElementById('balanceText').textContent=currentBal.toLocaleString();
     
-    // Top-up Notification Logic
+    // Top-up Notification Logic & BONUS LOGIC
     if (prevBalance !== null && currentBal > prevBalance) {
         let diff = currentBal - prevBalance;
         let msg = `💰 အကောင့်ထဲသို့ ငွေ ${diff.toLocaleString()} Ks ဝင်လာပါပြီ!`;
         window.showToast(msg, 'success');
         document.getElementById('coinSound')?.play().catch(e=>console.log(e));
+        if ("Notification" in window && Notification.permission === "granted") { new Notification("Wifipay ငွေဝင်လာပါပြီ", { body: msg, icon: "icon.png" }); }
         
-        // Push Notification on Phone
-        if ("Notification" in window && Notification.permission === "granted") {
-            new Notification("Wifipay ငွေဝင်လာပါပြီ", { body: msg, icon: "icon.png" });
+        // 🌟 AUTOMATIC 500 Ks BONUS IF FIRST TIME >= 5000 🌟
+        if(diff >= 5000 && cu.hasReceivedBonus === false) {
+            setTimeout(async () => {
+                let u = {}; let now = new Date().toLocaleString();
+                u[`customers/${cu.phone}/balance`] = currentBal + 500;
+                u[`customers/${cu.phone}/hasReceivedBonus`] = true;
+                u[`customers/${cu.phone}/history/tx_bonus_${Date.now()}`] = { type: 'gift_in', title: 'Welcome Bonus 🎉', amount: 500, date: now };
+                await update(ref(db), u);
+                window.showToast('🎉 ပထမဆုံးအကြိမ် ငွေဖြည့်သည့်အတွက် 500 Ks Bonus ရရှိပါသည်!', 'success');
+            }, 3000); // 3 seconds delay for wow factor
         }
     }
     prevBalance = currentBal;
+    isFirstLogin = false;
 
     document.getElementById('userNameDisplay').textContent=cu.name; document.getElementById('userPhoneTail').textContent=ph.slice(-4);
     document.getElementById('settingsName').textContent=cu.name; document.getElementById('settingsPhone').textContent=ph;
@@ -595,11 +642,9 @@ window.loadDash=function(ph){
     }
   });
 
-  // 🌟 REAL-TIME MENU SYNC FROM ADMIN 🌟
   onValue(ref(db, 'food_menu'), snap => {
     if(snap.exists()) {
       window.foodMenu = Object.values(snap.val());
-      // အအေး Option button အမြဲတမ်း ပါအောင် ထည့်ပေးမည်
       let hasDrinks = window.foodMenu.find(f => f.isOptions);
       if(!hasDrinks) { window.foodMenu.push({ id: 'f_drinks', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true }); }
     } else {
@@ -608,9 +653,7 @@ window.loadDash=function(ph){
     if(document.getElementById('tab-food').classList.contains('active')) window.renderFood();
   });
 
-  onValue(ref(db, 'drink_options'), snap => {
-    if(snap.exists()) { window.drinkOptions = Object.values(snap.val()); }
-  });
+  onValue(ref(db, 'drink_options'), snap => { if(snap.exists()) { window.drinkOptions = Object.values(snap.val()); } });
 };
 
 // --- UPDATE PROFILE NAME ---
@@ -618,6 +661,7 @@ window.updateProfileName=async function(){
   const newName=document.getElementById('editNameInput').value.trim();
   if(!newName)return window.showToast('နာမည် အသစ်ထည့်ပါ','error');
   await update(ref(db,'customers/'+cu.phone),{name:newName});
+  window.saveAccountToLocal(cu.phone, newName, cu.password);
   window.showToast('✓ နာမည် ပြောင်းလဲပြီးပါပြီ','success');
   document.getElementById('profileSection').style.display='none';
 };
@@ -635,12 +679,9 @@ window.handleAvatarChange=function(e){
       if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
       else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
       canvas.width = width; canvas.height = height;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, width, height);
+      const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-      update(ref(db, 'customers/' + cu.phone), { avatar: dataUrl }).then(() => {
-        window.showToast('✓ Profile ပုံ ပြောင်းလဲပြီးပါပြီ', 'success');
-      });
+      update(ref(db, 'customers/' + cu.phone), { avatar: dataUrl }).then(() => { window.showToast('✓ Profile ပုံ ပြောင်းလဲပြီးပါပြီ', 'success'); });
     }
     img.src = event.target.result;
   }
@@ -653,38 +694,23 @@ window.renderFood = function() {
   window.foodMenu.forEach(f => {
     let priceDisplay = f.isOptions ? f.price : f.price.toLocaleString() + ' Ks';
     let action = f.isOptions ? `window.openDrinkModal()` : `window.addToCart('${f.id}', '${f.name}', ${f.price}, '${f.icon}')`;
-    
-    fg.innerHTML += `<div class="food-item">
-      <div class="food-img">${f.icon}</div>
-      <div class="food-info">
-        <div class="food-name">${f.name}</div>
-        <div class="food-price">${priceDisplay}</div>
-        <button class="btn-add" onclick="${action}"><i class="fa-solid fa-plus"></i></button>
-      </div>
-    </div>`;
+    fg.innerHTML += `<div class="food-item"><div class="food-img">${f.icon}</div><div class="food-info"><div class="food-name">${f.name}</div><div class="food-price">${priceDisplay}</div><button class="btn-add" onclick="${action}"><i class="fa-solid fa-plus"></i></button></div></div>`;
   });
 };
 
 window.openDrinkModal = function() {
   const dl = document.getElementById('drinkList'); dl.innerHTML = '';
-  if(window.drinkOptions.length === 0) {
-      dl.innerHTML = '<p style="text-align:center;font-size:12px;color:gray;">အအေး မရှိသေးပါ</p>';
-  }
+  if(window.drinkOptions.length === 0) { dl.innerHTML = '<p style="text-align:center;font-size:12px;color:gray;">အအေး မရှိသေးပါ</p>'; }
   window.drinkOptions.forEach(d => {
-    dl.innerHTML += `<div class="drink-item" onclick="window.addToCart('${d.id}', '${d.name}', ${d.price}, '🥤'); document.getElementById('drinkOverlay').style.display='none';">
-      <div class="d-name">${d.name}</div>
-      <div class="d-price">${d.price.toLocaleString()} Ks</div>
-    </div>`;
+    dl.innerHTML += `<div class="drink-item" onclick="window.addToCart('${d.id}', '${d.name}', ${d.price}, '🥤'); document.getElementById('drinkOverlay').style.display='none';"><div class="d-name">${d.name}</div><div class="d-price">${d.price.toLocaleString()} Ks</div></div>`;
   });
   document.getElementById('drinkOverlay').style.display = 'flex';
 };
 
 window.addToCart = function(id, name, price, icon) {
-  let ex = cart.find(i => i.id === id);
-  if(ex) ex.qty++; else cart.push({id, name, price, icon, qty: 1});
+  let ex = cart.find(i => i.id === id); if(ex) ex.qty++; else cart.push({id, name, price, icon, qty: 1});
   window.showToast(name + ' ကို ခြင်းထဲထည့်လိုက်ပါပြီ', 'success');
-  document.getElementById('cartCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
-  document.getElementById('cartFloat').style.display = 'flex';
+  document.getElementById('cartCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0); document.getElementById('cartFloat').style.display = 'flex';
 };
 
 window.openCart = function() {
@@ -692,30 +718,17 @@ window.openCart = function() {
   if(cart.length === 0) { cb.innerHTML = '<p style="text-align:center; color:var(--text-sub); margin-top:20px;">ခြင်းတောင်း လွတ်နေပါသည်</p>'; }
   else {
     cart.forEach((c, idx) => {
-      cb.innerHTML += `<div class="cart-item">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <div style="font-size:24px;">${c.icon}</div>
-          <div><div class="cart-item-name">${c.name}</div><div class="cart-item-price">${c.price.toLocaleString()} Ks</div></div>
-        </div>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <button style="background:var(--surface2); border:none; color:white; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="window.updateQty(${idx}, -1)">-</button>
-          <span style="font-size:14px; font-weight:bold;">${c.qty}</span>
-          <button style="background:var(--surface2); border:none; color:white; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="window.updateQty(${idx}, 1)">+</button>
-        </div>
-      </div>`;
+      cb.innerHTML += `<div class="cart-item"><div style="display:flex; align-items:center; gap:10px;"><div style="font-size:24px;">${c.icon}</div><div><div class="cart-item-name">${c.name}</div><div class="cart-item-price">${c.price.toLocaleString()} Ks</div></div></div><div style="display:flex; align-items:center; gap:8px;"><button style="background:var(--surface2); border:none; color:white; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="window.updateQty(${idx}, -1)">-</button><span style="font-size:14px; font-weight:bold;">${c.qty}</span><button style="background:var(--surface2); border:none; color:white; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="window.updateQty(${idx}, 1)">+</button></div></div>`;
     });
   }
   window.calcCart();
-  
   if(cu && !document.getElementById('deliName').value) document.getElementById('deliName').value = cu.name;
   if(cu && !document.getElementById('deliPhone').value) document.getElementById('deliPhone').value = cu.phone;
-  
   document.getElementById('cartOverlay').style.display = 'flex';
 };
 
 window.updateQty = function(idx, val) {
-  cart[idx].qty += val;
-  if(cart[idx].qty <= 0) cart.splice(idx, 1);
+  cart[idx].qty += val; if(cart[idx].qty <= 0) cart.splice(idx, 1);
   document.getElementById('cartCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
   if(cart.length === 0) document.getElementById('cartFloat').style.display = 'none';
   window.openCart();
@@ -725,15 +738,9 @@ window.setDeli = function(type) {
   deliveryType = type;
   document.getElementById('btn-pickup').className = 'dt-btn' + (type==='pickup'?' active':'');
   document.getElementById('btn-deli').className = 'dt-btn' + (type==='deli'?' active':'');
-  
   document.getElementById('pickupWrap').style.display = type==='pickup' ? 'block' : 'none';
-  
   let deliWrap = document.getElementById('deliAddressWrap');
-  if(type === 'deli') {
-    deliWrap.style.display = 'flex';
-  } else {
-    deliWrap.style.display = 'none';
-  }
+  if(type === 'deli') { deliWrap.style.display = 'flex'; } else { deliWrap.style.display = 'none'; }
   window.calcCart();
 };
 
@@ -747,32 +754,23 @@ window.calcCart = function() {
 
 // --- TRANSACTION PREP ---
 window.prepareTx = function(type) {
-  let total = 0;
-  let isCash = false;
-
+  let total = 0; let isCash = false;
   if(type === 'normal') {
-    const tp = document.getElementById('txPhone').value.trim();
-    total = parseInt(document.getElementById('txAmount').value);
+    const tp = document.getElementById('txPhone').value.trim(); total = parseInt(document.getElementById('txAmount').value);
     if(!tp || !total) return window.showToast('အချက်အလက် ဖြည့်ပါ', 'error');
     if(tp === cu.phone) return window.showToast('မိမိကိုယ်တိုင် မလွှဲနိုင်ပါ', 'error');
-  } 
-  else if(type === 'order') {
+  } else if(type === 'order') {
     if(cart.length === 0) return window.showToast('ခြင်းတောင်း လွတ်နေပါသည်', 'error');
-    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-    total = sub + (deliveryType === 'deli' ? 500 : 0);
+    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0); total = sub + (deliveryType === 'deli' ? 500 : 0);
     isCash = (deliveryType === 'pickup' && document.getElementById('payAtShop').checked);
-    
     if(deliveryType === 'deli') {
       if(!document.getElementById('deliName').value.trim() || !document.getElementById('deliPhone').value.trim() || !document.getElementById('deliAddress').value.trim()) {
         return window.showToast('နာမည်၊ ဖုန်း နဲ့ လိပ်စာ အပြည့်အစုံ ဖြည့်ပေးပါ', 'error');
       }
     }
   }
-
   if(!isCash && cu.balance < total) return window.showToast('လက်ကျန်ငွေ မလောက်ပါ 😢', 'error');
-
-  pendingTxType = type;
-  document.getElementById('modalPinInput').value = '';
+  pendingTxType = type; document.getElementById('modalPinInput').value = '';
   if(type === 'order') document.getElementById('cartOverlay').style.display = 'none';
   document.getElementById('pinOverlay').style.display = 'flex';
 };
@@ -782,7 +780,6 @@ window.confirmTx = async function() {
   const pw = document.getElementById('modalPinInput').value;
   if(pw !== cu.password) return window.showToast('စကားဝှက် မှားနေပါသည်', 'error');
   document.getElementById('pinOverlay').style.display = 'none'; 
-
   let updates = {}; const now = new Date().toLocaleString();
 
   if(pendingTxType === 'normal') {
@@ -797,46 +794,18 @@ window.confirmTx = async function() {
       await update(ref(db),updates); window.showToast('✓ '+tgt.name+' ထံ ငွေလွှဲပြီးပါပြီ','success');
       document.getElementById('txPhone').value='';document.getElementById('txAmount').value='';
     }catch(e){console.error(e);}
-  } 
-
-  else if(pendingTxType === 'order') {
-    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-    let deliFee = deliveryType === 'deli' ? 500 : 0;
-    let total = sub + deliFee;
+  } else if(pendingTxType === 'order') {
+    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0); let deliFee = deliveryType === 'deli' ? 500 : 0; let total = sub + deliFee;
     let isCash = (deliveryType === 'pickup' && document.getElementById('payAtShop').checked);
-    
     let addr = 'ဆိုင်တွင်လာယူမည်' + (isCash ? ' (ဆိုင်မှ ငွေရှင်းမည်)' : ' (KPay/Wallet ဖြင့်ရှင်းပြီး)');
-    let orderName = cu.name;
-    let orderPhone = cu.phone;
-
-    if(deliveryType === 'deli') {
-      orderName = document.getElementById('deliName').value.trim();
-      orderPhone = document.getElementById('deliPhone').value.trim();
-      addr = document.getElementById('deliAddress').value.trim();
-    }
-
-    let orderId = 'ord_' + Date.now();
-    let orderText = cart.map(c => `${c.qty}x ${c.name}`).join(', ');
-
+    let orderName = cu.name; let orderPhone = cu.phone;
+    if(deliveryType === 'deli') { orderName = document.getElementById('deliName').value.trim(); orderPhone = document.getElementById('deliPhone').value.trim(); addr = document.getElementById('deliAddress').value.trim(); }
+    let orderId = 'ord_' + Date.now(); let orderText = cart.map(c => `${c.qty}x ${c.name}`).join(', ');
     try{
       if(!isCash) updates[`customers/${cu.phone}/balance`] = cu.balance - total;
-      
-      updates[`customers/${cu.phone}/history/${orderId}`] = { 
-        type: 'food', 
-        title: isCash ? 'Food Order (Cash)' : 'Food Order', 
-        amount: total, 
-        extra: orderText, 
-        date: now 
-      };
-      
-      updates[`food_orders/${orderId}`] = { 
-        id: orderId, name: orderName, phone: orderPhone, items: cart, subtotal: sub, deliFee: deliFee, 
-        total: total, type: deliveryType, address: addr, payment_method: isCash ? 'cash' : 'wallet', date: now, status: 'pending' 
-      };
-      
-      await update(ref(db), updates); 
-      window.showToast('🍔 Order တင်ခြင်း အောင်မြင်ပါသည်!', 'success');
-      
+      updates[`customers/${cu.phone}/history/${orderId}`] = { type: 'food', title: isCash ? 'Food Order (Cash)' : 'Food Order', amount: total, extra: orderText, date: now };
+      updates[`food_orders/${orderId}`] = { id: orderId, name: orderName, phone: orderPhone, items: cart, subtotal: sub, deliFee: deliFee, total: total, type: deliveryType, address: addr, payment_method: isCash ? 'cash' : 'wallet', date: now, status: 'pending' };
+      await update(ref(db), updates); window.showToast('🍔 Order တင်ခြင်း အောင်မြင်ပါသည်!', 'success');
       cart = []; document.getElementById('cartCount').textContent = 0; document.getElementById('cartFloat').style.display = 'none';
       document.getElementById('deliAddress').value = '';
     }catch(e){console.error(e);}
@@ -863,7 +832,8 @@ window.changePassword=async function(){
   if(o!==cu.password)return window.showToast('စကားဝှက်အဟောင်း မှားနေပါ','error');
   if(n.length<4)return window.showToast('အနည်းဆုံး ၄ လုံး ထည့်ပါ','error');
   await update(ref(db,'customers/'+cu.phone),{password:n});
-  localStorage.setItem('ww',n);window.showToast('✓ စကားဝှက် ပြောင်းလဲပြီး','success');
+  localStorage.setItem('ww',n);window.saveAccountToLocal(cu.phone, cu.name, n);
+  window.showToast('✓ စကားဝှက် ပြောင်းလဲပြီး','success');
   document.getElementById('oldPass').value='';document.getElementById('newPass').value='';
 };
 
@@ -873,21 +843,24 @@ window.renderHistory=function(){
   const txns=Object.values(cu.history).sort((a,b)=>new Date(b.date)-new Date(a.date)); let tIn=0,tOut=0;
   document.getElementById('statCount').textContent=txns.length;
   txns.forEach(tx=>{
-    if(tx.type==='tx_in')tIn+=tx.amount||0;
+    if(tx.type==='tx_in'||tx.type==='gift_in')tIn+=tx.amount||0;
     if(tx.type==='tx_out'||tx.type==='buy'||tx.type==='food')tOut+=tx.amount||0;
-    const im={buy:['buy','fa-wifi'],tx_out:['out','fa-arrow-up'],tx_in:['in','fa-arrow-down'],food:['food','fa-burger']};
-    const[cls,ico]=im[tx.type]||['buy','fa-circle']; const plus=tx.type==='tx_in'; let extra='';
+    const im={buy:['buy','fa-wifi'],tx_out:['out','fa-arrow-up'],tx_in:['in','fa-arrow-down'],gift_in:['in','fa-gift'],food:['food','fa-burger']};
+    const[cls,ico]=im[tx.type]||['buy','fa-circle']; const plus=(tx.type==='tx_in'||tx.type==='gift_in'); let extra='';
     if(tx.type==='buy')extra=`<div class="tx-code"><i class="fa-solid fa-key"></i> ${tx.extra}</div>`;
     if(tx.type==='food')extra=`<div class="tx-code" style="color:var(--gold); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;"><i class="fa-solid fa-utensils"></i> ${tx.extra}</div>`;
     cont.innerHTML+=`<div class="tx-item"><div class="tx-l"><div class="tx-ico ${cls}"><i class="fa-solid ${ico}"></i></div><div style="overflow:hidden;"><div class="tx-name">${tx.title||''}</div><div class="tx-date">${tx.date||''}</div>${extra}</div></div><div class="tx-amt ${plus?'plus':'minus'}">${plus?'+':'-'}${(tx.amount||0).toLocaleString()}</div></div>`;
   });
   document.getElementById('statIn').textContent=tIn.toLocaleString(); document.getElementById('statOut').textContent=tOut.toLocaleString();
 };
+
 window.onload=()=>{
   document.getElementById('mainApp').style.display='none';
+  window.loadSavedAccounts();
   const ph=localStorage.getItem('wp'),pw=localStorage.getItem('ww');
   if(ph&&pw){document.getElementById('loginPhone').value=ph;document.getElementById('loginPass').value=pw;window.login();}
 };
 </script>
 </body>
 </html>
+
