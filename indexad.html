@@ -20,21 +20,22 @@
     .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 25px 20px 65px; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 10px 20px rgba(67, 97, 238, 0.15); }
     .header-title { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 
-    /* DASHBOARD */
-    .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px; margin-top: -35px; }
-    .dash-card { background: var(--surface); border-radius: var(--radius); padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px; }
-    .dash-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
-    .dash-lbl { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; }
-    .dash-val { font-size: 20px; font-weight: 700; color: var(--text); font-family: var(--mono); }
-    .c-users .dash-icon { background: rgba(67, 97, 238, 0.1); color: var(--primary); }
-    .c-topup .dash-icon { background: rgba(5, 205, 153, 0.1); color: var(--green); }
-    .c-wifi .dash-icon { background: rgba(255, 206, 32, 0.1); color: var(--orange); }
-    .c-food .dash-icon { background: rgba(238, 93, 80, 0.1); color: var(--red); }
-
     /* TABS */
     .tab-content { display: none; animation: fadeIn 0.3s ease; }
     .tab-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* DASHBOARD CARDS */
+    .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px; margin-top: -35px; }
+    .dash-card { background: var(--surface); border-radius: var(--radius); padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px; }
+    .dash-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
+    .dash-lbl { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+    .dash-val { font-size: 20px; font-weight: 700; color: var(--text); font-family: var(--mono); }
+    
+    .c-users .dash-icon { background: rgba(67, 97, 238, 0.1); color: var(--primary); }
+    .c-topup .dash-icon { background: rgba(5, 205, 153, 0.1); color: var(--green); }
+    .c-wifi .dash-icon { background: rgba(255, 206, 32, 0.1); color: var(--orange); }
+    .c-food .dash-icon { background: rgba(238, 93, 80, 0.1); color: var(--red); }
 
     /* SECTIONS */
     .container { max-width: 600px; margin: 0 auto; }
@@ -44,7 +45,7 @@
     /* FORMS */
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-light); margin-bottom: 8px; text-transform: uppercase; }
-    .form-control { width: 100%; padding: 12px 15px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fafbfc; transition: 0.2s; }
+    .form-control { width: 100%; padding: 12px 15px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fafbfc; transition: 0.2s; font-family: var(--font); }
     .form-control:focus { border-color: var(--primary); background: white; }
 
     /* BUTTONS */
@@ -55,11 +56,11 @@
     .btn-outline { background: white; border: 1.5px solid var(--border); color: var(--text); }
     .btn-sm { padding: 6px 10px; font-size: 11px; border-radius: 8px; }
 
-    /* CUSTOMER INFO */
+    /* CUSTOMER INFO BOX */
     .cus-info-box { background: rgba(5, 205, 153, 0.05); border: 1px dashed var(--green); border-radius: 12px; padding: 15px; margin-bottom: 15px; display: none; }
     .cus-info-box p { font-size: 13px; margin-bottom: 5px; }
 
-    /* STOCK ITEMS */
+    /* STOCK DISPLAY */
     .stock-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
     .stock-item { background: #fafbfc; border: 1px solid var(--border); padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .stock-item span { background: var(--primary); color: white; padding: 2px 6px; border-radius: 15px; font-size: 11px; }
@@ -68,19 +69,19 @@
     .table-wrapper { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 12px; }
     th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
-    th { color: var(--text-light); font-size: 10px; text-transform: uppercase; background: #fafbfc; }
+    th { color: var(--text-light); font-weight: 700; text-transform: uppercase; font-size: 10px; background: #fafbfc; }
 
-    /* NAV */
+    /* BOTTOM NAV */
     .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; left: 50%; transform: translateX(-50%); background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); cursor: pointer; flex: 1; }
     .nav-item i { font-size: 20px; margin-bottom: 4px; }
     .nav-item span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
     .nav-item.active { color: var(--primary); }
 
-    /* MODAL & TOAST */
+    /* MODALS & TOAST */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; justify-content: center; align-items: center; }
     .modal-content { background: var(--surface); width: 90%; max-width: 400px; max-height: 85vh; border-radius: 20px; padding: 20px; overflow-y: auto; position: relative; }
-    .btn-close { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.05); width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer; }
+    .btn-close { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.05); width: 30px; height: 30px; border-radius: 50%; border: none; font-size: 16px; color: var(--text); cursor: pointer; }
     #toast { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #1a1a2e; color: white; padding: 12px 24px; border-radius: 30px; font-size: 12px; font-weight: 700; opacity: 0; transition: 0.3s; z-index: 2000; pointer-events: none; }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
 </style>
@@ -92,6 +93,7 @@
 </div>
 
 <div class="container">
+    
     <div id="tab-home" class="tab-content active">
         <div class="dash-grid">
             <div class="dash-card c-users"><div class="dash-icon"><i class="fa-solid fa-users"></i></div><div><div class="dash-lbl">Users</div><div class="dash-val" id="statUsers">0</div></div></div>
@@ -101,7 +103,7 @@
         </div>
 
         <div class="section">
-            <div class="sec-title"><i class="fa-solid fa-money-bill-transfer"></i> ငွေဖြည့်ရန် / ငွေနုတ်ရန်</div>
+            <div class="sec-title"><i class="fa-solid fa-money-bill-transfer"></i> ငွေဖြည့်ရန် / နုတ်ရန်</div>
             <div class="form-group">
                 <label>ဖုန်းနံပါတ်</label>
                 <input type="tel" id="topupPhone" class="form-control" list="phoneList" placeholder="09xxxxxxxxx" oninput="window.checkCustomer()">
@@ -120,7 +122,7 @@
 
         <div class="section">
             <div class="sec-title" style="color:var(--purple);"><i class="fa-solid fa-bullhorn"></i> ကြော်ငြာတင်ရန်</div>
-            <div class="form-group"><textarea id="adText" class="form-control" placeholder="Customer App မှာပေါ်မယ့် ကြော်ငြာစာသား..."></textarea></div>
+            <div class="form-group"><textarea id="adText" class="form-control" placeholder="Customer App တွင်ပေါ်မည့်စာသား..."></textarea></div>
             <button class="btn" style="background:var(--purple); color:white; width:100%;" onclick="window.saveAd()"><i class="fa-solid fa-paper-plane"></i> ကြော်ငြာသိမ်းမည်</button>
         </div>
     </div>
@@ -129,10 +131,23 @@
         <div class="section">
             <div class="sec-title"><i class="fa-solid fa-box-open"></i> ဂိုဒေါင် စာရင်း</div>
             <div class="stock-grid" id="stockStatus"></div>
-            <div style="display:flex; gap:10px; margin-bottom: 10px;">
-                <button class="btn btn-primary" style="flex:1;" onclick="window.openModal('addStockModal')">Add Codes</button>
-                <button class="btn btn-outline" style="flex:1;" onclick="window.openManageStock()">Manage</button>
+            <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                <button class="btn btn-primary" style="flex:1;" onclick="window.openModal('addStockModal')"><i class="fa-solid fa-plus"></i> Add Codes</button>
+                <button class="btn btn-outline" style="flex:1;" onclick="window.openManageStock()"><i class="fa-solid fa-trash-can"></i> Manage</button>
             </div>
+        </div>
+    </div>
+
+    <div id="tab-food" class="tab-content">
+        <div class="section">
+            <div class="sec-title"><i class="fa-solid fa-utensils"></i> Food Menu စီမံရန်</div>
+            <div id="menuContainer" style="margin-bottom: 15px;"></div>
+            <button class="btn btn-outline" style="width:100%;" onclick="window.openModal('addMenuModal')"><i class="fa-solid fa-plus"></i> Menu အသစ်ထည့်ရန်</button>
+        </div>
+        <div class="section">
+            <div class="sec-title"><i class="fa-solid fa-wine-glass"></i> အအေး (Drink Options)</div>
+            <div id="drinkContainer" style="margin-bottom: 15px;"></div>
+            <button class="btn btn-outline" style="width:100%;" onclick="window.openModal('addDrinkModal')"><i class="fa-solid fa-plus"></i> အအေးအသစ်ထည့်ရန်</button>
         </div>
     </div>
 
@@ -147,20 +162,43 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <nav class="bottom-nav">
     <div class="nav-item active" onclick="window.switchTab('home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
     <div class="nav-item" onclick="window.switchTab('stock', this)"><i class="fa-solid fa-box"></i><span>Stock</span></div>
+    <div class="nav-item" onclick="window.switchTab('food', this)"><i class="fa-solid fa-burger"></i><span>Food</span></div>
     <div class="nav-item" onclick="window.switchTab('users', this)"><i class="fa-solid fa-users"></i><span>Users</span></div>
 </nav>
 
 <div class="modal-overlay" id="addStockModal">
     <div class="modal-content">
         <button class="btn-close" onclick="window.closeModal('addStockModal')">×</button>
-        <div class="sec-title">Voucher Codes ထည့်ရန်</div>
-        <div class="form-group"><label>Paste Ruijie Codes Here</label><textarea id="newCodes" class="form-control" style="height:150px;"></textarea></div>
+        <div class="sec-title">Ruijie Codes ထည့်ရန်</div>
+        <div class="form-group"><label>Paste (Ruijie Tabs/Columns)</label><textarea id="newCodes" class="form-control" style="height:200px;" placeholder="022322 1hour..."></textarea></div>
         <button class="btn btn-primary" onclick="window.addStock()">Confirm Add</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="addMenuModal">
+    <div class="modal-content">
+        <button class="btn-close" onclick="window.closeModal('addMenuModal')">×</button>
+        <div class="sec-title">Menu အသစ်ထည့်ရန်</div>
+        <div class="form-group"><label>အမည်</label><input type="text" id="menuName" class="form-control"></div>
+        <div class="form-group"><label>စျေးနှုန်း</label><input type="number" id="menuPrice" class="form-control"></div>
+        <div class="form-group"><label>Icon (Emoji)</label><input type="text" id="menuIcon" class="form-control" value="🍲"></div>
+        <button class="btn btn-primary" onclick="window.saveFoodMenu()">Save</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="addDrinkModal">
+    <div class="modal-content">
+        <button class="btn-close" onclick="window.closeModal('addDrinkModal')">×</button>
+        <div class="sec-title">အအေးအသစ်ထည့်ရန်</div>
+        <div class="form-group"><label>အမည်</label><input type="text" id="drinkName" class="form-control"></div>
+        <div class="form-group"><label>စျေးနှုန်း</label><input type="number" id="drinkPrice" class="form-control"></div>
+        <button class="btn btn-primary" onclick="window.saveDrinkOption()">Save</button>
     </div>
 </div>
 
@@ -171,7 +209,7 @@
         <select id="stockPlanSelect" class="form-control" onchange="window.loadManageStock()" style="margin-bottom:15px;">
             <option value="1 Hour">1 Hour</option><option value="4 Hours">4 Hours</option><option value="1 Day">1 Day</option><option value="1 Week">1 Week</option><option value="1 Month">1 Month</option>
         </select>
-        <div class="table-wrapper"><table id="manageStockTable"><thead><tr><th>No</th><th>Code</th><th>Del</th></tr></thead><tbody id="manageStockBody"></tbody></table></div>
+        <div class="table-wrapper"><table><thead><tr><th>No</th><th>Code</th><th>Del</th></tr></thead><tbody id="manageStockBody"></tbody></table></div>
     </div>
 </div>
 
@@ -181,7 +219,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-// 🌟 FIREBASE PROJECT အသစ် (wifipay-ff292) 🌟
 const firebaseConfig = {
     apiKey: "AIzaSyCWtLbUKGHG6ZHXzU69YLwNvH2Z5EWOyV4",
     authDomain: "wifipay-ff292.firebaseapp.com",
@@ -199,28 +236,26 @@ let allCustomers = {};
 let allInventory = { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] };
 let currentTopupCus = null;
 
-// --- UTILS ---
 window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); };
 window.openModal = (id) => document.getElementById(id).style.display = 'flex';
 window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+
 window.switchTab = (tab, el) => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     document.getElementById(`tab-${tab}`).classList.add('active'); el.classList.add('active');
 };
 
-// --- DATA SYNC ---
 onValue(ref(db, '/'), (snap) => {
     if (snap.exists()) {
         const data = snap.val();
         allCustomers = data.customers || {};
         allInventory = { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [], ...data.inventory };
-        renderDashboard(); renderPhoneList(); renderCustomerTable(); renderStock();
+        renderDashboard(); renderPhoneList(); renderCustomerTable(); renderStock(); renderMenu(); renderDrinks();
         if(data.settings?.ad_banner && !document.getElementById('adText').value) document.getElementById('adText').value = data.settings.ad_banner;
     }
 });
 
-// --- DASHBOARD ---
 function renderDashboard() {
     let tUsers = Object.keys(allCustomers).length; let tTopup = 0, tVoucher = 0;
     Object.values(allCustomers).forEach(c => {
@@ -236,11 +271,11 @@ function renderDashboard() {
     document.getElementById('statVoucher').innerText = tVoucher.toLocaleString();
 }
 
-// --- TOP UP & DEDUCT ---
 function renderPhoneList() {
     const list = document.getElementById('phoneList'); list.innerHTML = '';
     Object.values(allCustomers).forEach(c => { list.innerHTML += `<option value="${c.phone}">${c.name}</option>`; });
 }
+
 window.checkCustomer = () => {
     const ph = document.getElementById('topupPhone').value.trim();
     if(allCustomers[ph]) {
@@ -255,8 +290,7 @@ window.addTopup = async () => {
     if(!currentTopupCus) return window.showToast("ဖုန်းနံပါတ် မှားနေပါသည်");
     const amt = parseInt(document.getElementById('topupAmount').value);
     if(!amt || amt <= 0) return window.showToast("ပမာဏ မှန်အောင်ထည့်ပါ");
-    const now = new Date().toLocaleString();
-    let updates = {};
+    let updates = {}; let now = new Date().toLocaleString();
     updates[`customers/${currentTopupCus.phone}/balance`] = (currentTopupCus.balance || 0) + amt;
     updates[`customers/${currentTopupCus.phone}/history/tx_${Date.now()}`] = { type: 'topup_in', title: 'Top Up (Admin)', amount: amt, date: now };
     await update(ref(db), updates); window.showToast("ငွေဖြည့်ပြီးပါပြီ"); resetForm();
@@ -266,9 +300,7 @@ window.deductTopup = async () => {
     if(!currentTopupCus) return window.showToast("ဖုန်းနံပါတ် မှားနေပါသည်");
     const amt = parseInt(document.getElementById('topupAmount').value);
     if(!amt || amt <= 0) return window.showToast("ပမာဏ မှန်အောင်ထည့်ပါ");
-    if((currentTopupCus.balance || 0) < amt) return window.showToast("လက်ကျန်ငွေ မလောက်ပါ");
-    const now = new Date().toLocaleString();
-    let updates = {};
+    let updates = {}; let now = new Date().toLocaleString();
     updates[`customers/${currentTopupCus.phone}/balance`] = (currentTopupCus.balance || 0) - amt;
     updates[`customers/${currentTopupCus.phone}/history/tx_${Date.now()}`] = { type: 'deduct_out', title: 'Deducted (Admin)', amount: amt, date: now };
     await update(ref(db), updates); window.showToast("ငွေနုတ်ပြီးပါပြီ"); resetForm();
@@ -278,7 +310,7 @@ function resetForm() { document.getElementById('topupPhone').value=''; document.
 
 window.saveAd = async () => { await set(ref(db, 'settings/ad_banner'), document.getElementById('adText').value.trim()); window.showToast("ကြော်ငြာ သိမ်းပြီးပါပြီ"); };
 
-// --- STOCK ---
+// 🌟 INVENTORY (RUIJIE TAB SUPPORT) 🌟
 function renderStock() {
     const grid = document.getElementById('stockStatus'); grid.innerHTML = '';
     ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => {
@@ -317,11 +349,36 @@ window.deleteStock = async (p, i) => {
     await set(ref(db, `inventory/${p}`), temp); window.loadManageStock();
 };
 
+// --- FOOD & DRINKS ---
+function renderMenu() {
+    const cont = document.getElementById('menuContainer'); cont.innerHTML = '';
+    Object.values(allCustomers.food_menu || {}).forEach(f => {
+        cont.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${f.icon} ${f.name}</span> <button class="btn-sm btn-danger" onclick="window.deleteMenu('${f.id}')">Delete</button></div>`;
+    });
+}
+window.saveFoodMenu = async () => {
+    const id = 'f_'+Date.now(); const name = document.getElementById('menuName').value; const price = parseInt(document.getElementById('menuPrice').value); const icon = document.getElementById('menuIcon').value;
+    await set(ref(db, `food_menu/${id}`), { id, name, price, icon }); window.closeModal('addMenuModal');
+};
+window.deleteMenu = async (id) => { await remove(ref(db, `food_menu/${id}`)); };
+
+function renderDrinks() {
+    const cont = document.getElementById('drinkContainer'); cont.innerHTML = '';
+    Object.values(allCustomers.drink_options || {}).forEach(d => {
+        cont.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${d.name} (${d.price} Ks)</span> <button class="btn-sm btn-danger" onclick="window.deleteDrink('${d.id}')">Delete</button></div>`;
+    });
+}
+window.saveDrinkOption = async () => {
+    const id = 'd_'+Date.now(); const name = document.getElementById('drinkName').value; const price = parseInt(document.getElementById('drinkPrice').value);
+    await set(ref(db, `drink_options/${id}`), { id, name, price }); window.closeModal('addDrinkModal');
+};
+window.deleteDrink = async (id) => { await remove(ref(db, `drink_options/${id}`)); };
+
 // --- USERS ---
 function renderCustomerTable() {
     const tb = document.getElementById('customerTableBody'); tb.innerHTML = '';
     Object.values(allCustomers).forEach(c => {
-        tb.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td style="color:var(--green);font-weight:700;">${(c.balance||0).toLocaleString()}</td><td><button class="btn-sm btn-outline" onclick="alert('History is in Customer App')">View</button></td></tr>`;
+        if(c.phone) tb.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td style="color:var(--green);font-weight:700;">${(c.balance||0).toLocaleString()}</td><td><button class="btn-sm btn-outline" onclick="alert('History exists in User App')">View</button></td></tr>`;
     });
 }
 </script>
