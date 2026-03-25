@@ -1,763 +1,514 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="my">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voucher Smart Print V12 - Admin Panel</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Wifipay - Admin Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    :root {
+        --bg: #f4f7fe; --surface: #ffffff; --primary: #4361ee; --secondary: #3f51b5;
+        --text: #2b3674; --text-light: #a3aed1; --border: #e2e8f0;
+        --green: #05cd99; --red: #ee5d50; --orange: #ffce20; --purple: #7551ff;
+        --radius: 18px; --font: 'DM Sans', sans-serif; --mono: 'Space Mono', monospace;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font); -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 80px; }
+
+    /* HEADER */
+    .header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 25px 20px 65px; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 10px 20px rgba(67, 97, 238, 0.15); }
+    .header-title { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+
+    /* TABS */
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* DASHBOARD CARDS */
+    .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px; margin-top: -35px; }
+    .dash-card { background: var(--surface); border-radius: var(--radius); padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px; }
+    .dash-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
+    .dash-lbl { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+    .dash-val { font-size: 20px; font-weight: 700; color: var(--text); font-family: var(--mono); }
     
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 10px; margin: 0; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; margin-bottom: 20px; }
-        .section { border: 1px solid #ddd; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
-        .section h3 { margin-top: 0; color: #007bff; font-size: 18px; display: flex; justify-content: space-between; align-items: center; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; margin-top: 15px; font-size: 14px; }
-        input[type="text"], input[type="number"], input[type="date"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-        
-        button { padding: 12px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; font-size: 16px; transition: 0.3s; }
-        button:hover { background-color: #218838; }
-        .btn-alt { background-color: #ffc107; color: #333; }
-        .btn-alt:hover { background-color: #e0a800; }
-        .btn-danger { background-color: #dc3545; color: white; }
-        .btn-danger:hover { background-color: #c82333; }
-        
-        .stock-display { font-size: 15px; font-weight: bold; color: #333; margin-top: 15px; text-align: center; background: #ffeeba; padding: 10px; border-radius: 4px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        .stock-item { background: #fff; padding: 5px 10px; border-radius: 4px; border: 1px solid #ffc107; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #007bff; color: white; }
-        
-        .btn-small { background-color: #17a2b8; padding: 5px 10px; font-size: 12px; margin: 2px; width: auto; color: white; border: none; cursor: pointer; border-radius: 3px; }
-        .btn-small:hover { background-color: #138496; }
+    .c-users .dash-icon { background: rgba(67, 97, 238, 0.1); color: var(--primary); }
+    .c-topup .dash-icon { background: rgba(5, 205, 153, 0.1); color: var(--green); }
+    .c-wifi .dash-icon { background: rgba(255, 206, 32, 0.1); color: var(--orange); }
+    .c-food .dash-icon { background: rgba(238, 93, 80, 0.1); color: var(--red); }
 
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
-        .modal-content { background-color: white; margin: 10% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
-        .close-btn { color: red; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        
-        .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; color: white; }
-        .st-pending { background-color: #ffc107; color: #000; }
-        .st-accepted { background-color: #17a2b8; }
-        .st-completed { background-color: #28a745; }
-        .st-cancelled { background-color: #dc3545; }
-    </style>
+    /* SECTIONS */
+    .container { max-width: 600px; margin: 0 auto; }
+    .section { background: var(--surface); border-radius: var(--radius); padding: 20px; margin: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
+    .sec-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .sec-title i { color: var(--primary); }
+
+    /* FORMS */
+    .form-group { margin-bottom: 15px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; color: var(--text-light); margin-bottom: 8px; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 12px 15px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; outline: none; background: #fafbfc; transition: 0.2s; font-family: var(--font); }
+    .form-control:focus { border-color: var(--primary); background: white; }
+    textarea.form-control { resize: vertical; min-height: 80px; }
+
+    /* BUTTONS */
+    .btn { padding: 12px 15px; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-primary { background: var(--primary); color: white; width: 100%; box-shadow: 0 4px 10px rgba(67, 97, 238, 0.2); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-green { background: var(--green); color: white; width: 100%; box-shadow: 0 4px 10px rgba(5, 205, 153, 0.2); }
+    .btn-danger { background: var(--red); color: white; width: 100%; }
+    .btn-outline { background: white; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-sm { padding: 6px 10px; font-size: 11px; border-radius: 8px; width: auto; }
+
+    /* CUSTOMER INFO BOX */
+    .cus-info-box { background: rgba(5, 205, 153, 0.05); border: 1px dashed var(--green); border-radius: 12px; padding: 15px; margin-bottom: 15px; display: none; }
+    .cus-info-box p { font-size: 13px; margin-bottom: 5px; }
+    .cus-info-box b { color: var(--text); font-size: 15px; }
+
+    /* STOCK DISPLAY & MANAGE */
+    .stock-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+    .stock-item { background: #fafbfc; border: 1px solid var(--border); padding: 8px 12px; border-radius: 10px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .stock-item span { background: var(--primary); color: white; padding: 2px 6px; border-radius: 15px; font-size: 11px; }
+
+    /* FOOD ORDERS */
+    .order-card { border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 12px; background: #fafbfc; }
+    .order-hdr { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; font-weight: 700; }
+    .order-items { font-size: 12px; color: var(--text-light); margin-bottom: 8px; line-height: 1.5; }
+    .order-addr { font-size: 12px; color: var(--red); font-weight: 600; margin-bottom: 10px; }
+
+    /* MENU ITEM */
+    .menu-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px dashed var(--border); }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-info { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
+
+    /* TABLES */
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 5px; font-size: 12px; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-light); font-weight: 700; text-transform: uppercase; font-size: 10px; background: #fafbfc; }
+    .badge-green { background: rgba(5,205,153,0.1); color: var(--green); padding: 4px 6px; border-radius: 6px; font-weight: 700; }
+
+    /* BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 600px; left: 50%; transform: translateX(-50%); background: white; display: flex; justify-content: space-around; padding: 12px 0 15px 0; border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); cursor: pointer; transition: 0.3s; flex: 1; }
+    .nav-item i { font-size: 20px; margin-bottom: 4px; }
+    .nav-item span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
+    .nav-item.active { color: var(--primary); }
+
+    /* MODALS & TOAST */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; justify-content: center; align-items: center; }
+    .modal-content { background: var(--surface); width: 90%; max-width: 400px; max-height: 85vh; border-radius: 20px; padding: 20px; overflow-y: auto; position: relative; animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .btn-close { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.05); width: 30px; height: 30px; border-radius: 50%; border: none; font-size: 16px; color: var(--text); cursor: pointer; }
+    #toast { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a2e; color: white; padding: 12px 24px; border-radius: 30px; font-size: 12px; font-weight: 700; opacity: 0; transition: 0.3s; z-index: 2000; box-shadow: 0 10px 20px rgba(0,0,0,0.2); pointer-events: none; white-space: nowrap; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
 </head>
-<body onclick="window.enableAudio()">
+<body>
 
-<audio id="orderRing" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+<div class="header">
+    <div class="container">
+        <div class="header-title"><i class="fa-solid fa-shield-halved"></i> Admin Pro</div>
+    </div>
+</div>
 
 <div class="container">
-    <h2>📡 Smart WiFi & Food Admin Panel</h2>
-
-    <div class="section">
-        <h3>၁။ ဂိုဒေါင်သို့ Code များ ဖြည့်ရန်</h3>
-        <label>Ruijie မှ Code များကို ကူးထည့်ပါ (ထပ်နေပါက ပယ်ဖျက်မည်):</label>
-        <textarea id="newCodes" rows="4" placeholder="ဥပမာ...&#10;022322   4hour   Not used   No   1000..."></textarea>
-        <button onclick="window.addStock()" style="background-color: #17a2b8;">📥 ဂိုဒေါင်ထဲ ထည့်မည်</button>
-        <div class="stock-display" id="stockStatus"></div>
-
-        <div style="display: flex; gap: 10px;">
-            <button onclick="document.getElementById('inventoryLogModal').style.display='block'" class="btn-alt" style="margin-top: 10px; font-size: 14px; padding: 8px;">📋 ဖြည့်သွင်းမှု မှတ်တမ်း</button>
-            <button onclick="document.getElementById('manageStockModal').style.display='block'; window.loadManageStock();" class="btn-danger" style="margin-top: 10px; font-size: 14px; padding: 8px;">📦 ဂိုဒေါင် စီမံရန်</button>
+    
+    <div id="tab-home" class="tab-content active">
+        <div class="dash-grid">
+            <div class="dash-card c-users"><div class="dash-icon"><i class="fa-solid fa-users"></i></div><div><div class="dash-lbl">Users</div><div class="dash-val" id="statUsers">0</div></div></div>
+            <div class="dash-card c-topup"><div class="dash-icon"><i class="fa-solid fa-wallet"></i></div><div><div class="dash-lbl">Cash In</div><div class="dash-val" id="statTopup">0</div></div></div>
+            <div class="dash-card c-wifi"><div class="dash-icon"><i class="fa-solid fa-wifi"></i></div><div><div class="dash-lbl">Vouchers</div><div class="dash-val" id="statVoucher">0</div></div></div>
+            <div class="dash-card c-food"><div class="dash-icon"><i class="fa-solid fa-burger"></i></div><div><div class="dash-lbl">Food Sales</div><div class="dash-val" id="statFood">0</div></div></div>
         </div>
-    </div>
 
-    <div class="section" style="background-color: #e8f5e9;">
-        <h3 style="color: #28a745;">၂။ ဖောက်သည်များအား ငွေဖြည့်/နုတ်ရန်</h3>
-        <label>ဖောက်သည်၏ ဖုန်းနံပါတ်:</label>
-        <div style="display: flex; gap: 10px;">
-            <input type="number" id="topupPhone" placeholder="ဥပမာ - 09xxxxxxxxx">
-            <button onclick="window.checkCustomer()" style="width: auto; margin-top: 0; background-color: #17a2b8;">🔍 ရှာမည်</button>
-        </div>
-        
-        <div id="customerInfo" style="display: none; background: #fff; padding: 15px; border-radius: 5px; margin-top: 15px; border: 1px dashed #28a745;">
-            <p style="margin: 0 0 10px 0; font-size: 15px;">အမည်: <b id="infoNameText" style="color: #007bff;">-</b></p>
-            <p style="margin: 0 0 15px 0; font-size: 15px;">လက်ရှိ ငွေလက်ကျန်: <b id="infoBalanceText" style="color: #28a745; font-size: 20px;">0</b> Ks</p>
+        <div class="section">
+            <div class="sec-title"><i class="fa-solid fa-money-bill-transfer"></i> ဖောက်သည်အား ငွေဖြည့်ရန် / နုတ်ရန်</div>
+            <div class="form-group">
+                <label>ဖုန်းနံပါတ်</label>
+                <input type="tel" id="topupPhone" class="form-control" list="phoneList" placeholder="09xxxxxxxxx" oninput="window.checkCustomer()">
+                <datalist id="phoneList"></datalist>
+            </div>
+            <div id="cusInfoBox" class="cus-info-box">
+                <p>အမည်: <b id="infoName">-</b></p>
+                <p>လက်ကျန်ငွေ: <b id="infoBalance" style="color:var(--green);">0</b> Ks</p>
+            </div>
+            <div class="form-group"><label>ပမာဏ (Ks)</label><input type="number" id="topupAmount" class="form-control" placeholder="5000"></div>
             
-            <label style="margin-top: 0;">ဖြည့်သွင်းမည့် ငွေပမာဏ (Ks):</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="number" id="topupAmount" placeholder="ဥပမာ - 5000">
-                <button onclick="window.addTopup()" style="background-color: #28a745; margin-top: 0; width: auto; white-space: nowrap;">💰 ငွေဖြည့်မည်</button>
-            </div>
-
-            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;">
-                <label style="margin-top: 0; color: #dc3545;">မှားထည့်မိပါက ငွေပြန်နုတ်ရန် (Ks):</label>
-                <div style="display: flex; gap: 10px;">
-                    <input type="number" id="deductAmount" placeholder="ဥပမာ - 1000">
-                    <button onclick="window.deductBalance()" style="background-color: #dc3545; margin-top: 0; width: auto; white-space: nowrap;">📉 ငွေနုတ်မည်</button>
-                </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-green" style="flex:1;" onclick="window.addTopup()"><i class="fa-solid fa-plus"></i> ငွေဖြည့်မည်</button>
+                <button class="btn btn-danger" style="flex:1;" onclick="window.deductTopup()"><i class="fa-solid fa-minus"></i> ငွေပြန်နုတ်မည်</button>
             </div>
         </div>
-    </div>
 
-    <div class="section" style="background-color: #f9f9f9;">
-        <h3>၃။ လက်ခွဲသို့ Code များ ထုတ်ပေးရန်</h3>
-        <label>လက်ခွဲ အမည်:</label>
-        <input type="text" id="agentName" list="agentList" placeholder="အမည်ရိုက်ထည့်ပါ (ဥပမာ - Mg Mg)">
-        <datalist id="agentList"></datalist>
-        
-        <label>ထုတ်ပေးမည့် အမျိုးအစား:</label>
-        <select id="issuePlan">
-            <option value="1 Hour">1 Hour (500 Ks)</option>
-            <option value="4 Hours">4 Hours (1000 Ks)</option>
-            <option value="1 Day">1 Day (2000 Ks)</option>
-            <option value="1 Week">1 Week (8000 Ks)</option>
-            <option value="1 Month">1 Month (35000 Ks)</option>
-        </select>
-        
-        <label>အရေအတွက်:</label>
-        <input type="number" id="issueQty" placeholder="ဥပမာ - 10">
-        
-        <button onclick="window.issueAndPrintVouchers()">🖨️ ထုတ်ယူပြီး စာရင်းမှတ်မည်</button>
-        <div id="statusText" style="text-align: center; color: #007bff; font-weight: bold; margin-top: 15px;"></div>
-    </div>
-
-    <div class="section">
-        <h3>၄။ ကိုယ်စားလှယ်များ၏ ရောင်းချပြီး မှတ်တမ်း (Agents)</h3>
-        <table id="summaryTable">
-            <thead><tr><th>အမည်</th><th>အရေအတွက်</th><th>တန်ဖိုး (Ks)</th><th>လုပ်ဆောင်ချက်</th></tr></thead>
-            <tbody id="summaryBody"></tbody>
-            <tfoot><tr style="background-color: #e9ecef;"><th colspan="2" style="text-align: right; font-size: 15px;">ကိုယ်စားလှယ် စုစုပေါင်း:</th><th colspan="2" id="grandTotalText" style="text-align: left; color: #007bff; font-size: 16px;">0 Ks</th></tr></tfoot>
-        </table>
-
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <button onclick="document.getElementById('manualModal').style.display='block'" class="btn-alt" style="margin: 0;">📝 Manual ထည့်ရန်</button>
-            <button onclick="window.openRecycleBin()" class="btn-danger" style="margin: 0; background-color: #6c757d;">🗑️ အမှိုက်ပုံး</button>
-            <button onclick="window.exportToCSV()" style="margin: 0; background-color: #007bff;">📥 Excel ဒေါင်းမည်</button>
+        <div class="section">
+            <div class="sec-title" style="color:var(--purple);"><i class="fa-solid fa-bullhorn"></i> ကြော်ငြာ / Announcement</div>
+            <div class="form-group"><textarea id="adText" class="form-control" placeholder="App တွင် ပေါ်စေမည့် စာသား..."></textarea></div>
+            <button class="btn" style="background:var(--purple); color:white; width:100%;" onclick="window.saveAd()"><i class="fa-solid fa-paper-plane"></i> ကြော်ငြာတင်မည်</button>
         </div>
     </div>
 
-    <div class="section" style="background-color: #fdfdfd; border-color: #28a745;">
-        <h3 style="color: #28a745;">၅။ ဖောက်သည်များ၏ မှတ်တမ်း (Direct Customers)</h3>
-        <p style="font-size: 13px; color: #666; margin-top: 0;">ဤမှတ်တမ်းတွင် Web App မှ ကိုယ်တိုင်ဝယ်ယူသူများကိုသာ သီးသန့် ပြသထားပါသည်။</p>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;">
-            <thead>
-                <tr><th style="background-color: #28a745;">အမည်</th><th style="background-color: #28a745;">ဖုန်းနံပါတ်</th><th style="background-color: #28a745;">ငွေဖြည့်စုစုပေါင်း</th><th style="background-color: #28a745;">ဝယ်ယူမှုစုစုပေါင်း</th><th style="background-color: #28a745;">လက်ကျန်ငွေ</th><th style="background-color: #28a745;">လုပ်ဆောင်ချက်</th></tr>
-            </thead>
-            <tbody id="customerBody"></tbody>
-        </table>
-    </div>
-
-    <div class="section" style="background-color: #fff3cd; border-color: #ffc107;">
-        <h3 style="color: #d39e00;">
-            <span>၆။ 🍔 အစားအသောက် အော်ဒါများ</span>
-            <button onclick="window.requestNotiPermission()" class="btn-small" style="background-color: #007bff; font-size: 11px; padding: 6px 12px; margin-top: 0;">🔔 ဖုန်း Noti ဖွင့်မည်</button>
-        </h3>
-        <p style="font-size: 13px; color: #666; margin-top: 0;">Order အသစ်ဝင်လာပါက အသံမြည်ပါမည်။ (မှတ်ချက်: App ထဲရောက်လျှင် နေရာလွတ်ကို တစ်ချက်နှိပ်ပါ)</p>
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px;">
-                <thead>
-                    <tr><th style="background-color: #d39e00;">အချိန်</th><th style="background-color: #d39e00;">အချက်အလက်</th><th style="background-color: #d39e00;">အော်ဒါစာရင်း</th><th style="background-color: #d39e00;">အမျိုးအစား / ငွေရှင်း</th><th style="background-color: #d39e00;">ကျသင့်ငွေ</th><th style="background-color: #d39e00;">Status</th><th style="background-color: #d39e00;">Action</th></tr>
-                </thead>
-                <tbody id="foodOrdersBody"></tbody>
-            </table>
+    <div id="tab-stock" class="tab-content">
+        <div class="section">
+            <div class="sec-title"><i class="fa-solid fa-box-open"></i> ဂိုဒေါင် စာရင်း (Stock)</div>
+            <div class="stock-grid" id="stockStatus"></div>
+            <div style="display:flex; gap:10px; margin-bottom: 15px;">
+                <button class="btn btn-primary" style="flex:1;" onclick="window.openModal('addStockModal')"><i class="fa-solid fa-plus"></i> အသစ်ထည့်ရန်</button>
+                <button class="btn btn-outline" style="flex:1;" onclick="window.openManageStock()"><i class="fa-solid fa-trash-can"></i> စီမံရန် (ဖျက်ရန်)</button>
+            </div>
+            <button class="btn btn-outline" style="width:100%;" onclick="window.openModal('invLogModal')"><i class="fa-solid fa-clock-rotate-left"></i> ဖြည့်သွင်းမှု မှတ်တမ်း</button>
         </div>
     </div>
 
-    <div class="section" style="background-color: #e2e3e5; border-color: #d6d8db;">
-        <h3 style="color: #383d41;">၇။ 📋 Menu အပြင်အဆင် (Food & Drinks)</h3>
-        <p style="font-size: 13px; color: #666; margin-top: 0;">Customer App တွင်ပြသမည့် ဟင်းပွဲနှင့် အအေးများကို ဤနေရာမှ ပြင်ဆင်ပါ။</p>
-        <button onclick="window.openMenuManage()" class="btn-alt" style="margin-top: 5px;">စားစရာ / သောက်စရာ Menu ပြင်မည်</button>
+    <div id="tab-food" class="tab-content">
+        <div class="section" style="background: rgba(238, 93, 80, 0.05); border: 1px solid rgba(238, 93, 80, 0.2);">
+            <div class="sec-title" style="color:var(--red);"><i class="fa-solid fa-bell-concierge"></i> Incoming Orders</div>
+            <div id="orderContainer">
+                <p style="font-size:12px; color:var(--text-light); text-align:center;">အော်ဒါ အသစ်မရှိသေးပါ</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="sec-title"><i class="fa-solid fa-utensils"></i> Food Menu စီမံရန်</div>
+            <div id="menuContainer" style="margin-bottom: 15px;"></div>
+            <button class="btn btn-outline" style="width:100%;" onclick="window.openModal('addMenuModal')"><i class="fa-solid fa-plus"></i> Menu အသစ်ထည့်ရန်</button>
+        </div>
+    </div>
+
+    <div id="tab-users" class="tab-content">
+        <div class="section">
+            <div class="sec-title"><i class="fa-solid fa-address-book"></i> ဖောက်သည် စာရင်း</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead><tr><th>အမည်</th><th>ဖုန်း</th><th>လက်ကျန်ငွေ</th><th>Action</th></tr></thead>
+                    <tbody id="customerTableBody"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
 </div>
 
-<div id="menuManageModal" class="modal"><div class="modal-content">
-    <span class="close-btn" onclick="document.getElementById('menuManageModal').style.display='none'">&times;</span>
-    <h3 style="margin-top: 0; color: #383d41;">📋 Menu ပြင်ဆင်ရန်</h3>
-    
-    <div style="margin-bottom: 20px;">
-        <h4 style="color: #007bff; border-bottom: 1px solid #ddd; padding-bottom: 5px;">🍔 အစားအသောက် ထည့်ရန်</h4>
-        <div style="display:flex; gap:5px; margin-bottom: 10px;">
-            <input type="text" id="newFoodName" placeholder="နာမည် (ဥပမာ- ကြာဆံကြော်)">
-            <input type="number" id="newFoodPrice" placeholder="စျေး (Ks)">
-            <input type="text" id="newFoodIcon" placeholder="Icon (ဥပမာ- 🍝)" style="width: 80px;">
-            <button class="btn-small" style="background-color:#007bff;" onclick="window.addFoodItem()">+ ထည့်မည်</button>
-        </div>
-        <table style="width: 100%; font-size: 12px;">
-            <tbody id="foodMenuAdminBody"></tbody>
-        </table>
-    </div>
+<nav class="bottom-nav">
+    <div class="nav-item active" onclick="window.switchTab('home', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+    <div class="nav-item" onclick="window.switchTab('stock', this)"><i class="fa-solid fa-box"></i><span>Stock</span></div>
+    <div class="nav-item" onclick="window.switchTab('food', this)"><i class="fa-solid fa-burger"></i><span>Food</span></div>
+    <div class="nav-item" onclick="window.switchTab('users', this)"><i class="fa-solid fa-users"></i><span>Users</span></div>
+</nav>
 
-    <div>
-        <h4 style="color: #17a2b8; border-bottom: 1px solid #ddd; padding-bottom: 5px;">🥤 အအေး ထည့်ရန်</h4>
-        <div style="display:flex; gap:5px; margin-bottom: 10px;">
-            <input type="text" id="newDrinkName" placeholder="နာမည် (ဥပမာ- Redbull)">
-            <input type="number" id="newDrinkPrice" placeholder="စျေး (Ks)">
-            <button class="btn-small" style="background-color:#17a2b8;" onclick="window.addDrinkItem()">+ ထည့်မည်</button>
-        </div>
-        <table style="width: 100%; font-size: 12px;">
-            <tbody id="drinkMenuAdminBody"></tbody>
-        </table>
+<div class="modal-overlay" id="addStockModal">
+    <div class="modal-content">
+        <button class="btn-close" onclick="window.closeModal('addStockModal')"><i class="fa-solid fa-xmark"></i></button>
+        <div class="sec-title"><i class="fa-solid fa-download"></i> Code အသစ်ထည့်ရန်</div>
+        <div class="form-group"><label>Ruijie မှ Code များကို ကူးထည့်ပါ</label><textarea id="newCodes" class="form-control" placeholder="022322 4hour Not used..."></textarea></div>
+        <button class="btn btn-primary" onclick="window.addStock()">သိမ်းမည်</button>
     </div>
-</div></div>
+</div>
 
-<div id="inventoryLogModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('inventoryLogModal').style.display='none'">&times;</span><h3 style="margin-top: 0; color: #17a2b8;">📋 ဂိုဒေါင်သို့ ဖြည့်သွင်းမှု မှတ်တမ်း</h3><table style="width: 100%;"><thead><tr><th>ရက်စွဲ နှင့် အချိန်</th><th>အမျိုးအစား</th><th>အရေအတွက်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody id="inventoryLogBody"></tbody></table></div></div>
-<div id="manageStockModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('manageStockModal').style.display='none'">&times;</span><h3 style="margin-top: 0; color: #dc3545;">📦 ဂိုဒေါင်ရှိ Code များ စီမံရန်</h3><select id="stockPlanSelect" onchange="window.loadManageStock()" style="margin-bottom: 10px;"><option value="1 Hour">1 Hour</option><option value="4 Hours">4 Hours</option><option value="1 Day">1 Day</option><option value="1 Week">1 Week</option><option value="1 Month">1 Month</option></select><button class="btn-danger" style="margin-bottom:15px; background-color: #c82333;" onclick="window.clearStockPlan()">ရွေးချယ်ထားသော အမျိုးအစားအားလုံးဖျက်ရန်</button><table style="width: 100%;"><thead><tr><th>စဉ်</th><th>Code</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody id="manageStockBody"></tbody></table></div></div>
-<div id="detailsModal" class="modal"><div class="modal-content">
-    <span class="close-btn" onclick="document.getElementById('detailsModal').style.display='none'">&times;</span>
-    <h3 id="modalTitle" style="margin-top: 0; color: #007bff;">ကိုယ်စားလှယ် အသေးစိတ် မှတ်တမ်း</h3>
-    <table style="width: 100%;"><thead><tr><th>ရက်စွဲ</th><th>အမျိုးအစား</th><th>အရေအတွက်</th><th>တန်ဖိုး</th><th>ဖျက်ရန်</th></tr></thead><tbody id="modalBody"></tbody></table>
-    <div style="background: #f8f9fa; padding: 15px; margin-top: 15px; border-radius: 5px; border: 1px solid #ddd;">
-        <label style="margin-top: 0;">ရာခိုင်နှုန်း (%) သတ်မှတ်ရန်:</label>
-        <input type="number" id="agentCommPct" value="0" oninput="window.calcAgentCommission()" style="width: 100px; display: inline-block;"> %
-        <div style="margin-top: 15px; font-size: 15px;">
-            <p style="margin: 5px 0;">စုစုပေါင်း ရောင်းရငွေ: <b id="agentTotalSales">0</b> Ks</p>
-            <p style="margin: 5px 0;">ကိုယ်စားလှယ် ရမည့်ငွေ (<span id="agentCommLabel">0</span>%): <b id="agentCommAmount" style="color: #dc3545;">0</b> Ks</p>
-            <p style="margin: 5px 0;">မိမိ ရမည့်ငွေ (အသားတင်): <b id="ownerNetProfit" style="color: #28a745;">0</b> Ks</p>
+<div class="modal-overlay" id="manageStockModal">
+    <div class="modal-content">
+        <button class="btn-close" onclick="window.closeModal('manageStockModal')"><i class="fa-solid fa-xmark"></i></button>
+        <div class="sec-title"><i class="fa-solid fa-trash-can"></i> ဂိုဒေါင် စီမံရန်</div>
+        <div class="form-group">
+            <label>အမျိုးအစား ရွေးချယ်ပါ</label>
+            <select id="stockPlanSelect" class="form-control" onchange="window.loadManageStock()">
+                <option value="1 Hour">1 Hour</option><option value="4 Hours">4 Hours</option><option value="1 Day">1 Day</option><option value="1 Week">1 Week</option><option value="1 Month">1 Month</option>
+            </select>
+        </div>
+        <button class="btn btn-danger" style="margin-bottom:15px;" onclick="window.clearStockPlan()"><i class="fa-solid fa-triangle-exclamation"></i> ရွေးချယ်ထားသော အားလုံးကို ဖျက်မည်</button>
+        <div class="table-wrapper">
+            <table>
+                <thead><tr><th>စဉ်</th><th>Code</th><th>ဖျက်ရန်</th></tr></thead>
+                <tbody id="manageStockBody"></tbody>
+            </table>
         </div>
     </div>
-</div></div>
-<div id="customerDetailsModal" class="modal"><div class="modal-content">
-    <span class="close-btn" onclick="document.getElementById('customerDetailsModal').style.display='none'">&times;</span>
-    <h3 id="custModalTitle" style="margin-top: 0; color: #28a745;">ဖောက်သည် အသေးစိတ်</h3>
-    <h4 style="color: #007bff; border-bottom: 1px solid #ddd; padding-bottom: 5px;">💰 ငွေဖြည့်မှတ်တမ်း (Top-ups)</h4>
-    <table style="width: 100%; font-size: 13px;"><thead><tr><th style="background-color: #6c757d;">ရက်စွဲ</th><th style="background-color: #6c757d;">ပမာဏ</th></tr></thead><tbody id="custTopupBody"></tbody></table>
-    <h4 style="color: #dc3545; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 20px;">🛒 ဝယ်ယူထားသော Voucher များ</h4>
-    <table style="width: 100%; font-size: 13px;"><thead><tr><th style="background-color: #6c757d;">ရက်စွဲ</th><th style="background-color: #6c757d;">အမျိုးအစား</th><th style="background-color: #6c757d;">Code</th><th style="background-color: #6c757d;">တန်ဖိုး</th></tr></thead><tbody id="custHistoryBody"></tbody></table>
-</div></div>
-<div id="recycleBinModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('recycleBinModal').style.display='none'">&times;</span><h3 style="margin-top: 0; color: #dc3545;">🗑️ အမှိုက်ပုံး (ဖျက်ထားသော စာရင်းများ)</h3><table style="width: 100%;"><thead><tr><th>ရက်စွဲ</th><th>အမည်</th><th>အရေအတွက်</th><th>လုပ်ဆောင်ချက်</th></tr></thead><tbody id="recycleBinBody"></tbody></table></div></div>
-<div id="manualModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="document.getElementById('manualModal').style.display='none'">&times;</span><h3 style="margin-top: 0; color: #ff9800;">📝 Manual စာရင်းသွင်းရန်</h3><label>ရက်စွဲ:</label><input type="date" id="manDate"><label>လက်ခွဲ အမည်:</label><input type="text" id="manName" list="agentList"><label>အမျိုးအစား:</label><select id="manPlan" oninput="window.calcManualTotal()"><option value="1 Hour">1 Hour</option><option value="4 Hours">4 Hours</option><option value="1 Day">1 Day</option><option value="1 Week">1 Week</option><option value="1 Month">1 Month</option></select><label>အရေအတွက်:</label><input type="number" id="manQty" oninput="window.calcManualTotal()"><label>စုစုပေါင်း တန်ဖိုး (Ks):</label><input type="number" id="manTotal" readonly style="background-color: #e9ecef;"><button onclick="window.addManualRecord()">💾 စာရင်းသွင်းမည်</button></div></div>
+</div>
+
+<div class="modal-overlay" id="addMenuModal">
+    <div class="modal-content">
+        <button class="btn-close" onclick="window.closeModal('addMenuModal')"><i class="fa-solid fa-xmark"></i></button>
+        <div class="sec-title"><i class="fa-solid fa-burger"></i> Menu အသစ်ထည့်ရန်</div>
+        <div class="form-group"><label>အမည် (ဥပမာ - ကြက်ဆီထမင်း)</label><input type="text" id="menuName" class="form-control"></div>
+        <div class="form-group"><label>စျေးနှုန်း (Ks)</label><input type="number" id="menuPrice" class="form-control"></div>
+        <div class="form-group"><label>Icon (Emoji ပုံလေး ထည့်ပါ 🍜)</label><input type="text" id="menuIcon" class="form-control" value="🍲"></div>
+        <button class="btn btn-primary" onclick="window.saveFoodMenu()">သိမ်းမည်</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="invLogModal">
+    <div class="modal-content">
+        <button class="btn-close" onclick="window.closeModal('invLogModal')"><i class="fa-solid fa-xmark"></i></button>
+        <div class="sec-title"><i class="fa-solid fa-clock-rotate-left"></i> မှတ်တမ်း</div>
+        <table style="width:100%;"><thead><tr><th>ရက်စွဲ</th><th>အမျိုးအစား</th><th>အရေအတွက်</th></tr></thead><tbody id="invLogBody"></tbody></table>
+    </div>
+</div>
+
+<div class="modal-overlay" id="cusDetailModal">
+    <div class="modal-content">
+        <button class="btn-close" onclick="window.closeModal('cusDetailModal')"><i class="fa-solid fa-xmark"></i></button>
+        <div class="sec-title" id="detailCusName">-</div>
+        <table style="width:100%;"><thead><tr><th>ရက်စွဲ</th><th>အကြောင်းအရာ</th><th>တန်ဖိုး</th></tr></thead><tbody id="cusDetailBody"></tbody></table>
+    </div>
+</div>
+
+<div id="toast"></div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getDatabase, ref, set, get, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCqZi-PrBdzak2-vpOhqgB398DT6uIcgDE",
-        authDomain: "voucher-system-7890.firebaseapp.com",
-        projectId: "voucher-system-7890",
-        storageBucket: "voucher-system-7890.firebasestorage.app",
-        messagingSenderId: "691932496625",
-        appId: "1:691932496625:web:0a99af369e4a8fb6b6df50",
-        databaseURL: "https://voucher-system-7890-default-rtdb.asia-southeast1.firebasedatabase.app/"
-    };
+// NEW FIREBASE CONFIG (wifipay-ff292)
+const firebaseConfig = {
+  apiKey: "AIzaSyCWtLbUKGHG6ZHXzU69YLwNvH2Z5EWOyV4",
+  authDomain: "wifipay-ff292.firebaseapp.com",
+  projectId: "wifipay-ff292",
+  storageBucket: "wifipay-ff292.firebasestorage.app",
+  messagingSenderId: "429630230761",
+  appId: "1:429630230761:web:8c7f29457326c1f0c02078",
+  databaseURL: "https://wifipay-ff292-default-rtdb.asia-southeast1.firebasedatabase.app/"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+const app = initializeApp(firebaseConfig); const db = getDatabase(app);
 
-    // 1. INSTANT LOCAL LOAD
-    window.inventory = JSON.parse(localStorage.getItem('smartInventory_v11')) || { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] };
-    window.records = JSON.parse(localStorage.getItem('smartRecords_v11')) || [];
-    window.trashBin = JSON.parse(localStorage.getItem('recycleBin_v11')) || [];
-    window.inventoryLog = JSON.parse(localStorage.getItem('inventoryLog_v11')) || [];
-    window.agentPercentages = JSON.parse(localStorage.getItem('agentPercentages_v11')) || {};
-    window.agentNamesList = JSON.parse(localStorage.getItem('agentNamesList_v11')) || [];
-    window.customersData = JSON.parse(localStorage.getItem('customersData_v11')) || {};
+let allCustomers = {};
+let allInventory = { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] };
+let inventoryLog = []; let foodMenu = {}; let foodOrders = {};
+let currentTopupCus = null;
+
+// --- UTILS ---
+window.showToast = function(msg) { const t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
+window.openModal = (id) => document.getElementById(id).style.display = 'flex';
+window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+
+window.switchTab = function(tabName, el) {
+    document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+    document.getElementById(`tab-${tabName}`).classList.add('active'); el.classList.add('active');
+}
+
+// --- DATA SYNC ---
+onValue(ref(db, '/'), (snap) => {
+    if(snap.exists()) {
+        const data = snap.val();
+        allCustomers = data.customers || {};
+        if(data.inventory) allInventory = { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [], ...data.inventory };
+        inventoryLog = data.inventoryLog ? Object.values(data.inventoryLog).reverse() : [];
+        foodMenu = data.food_menu || {};
+        foodOrders = data.food_orders || {};
+        if(data.settings && data.settings.ad_banner && !document.getElementById('adText').value) document.getElementById('adText').value = data.settings.ad_banner;
+
+        renderDashboard(); renderPhoneList(); renderCustomerTable(); renderStock(); renderInvLog(); renderMenu(); renderOrders();
+        if(document.getElementById('manageStockModal').style.display === 'flex') window.loadManageStock();
+    }
+});
+
+// --- DASHBOARD ---
+function renderDashboard() {
+    let tUsers = Object.keys(allCustomers).length; let tTopup = 0, tVoucher = 0, tFood = 0;
+    Object.values(allCustomers).forEach(c => {
+        if(c.history) {
+            Object.values(c.history).forEach(tx => {
+                if(tx.type === 'topup_in') tTopup += (tx.amount || 0);
+                if(tx.type === 'buy') tVoucher += (tx.amount || 0);
+                if(tx.type === 'food') tFood += (tx.amount || 0);
+            });
+        }
+    });
+    document.getElementById('statUsers').innerText = tUsers; document.getElementById('statTopup').innerText = tTopup.toLocaleString();
+    document.getElementById('statVoucher').innerText = tVoucher.toLocaleString(); document.getElementById('statFood').innerText = tFood.toLocaleString();
+}
+
+// --- TOP UP & DEDUCT ---
+function renderPhoneList() {
+    const list = document.getElementById('phoneList'); list.innerHTML = '';
+    Object.values(allCustomers).forEach(c => { list.innerHTML += `<option value="${c.phone}">${c.name} (${c.balance} Ks)</option>`; });
+}
+window.checkCustomer = function() {
+    const phone = document.getElementById('topupPhone').value.trim();
+    if(allCustomers[phone]) {
+        currentTopupCus = allCustomers[phone];
+        document.getElementById('infoName').innerText = currentTopupCus.name; document.getElementById('infoBalance').innerText = currentTopupCus.balance.toLocaleString();
+        document.getElementById('cusInfoBox').style.display = 'block';
+    } else { currentTopupCus = null; document.getElementById('cusInfoBox').style.display = 'none'; }
+}
+
+window.addTopup = async function() {
+    if(!currentTopupCus) return window.showToast('ဖုန်းနံပါတ် အရင်ရွေးချယ်ပါ');
+    const amt = parseInt(document.getElementById('topupAmount').value);
+    if(!amt || amt <= 0) return window.showToast('ငွေပမာဏ မှန်ကန်စွာ ထည့်ပါ');
+    if(!confirm(`${currentTopupCus.name} ထံသို့ ${amt.toLocaleString()} Ks ငွေဖြည့်မည်လား?`)) return;
+    try {
+        let u = {}; let newBal = (currentTopupCus.balance || 0) + amt; let now = new Date().toLocaleString();
+        u[`customers/${currentTopupCus.phone}/balance`] = newBal;
+        u[`customers/${currentTopupCus.phone}/history/tx_topup_${Date.now()}`] = { type: 'topup_in', title: 'Top Up (Admin)', amount: amt, date: now };
+        await update(ref(db), u); window.showToast('✅ အောင်မြင်ပါသည်');
+        resetTopupForm();
+    } catch(e) { window.showToast('အမှားဖြစ်သွားပါသည်'); }
+}
+
+window.deductTopup = async function() {
+    if(!currentTopupCus) return window.showToast('ဖုန်းနံပါတ် အရင်ရွေးချယ်ပါ');
+    const amt = parseInt(document.getElementById('topupAmount').value);
+    if(!amt || amt <= 0) return window.showToast('ငွေပမာဏ မှန်ကန်စွာ ထည့်ပါ');
+    if((currentTopupCus.balance || 0) < amt) return window.showToast('လက်ကျန်ငွေ မလောက်ပါ');
+    if(!confirm(`${currentTopupCus.name} ထံမှ ${amt.toLocaleString()} Ks ပြန်နုတ်မည်လား?`)) return;
+    try {
+        let u = {}; let newBal = (currentTopupCus.balance || 0) - amt; let now = new Date().toLocaleString();
+        u[`customers/${currentTopupCus.phone}/balance`] = newBal;
+        u[`customers/${currentTopupCus.phone}/history/tx_deduct_${Date.now()}`] = { type: 'deduct_out', title: 'Deducted (Admin)', amount: amt, date: now };
+        await update(ref(db), u); window.showToast('✅ ငွေပြန်နုတ်ပြီးပါပြီ');
+        resetTopupForm();
+    } catch(e) { window.showToast('အမှားဖြစ်သွားပါသည်'); }
+}
+
+function resetTopupForm() {
+    document.getElementById('topupPhone').value = ''; document.getElementById('topupAmount').value = ''; document.getElementById('cusInfoBox').style.display = 'none'; currentTopupCus = null;
+}
+
+window.saveAd = async function() { await set(ref(db, 'settings/ad_banner'), document.getElementById('adText').value.trim()); window.showToast('✅ ကြော်ငြာ သိမ်းပြီးပါပြီ'); }
+
+// --- 🌟 INVENTORY (MANAGE / DELETE) 🌟 ---
+function renderStock() {
+    const grid = document.getElementById('stockStatus'); grid.innerHTML = '';
+    ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => {
+        let c = allInventory[p] ? allInventory[p].length : 0;
+        grid.innerHTML += `<div class="stock-item">${p} <span>${c}</span></div>`;
+    });
+}
+function renderInvLog() {
+    const body = document.getElementById('invLogBody'); body.innerHTML = '';
+    if(inventoryLog.length === 0) return body.innerHTML = '<tr><td colspan="3" style="text-align:center;">မှတ်တမ်း မရှိသေးပါ</td></tr>';
+    inventoryLog.forEach(log => { body.innerHTML += `<tr><td style="font-size:10px;">${log.date}</td><td>${log.plan}</td><td><span class="badge-green">+${log.qty}</span></td></tr>`; });
+}
+
+// Updated ADD STOCK function to strictly assign 1 Week=8000 and 1 Month=35000
+window.addStock = async function() {
+    const text = document.getElementById('newCodes').value; if (!text.trim()) return window.showToast("Code ထည့်ပါ");
+    let existing = new Set(); Object.values(allInventory).forEach(arr => { if(arr) arr.forEach(i => existing.add(String(i.code).trim())); });
+    const lines = text.split('\n'); let counts = { "1 Hour":0, "4 Hours":0, "1 Day":0, "1 Week":0, "1 Month":0 }; let dup = 0;
+    let temp = JSON.parse(JSON.stringify(allInventory));
     
-    // NEW ARRAYS FOR MENU & ORDERS
-    window.foodMenu = [];
-    window.drinkOptions = [];
-    window.foodOrders = {};
-    let isInitialOrderLoad = true;
-    let previousPendingCount = 0;
-    window.audioEnabled = false;
-
-    window.currentModalAgent = "";
-    window.currentTopupCustomer = null;
-
-    document.getElementById('manDate').valueAsDate = new Date();
-
-    window.enableAudio = function() {
-        if(!window.audioEnabled) {
-            document.getElementById('orderRing').load();
-            window.audioEnabled = true;
-        }
-    }
-
-    // --- BROWSER PUSH NOTIFICATION REQUEST ---
-    window.requestNotiPermission = function() {
-        if (!("Notification" in window)) {
-            alert("သင်၏ Browser သည် Notification စနစ်ကို မထောက်ပံ့ပါ။");
-            return;
-        }
-        Notification.requestPermission().then(permission => {
-            if (permission === "granted") {
-                alert("✅ Notification အောင်မြင်စွာ ဖွင့်ပြီးပါပြီ။ Order ဝင်လာလျှင် ဖုန်း Bar တွင် ပေါ်လာပါမည်။ (Browser Tab ကို မပိတ်ပါနှင့်)");
-            } else {
-                alert("❌ Notification ဖွင့်ခွင့် မပြုထားပါ။");
-            }
-        });
-    }
-
-    // --- FOOD ORDER LOGIC ---
-    window.renderFoodOrders = function() {
-        const tbody = document.getElementById('foodOrdersBody');
-        tbody.innerHTML = '';
-        
-        let ordersArray = Object.values(window.foodOrders).sort((a,b) => new Date(b.date) - new Date(a.date));
-        
-        if(ordersArray.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#999;">အော်ဒါ မရှိသေးပါ</td></tr>';
-            return;
-        }
-
-        ordersArray.forEach(o => {
-            let itemsText = o.items ? o.items.map(i => `${i.qty}x ${i.name}`).join('<br>') : '';
-            let typeText = o.type === 'deli' ? '🛵 Deli' : '🛍️ ဆိုင်လာယူ';
-            let payText = o.payment_method === 'cash' ? '💵 Cash' : '💳 Wallet';
+    lines.forEach(line => {
+        let cols = line.trim().split(/\t+/); if(cols.length < 5) cols = line.trim().split(/\s+/); 
+        if (cols.length >= 2 && cols[0] !== "") {
+            const code = String(cols[0]).trim(); const planRaw = String(cols[1]).trim().toLowerCase(); 
+            let tp = ""; let setPrice = "0";
             
-            let badgeClass = 'st-pending';
-            let statusText = 'Pending';
-            if(o.status === 'accepted') { badgeClass = 'st-accepted'; statusText = 'Accepted'; }
-            if(o.status === 'completed') { badgeClass = 'st-completed'; statusText = 'Completed'; }
-            if(o.status === 'cancelled') { badgeClass = 'st-cancelled'; statusText = 'Cancelled'; }
-
-            tbody.innerHTML += `<tr>
-                <td>${o.date}</td>
-                <td><b>${o.name}</b><br><span style="color:#666;">${o.phone}</span><br><span style="font-size:11px; color:#17a2b8;">${o.address}</span></td>
-                <td>${itemsText}</td>
-                <td>${typeText}<br>${payText}</td>
-                <td><b>${(o.total||0).toLocaleString()} Ks</b></td>
-                <td><span class="status-badge ${badgeClass}">${statusText}</span></td>
-                <td>
-                    ${o.status === 'pending' ? `<button class="btn-small" style="background-color:#17a2b8;" onclick="window.updateOrderStatus('${o.id}', 'accepted')">Accept</button>` : ''}
-                    ${o.status === 'accepted' ? `<button class="btn-small" style="background-color:#28a745;" onclick="window.updateOrderStatus('${o.id}', 'completed')">Done</button>` : ''}
-                    ${o.status !== 'completed' && o.status !== 'cancelled' ? `<button class="btn-small" style="background-color:#dc3545;" onclick="window.updateOrderStatus('${o.id}', 'cancelled')">Cancel</button>` : ''}
-                    ${o.status === 'completed' || o.status === 'cancelled' ? `<span style="color:#999; font-size:11px;">Closed</span>` : ''}
-                </td>
-            </tr>`;
-        });
-    }
-
-    window.updateOrderStatus = async function(id, status) {
-        if(status === 'cancelled') {
-            if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား? Wallet ငွေဖြတ်ထားလျှင် ဖောက်သည်ထံ ငွေပြန်အမ်းပေးပါမည်။")) return;
-        }
-        try {
-            let updates = {};
-            updates[`food_orders/${id}/status`] = status;
-
-            // 🌟 Order Cancel လျှင် ငွေအလိုလို ပြန်အမ်းမည့် စနစ် (Refund) အသစ် 🌟
-            if (status === 'cancelled') {
-                let order = window.foodOrders[id];
-                // Wallet ဖြင့် ရှင်းထားသော အော်ဒါဖြစ်မှသာ ပြန်အမ်းမည်
-                if (order && order.payment_method === 'wallet') {
-                    let phone = order.phone;
-                    let refundAmt = parseInt(order.total) || 0;
-                    
-                    // Database ဆီကနေ လက်ရှိငွေ အတိအကျကို အရင်လှမ်းဖတ်မည် (အရေးကြီးဆုံး အဆင့်)
-                    const snap = await get(ref(db, `customers/${phone}`));
-                    if (snap.exists()) {
-                        let currentBal = parseInt(snap.val().balance) || 0;
-                        
-                        // လက်ရှိငွေအစစ် + ပြန်အမ်းငွေ
-                        updates[`customers/${phone}/balance`] = currentBal + refundAmt;
-                        
-                        // မှတ်တမ်း (History) တွင် Refund ပြန်ဝင်ကြောင်း ရေးမှတ်မည်
-                        let refundId = 'refund_' + Date.now();
-                        updates[`customers/${phone}/history/${refundId}`] = {
-                            type: 'tx_in', 
-                            title: 'Order Cancelled (Refund)', 
-                            amount: refundAmt, 
-                            date: new Date().toLocaleString()
-                        };
-                    }
-                }
-            }
+            if (planRaw.includes('1hour') || planRaw.includes('1hr')) tp = "1 Hour";
+            else if (planRaw.includes('4hour') || planRaw.includes('4hr')) tp = "4 Hours";
+            else if (planRaw.includes('1day')) tp = "1 Day"; 
+            else if (planRaw.includes('1week')) { tp = "1 Week"; setPrice = "8000"; } 
+            else if (planRaw.includes('1month')) { tp = "1 Month"; setPrice = "35000"; }
             
-            await update(ref(db), updates);
-            
-        } catch(e) { console.log(e); }
-    }
-    // --- FOOD MENU MANAGEMENT ---
-    window.openMenuManage = function() {
-        document.getElementById('menuManageModal').style.display = 'block';
-        window.renderAdminMenu();
-    }
-
-    window.renderAdminMenu = function() {
-        const fb = document.getElementById('foodMenuAdminBody');
-        const db = document.getElementById('drinkMenuAdminBody');
-        fb.innerHTML = ''; db.innerHTML = '';
-
-        window.foodMenu.forEach(f => {
-            if(f.isOptions) return; 
-            fb.innerHTML += `<tr>
-                <td>${f.icon} <b>${f.name}</b></td>
-                <td>${f.price} Ks</td>
-                <td style="text-align:right;"><button class="btn-small btn-danger" onclick="window.deleteMenuItem('food_menu', '${f.id}')">ဖျက်မည်</button></td>
-            </tr>`;
-        });
-
-        window.drinkOptions.forEach(d => {
-            db.innerHTML += `<tr>
-                <td>🥤 <b>${d.name}</b></td>
-                <td>${d.price} Ks</td>
-                <td style="text-align:right;"><button class="btn-small btn-danger" onclick="window.deleteMenuItem('drink_options', '${d.id}')">ဖျက်မည်</button></td>
-            </tr>`;
-        });
-    }
-
-    window.addFoodItem = async function() {
-        const name = document.getElementById('newFoodName').value.trim();
-        const price = parseInt(document.getElementById('newFoodPrice').value);
-        const icon = document.getElementById('newFoodIcon').value.trim() || '🍲';
-        if(!name || !price) return alert("နာမည်နှင့် စျေးနှုန်း ထည့်ပါ။");
-        const id = 'f_' + Date.now();
-        await set(ref(db, `food_menu/${id}`), { id: id, name: name, price: price, icon: icon });
-        document.getElementById('newFoodName').value = ''; document.getElementById('newFoodPrice').value = '';
-    }
-
-    window.addDrinkItem = async function() {
-        const name = document.getElementById('newDrinkName').value.trim();
-        const price = parseInt(document.getElementById('newDrinkPrice').value);
-        if(!name || !price) return alert("နာမည်နှင့် စျေးနှုန်း ထည့်ပါ။");
-        const id = 'd_' + Date.now();
-        await set(ref(db, `drink_options/${id}`), { id: id, name: name, price: price });
-        document.getElementById('newDrinkName').value = ''; document.getElementById('newDrinkPrice').value = '';
-    }
-
-    window.deleteMenuItem = async function(path, id) {
-        if(confirm("ဖျက်မှာ သေချာပြီလား?")) {
-            await remove(ref(db, `${path}/${id}`));
-        }
-    }
-
-
-    // --- TOP-UP & DEDUCT FUNCTIONS ---
-    window.checkCustomer = async function() {
-        const phone = document.getElementById('topupPhone').value.trim();
-        if(!phone) return alert("ဖုန်းနံပါတ် ထည့်ပါ။");
-        try {
-            const snapshot = await get(ref(db, `customers/${phone}`));
-            if(snapshot.exists()) {
-                window.currentTopupCustomer = snapshot.val();
-                document.getElementById('infoNameText').innerText = window.currentTopupCustomer.name;
-                document.getElementById('infoBalanceText').innerText = window.currentTopupCustomer.balance || 0;
-                document.getElementById('customerInfo').style.display = 'block';
-            } else {
-                alert("❌ ဤဖုန်းနံပါတ်ဖြင့် အကောင့် ဖွင့်ထားသူ မတွေ့ပါ။");
-                document.getElementById('customerInfo').style.display = 'none';
-                window.currentTopupCustomer = null;
+            if (tp !== "") { 
+                if (!existing.has(code)) { 
+                    if (!temp[tp]) temp[tp] = []; 
+                    // Use hardcoded price if set, otherwise try to extract from text
+                    let finalPrice = setPrice !== "0" ? setPrice : (cols.length >= 5 ? cols[4] : "0");
+                    temp[tp].push({ code: code, price: finalPrice }); 
+                    existing.add(code); counts[tp]++; 
+                } else dup++; 
             }
-        } catch(e) { console.error(e); alert("စနစ်ချို့ယွင်းနေပါသည်။"); }
-    }
-
-    window.addTopup = async function() {
-        if(!window.currentTopupCustomer) return;
-        const amount = parseInt(document.getElementById('topupAmount').value);
-        if(!amount || amount <= 0) return alert("ငွေပမာဏ မှန်ကန်စွာ ထည့်ပါ။");
-        if(!confirm(`${window.currentTopupCustomer.name} ထံသို့ ${amount} ကျပ် သေချာပေါက် ဖြည့်သွင်းမည်လား?`)) return;
-
-        try {
-            const phone = window.currentTopupCustomer.phone;
-            const newBalance = (window.currentTopupCustomer.balance || 0) + amount;
-            let updates = {};
-            updates[`customers/${phone}/balance`] = newBalance;
-            updates[`customers/${phone}/topups/topup_${Date.now()}`] = { amount: amount, date: new Date().toLocaleString() };
-
-            await update(ref(db), updates);
-            alert(`✅ ငွေဖြည့်သွင်းမှု အောင်မြင်ပါသည်!\nယခု လက်ကျန်ငွေ: ${newBalance} Ks`);
-            document.getElementById('topupAmount').value = '';
-            window.checkCustomer(); 
-        } catch(e) { console.error(e); }
-    }
-
-    // 🌟 DEDUCT BALANCE LOGIC
-    window.deductBalance = async function() {
-        if(!window.currentTopupCustomer) return;
-        const deductAmt = parseInt(document.getElementById('deductAmount').value);
-        if(!deductAmt || deductAmt <= 0) return alert("နုတ်မည့် ပမာဏ မှန်ကန်စွာ ထည့်ပါ။");
-        
-        let currentBal = window.currentTopupCustomer.balance || 0;
-        if(deductAmt > currentBal) return alert("လက်ကျန်ငွေထက် ပိုနုတ်၍ မရပါ။");
-
-        if(!confirm(`${window.currentTopupCustomer.name} ထံမှ ${deductAmt} ကျပ် သေချာပေါက် ပြန်နုတ်မည်လား?`)) return;
-
-        try {
-            const phone = window.currentTopupCustomer.phone;
-            const newBalance = currentBal - deductAmt;
-            let updates = {};
-            updates[`customers/${phone}/balance`] = newBalance;
-            // Negative top-up record so it shows as deduction
-            updates[`customers/${phone}/topups/deduct_${Date.now()}`] = { amount: -deductAmt, date: new Date().toLocaleString() };
-
-            await update(ref(db), updates);
-            alert(`✅ ငွေပြန်နုတ်မှု အောင်မြင်ပါသည်!\nယခု လက်ကျန်ငွေ: ${newBalance} Ks`);
-            document.getElementById('deductAmount').value = '';
-            window.checkCustomer(); 
-        } catch(e) { console.error(e); }
-    }
-
-    // --- CORE LOGIC (VOUCHERS & AGENTS) ---
-    window.updateAgentList = function() {
-        const agentList = document.getElementById('agentList');
-        agentList.innerHTML = '';
-        let allNames = window.agentNamesList.concat();
-        if (window.records) {
-            window.records.forEach(function(r) { 
-                if (!r.name.match(/\(\d{5,}\)$/) && !r.name.startsWith("Customer_")) { allNames.push(r.name); }
-            });
-        }
-        let uniqueNames = [...new Set(allNames)];
-        window.agentNamesList = uniqueNames;
-        uniqueNames.forEach(function(name) {
-            if (name && name.trim() !== '') {
-                let option = document.createElement('option'); option.value = name; agentList.appendChild(option);
-            }
-        });
-    }
-
-    window.updateStockDisplay = function() {
-        const plans = ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"];
-        let html = '';
-        plans.forEach(function(p) {
-            const count = (window.inventory && window.inventory[p]) ? window.inventory[p].length : 0;
-            html += `<div class="stock-item">${p}: <b>${count}</b></div>`;
-        });
-        document.getElementById('stockStatus').innerHTML = html;
-        if(document.getElementById('inventoryLogModal').style.display === 'block') window.updateInventoryLogTable();
-    }
-
-    window.updateTable = function() {
-        const summaryBody = document.getElementById('summaryBody');
-        summaryBody.innerHTML = '';
-        let groupedData = {}; let grandTotal = 0;
-        
-        if (window.records) {
-            window.records.forEach(function(r) {
-                if (r.name.match(/\(\d{5,}\)$/) || r.name.startsWith("Customer_")) return;
-                if(!groupedData[r.name]) groupedData[r.name] = { qty: 0, total: 0 };
-                groupedData[r.name].qty += r.qty;
-                groupedData[r.name].total += r.totalPrice;
-                grandTotal += r.totalPrice;
-            });
-        }
-        for (let name in groupedData) {
-            summaryBody.innerHTML += `<tr>
-                <td><strong>${name}</strong></td><td>${groupedData[name].qty} ခု</td><td>${groupedData[name].total} Ks</td>
-                <td><button class="btn-small" onclick="window.openModal('${name}')">အသေးစိတ်</button></td>
-            </tr>`;
-        }
-        document.getElementById('grandTotalText').innerText = grandTotal + " Ks";
-        window.updateAgentList();
-    }
-
-    window.updateCustomerTable = function() {
-        const custBody = document.getElementById('customerBody');
-        custBody.innerHTML = '';
-        for (let phone in window.customersData) {
-            let cust = window.customersData[phone];
-            let totalTopup = 0; if(cust.topups) Object.values(cust.topups).forEach(t => totalTopup += parseInt(t.amount || 0));
-            let totalSpent = 0; if(cust.history) Object.values(cust.history).forEach(h => totalSpent += parseInt(h.amount || h.price || 0));
-            custBody.innerHTML += `<tr>
-                <td><strong>${cust.name || "Unknown"}</strong></td><td>${cust.phone}</td>
-                <td style="color:#28a745;">${totalTopup >= 0 ? '+' : ''}${totalTopup} Ks</td><td style="color:#dc3545;">-${totalSpent} Ks</td>
-                <td><b>${cust.balance || 0} Ks</b></td>
-                <td><button class="btn-small" style="background-color: #28a745;" onclick="window.openCustomerModal('${cust.phone}')">အသေးစိတ်</button></td>
-            </tr>`;
-        }
-    }
-
-    window.openCustomerModal = function(phone) {
-        let cust = window.customersData[phone]; if(!cust) return;
-        document.getElementById('custModalTitle').innerText = `${cust.name} ၏ မှတ်တမ်း`;
-        
-        const topupBody = document.getElementById('custTopupBody'); topupBody.innerHTML = '';
-        if(cust.topups) { 
-            Object.values(cust.topups).reverse().forEach(t => { 
-                let amtStr = t.amount < 0 ? `<span style="color:#dc3545;">${t.amount} Ks</span>` : `<span style="color:#28a745;">+${t.amount} Ks</span>`;
-                topupBody.innerHTML += `<tr><td>${t.date}</td><td>${amtStr}</td></tr>`; 
-            });
-        } else { topupBody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:#999;">မှတ်တမ်း မရှိပါ</td></tr>'; }
-
-        const histBody = document.getElementById('custHistoryBody'); histBody.innerHTML = '';
-        if(cust.history) {
-            Object.values(cust.history).reverse().forEach(h => {
-                let codeOrFood = h.type === 'food' ? h.extra : (h.extra || h.code);
-                histBody.innerHTML += `<tr><td>${h.date}</td><td>${h.title || h.plan}</td><td>${codeOrFood}</td><td style="color:#dc3545;">-${h.amount || h.price} Ks</td></tr>`;
-            });
-        } else { histBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999;">မှတ်တမ်း မရှိပါ</td></tr>'; }
-        document.getElementById('customerDetailsModal').style.display = 'block';
-    }
-
-    window.openModal = function(name) {
-        window.currentModalAgent = name; document.getElementById('modalTitle').innerText = `${name} ၏ မှတ်တမ်း`;
-        const modalBody = document.getElementById('modalBody'); modalBody.innerHTML = '';
-        let agentRecords = window.records.filter(function(r) { return r.name === name; }); let agentTotal = 0;
-        agentRecords.forEach(function(r) {
-            agentTotal += r.totalPrice;
-            modalBody.innerHTML += `<tr><td>${r.date}</td><td>${r.plan}</td><td>${r.qty}</td><td>${r.totalPrice}</td><td><button class="btn-small" style="background-color: #dc3545;" onclick="window.deleteRecord('${r.id}')">🗑️</button></td></tr>`;
-        });
-        document.getElementById('agentTotalSales').innerText = agentTotal;
-        document.getElementById('agentCommPct').value = (window.agentPercentages && window.agentPercentages[name]) ? window.agentPercentages[name] : 0;
-        window.calcAgentCommission(); document.getElementById('detailsModal').style.display = "block";
-    }
-
-    window.calcAgentCommission = function() {
-        let name = window.currentModalAgent; if (!name) return;
-        let pct = parseFloat(document.getElementById('agentCommPct').value) || 0;
-        if (!window.agentPercentages) window.agentPercentages = {}; window.agentPercentages[name] = pct;
-        let total = parseFloat(document.getElementById('agentTotalSales').innerText) || 0; let comm = (total * pct) / 100;
-        document.getElementById('agentCommLabel').innerText = pct; document.getElementById('agentCommAmount').innerText = comm.toFixed(0); document.getElementById('ownerNetProfit').innerText = (total - comm).toFixed(0);
-        localStorage.setItem('agentPercentages_v11', JSON.stringify(window.agentPercentages));
-    }
-
-    window.deleteRecord = function(id) {
-        if(!confirm("ဤမှတ်တမ်းကို ဖျက်ရန် သေချာပါသလား?")) return;
-        const index = window.records.findIndex(function(r) { return r.id === id; });
-        if(index > -1) { window.trashBin.push(window.records[index]); window.records.splice(index, 1); window.saveToFirebase(); window.updateTable(); window.openModal(window.currentModalAgent); }
-    }
-
-    window.openRecycleBin = function() {
-        const rBinBody = document.getElementById('recycleBinBody'); rBinBody.innerHTML = '';
-        if(!window.trashBin || window.trashBin.length === 0) { rBinBody.innerHTML = `<tr><td colspan="4" style="text-align:center;">အမှိုက်ပုံး လွတ်နေပါသည်</td></tr>`;
-        } else {
-            window.trashBin.forEach(function(r) { rBinBody.innerHTML += `<tr><td>${r.date}</td><td>${r.name}</td><td>${r.qty}</td><td><button class="btn-small" style="background-color:#28a745;" onclick="window.restoreRecord('${r.id}')">Restore</button><button class="btn-small" style="background-color:#dc3545;" onclick="window.permanentDeleteRecord('${r.id}')">Delete</button></td></tr>`; });
-        }
-        document.getElementById('recycleBinModal').style.display = 'block';
-    }
-
-    window.restoreRecord = function(id) { const index = window.trashBin.findIndex(r => r.id === id); if(index > -1) { window.records.push(window.trashBin[index]); window.trashBin.splice(index, 1); window.saveToFirebase(); window.updateTable(); window.openRecycleBin(); } }
-    window.permanentDeleteRecord = function(id) { if(!confirm("အပြီးတိုင် ဖျက်ရန် သေချာပါသလား?")) return; const index = window.trashBin.findIndex(r => r.id === id); if(index > -1) { window.trashBin.splice(index, 1); window.saveToFirebase(); window.openRecycleBin(); } }
-
-    window.addManualRecord = function() {
-        const date = document.getElementById('manDate').value; const name = document.getElementById('manName').value; const plan = document.getElementById('manPlan').value; const qty = parseInt(document.getElementById('manQty').value); const total = parseInt(document.getElementById('manTotal').value);
-        if(!name || !qty || !total) return alert("အချက်အလက်များကို ပြည့်စုံစွာ ထည့်ပါ။");
-        window.records.push({ id: Date.now().toString(), date: date, name: name, plan: plan, qty: qty, totalPrice: total, codes: [], isManual: true });
-        if (!window.agentNamesList.includes(name) && !name.match(/\(\d{5,}\)$/)) window.agentNamesList.push(name);
-        window.saveToFirebase(); window.updateTable(); document.getElementById('manualModal').style.display = 'none'; alert("အောင်မြင်စွာ စာရင်းသွင်းပြီးပါပြီ။");
-    }
-
-    window.exportToCSV = function() {
-        let csvContent = "data:text/csv;charset=utf-8,Date,Agent Name,Plan,Quantity,Total Price (Ks)\n";
-        window.records.forEach(function(r) { if (!r.name.match(/\(\d{5,}\)$/) && !r.name.startsWith("Customer_")) { csvContent += `${r.date},${r.name},${r.plan},${r.qty},${r.totalPrice}\n`; } });
-        const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); link.setAttribute("href", encodedUri); link.setAttribute("download", "Agent_Sales_Record.csv"); document.body.appendChild(link); link.click(); document.body.removeChild(link);
-    }
-
-    window.addStock = function() {
-        const text = document.getElementById('newCodes').value; if (!text.trim()) return alert("စာသားများ ထည့်သွင်းပေးပါ။");
-        let existingCodes = new Set();
-        for (let key in window.inventory) { window.inventory[key].forEach(i => existingCodes.add(String(i.code).trim())); }
-        window.records.forEach(r => { if(r.codes) r.codes.forEach(c => existingCodes.add(String(c).trim())); }); window.trashBin.forEach(r => { if(r.codes) r.codes.forEach(c => existingCodes.add(String(c).trim())); });
-
-        const lines = text.split('\n'); let addedCounts = { "1 Hour": 0, "4 Hours": 0, "1 Day": 0, "1 Week": 0, "1 Month": 0 }; let duplicateCount = 0;
-        lines.forEach(function(line) {
-            let cols = line.trim().split(/\t+/); if(cols.length < 5) cols = line.trim().split(/\s+/); 
-            if (cols.length >= 2 && cols[0] !== "") {
-                const code = String(cols[0]).trim(); const planRaw = String(cols[1]).trim().toLowerCase(); let tp = "";
-                if (planRaw.includes('1hour') || planRaw.includes('1hr')) tp = "1 Hour"; else if (planRaw.includes('4hour') || planRaw.includes('4hr')) tp = "4 Hours"; else if (planRaw.includes('1day')) tp = "1 Day"; else if (planRaw.includes('1week')) tp = "1 Week"; else if (planRaw.includes('1month')) tp = "1 Month";
-                if (tp !== "") {
-                    if (!existingCodes.has(code)) { if (!window.inventory[tp]) window.inventory[tp] = []; window.inventory[tp].push({ code: code, price: cols.length >= 5 ? cols[4] : "0" }); existingCodes.add(code); addedCounts[tp]++; } else duplicateCount++; 
-                }
-            }
-        });
-        
-        let cDate = new Date().toLocaleString();
-        for (let p in addedCounts) if (addedCounts[p] > 0) window.inventoryLog.unshift({ datetime: cDate, plan: p, qty: addedCounts[p] }); 
-        window.saveToFirebase(); window.updateStockDisplay(); document.getElementById('newCodes').value = '';
-        alert("စာရင်းသွင်းပြီးပါပြီ!\n\nအသစ်ထည့်သွင်းမှုများ:\n" + Object.entries(addedCounts).map(([k,v]) => v>0?`${k}: ${v} ခု`:'').filter(Boolean).join('\n') + (duplicateCount>0 ? `\n\n⚠️ ထပ်နေသော Code: ${duplicateCount} ခု` : ''));
-    }
-
-    window.saveToFirebase = function() {
-        localStorage.setItem('smartInventory_v11', JSON.stringify(window.inventory));
-        localStorage.setItem('smartRecords_v11', JSON.stringify(window.records));
-        localStorage.setItem('recycleBin_v11', JSON.stringify(window.trashBin));
-        localStorage.setItem('inventoryLog_v11', JSON.stringify(window.inventoryLog));
-        localStorage.setItem('agentNamesList_v11', JSON.stringify(window.agentNamesList));
-
-        const safeRecords = window.records.reduce((acc, curr) => { acc[curr.id] = curr; return acc; }, {});
-        const safeTrash = window.trashBin.reduce((acc, curr) => { acc[curr.id] = curr; return acc; }, {});
-        const safeInvLog = window.inventoryLog.reduce((acc, curr, index) => { acc['log_'+index] = curr; return acc; }, {});
-
-        let updates = {};
-        updates['/inventory'] = window.inventory;
-        updates['/records'] = safeRecords;
-        updates['/trashBin'] = safeTrash;
-        updates['/inventoryLog'] = safeInvLog;
-        updates['/agentPercentages'] = window.agentPercentages;
-        updates['/agentNamesList'] = window.agentNamesList;
-
-        update(ref(db), updates);
-    };
-
-    // 🌟 DB LISTENERS
-    window.updateStockDisplay();
-    window.updateTable();
-    window.updateCustomerTable();
-
-    // Listen to main data
-    onValue(ref(db, '/'), (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            window.inventory = {
-                "1 Hour": data.inventory?.["1 Hour"] || [], "4 Hours": data.inventory?.["4 Hours"] || [],
-                "1 Day": data.inventory?.["1 Day"] || [], "1 Week": data.inventory?.["1 Week"] || [],
-                "1 Month": data.inventory?.["1 Month"] || []
-            };
-            window.records = data.records ? Object.values(data.records) : [];
-            window.trashBin = data.trashBin ? Object.values(data.trashBin) : [];
-            window.inventoryLog = data.inventoryLog ? Object.values(data.inventoryLog) : [];
-            window.agentPercentages = data.agentPercentages || {};
-            window.agentNamesList = data.agentNamesList || [];
-            window.customersData = data.customers || {};
-
-            window.updateStockDisplay();
-            window.updateTable();
-            window.updateCustomerTable();
-            if(document.getElementById('customerDetailsModal').style.display === 'block') window.openCustomerModal(window.currentTopupCustomer?.phone);
         }
     });
+    
+    try {
+        let u = {}; u['inventory'] = temp; let now = new Date().toLocaleString(); let hasNew = false;
+        for (let p in counts) { if (counts[p] > 0) { hasNew = true; u[`inventoryLog/log_${Date.now()}${Math.floor(Math.random()*100)}`] = { date: now, plan: p, qty: counts[p] }; } }
+        if(hasNew) { await update(ref(db), u); document.getElementById('newCodes').value = ''; window.closeModal('addStockModal'); window.showToast(`✅ စာရင်းသွင်းပြီး (အထပ် ${dup} ခု ပယ်ဖျက်သည်)`); } 
+        else window.showToast('⚠️ အသစ်မတွေ့ပါ / အကုန်ထပ်နေပါသည်');
+    } catch(e) { window.showToast('Error'); }
+}
 
-    // Listen to Food Orders separately & Trigger Phone Noti
-    onValue(ref(db, 'food_orders'), (snapshot) => {
-        window.foodOrders = snapshot.val() || {};
+window.openManageStock = function() { window.openModal('manageStockModal'); window.loadManageStock(); }
+window.loadManageStock = function() {
+    const plan = document.getElementById('stockPlanSelect').value; const body = document.getElementById('manageStockBody'); body.innerHTML = '';
+    const items = allInventory[plan] || [];
+    if(items.length === 0) { body.innerHTML = '<tr><td colspan="3" style="text-align:center;">Code များ မရှိသေးပါ</td></tr>'; return; }
+    items.forEach((item, idx) => {
+        body.innerHTML += `<tr><td>${idx + 1}</td><td style="font-family:var(--mono);">${item.code}</td><td><button class="btn-sm btn-danger" style="border:none;" onclick="window.deleteSingleStock('${plan}', ${idx})"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+    });
+}
+window.deleteSingleStock = async function(plan, index) {
+    if(!confirm("ဤ Code ကို ဖျက်မည်လား?")) return;
+    let temp = JSON.parse(JSON.stringify(allInventory)); temp[plan].splice(index, 1);
+    await set(ref(db, `inventory/${plan}`), temp[plan]); window.showToast('ဖျက်လိုက်ပါပြီ');
+}
+window.clearStockPlan = async function() {
+    const plan = document.getElementById('stockPlanSelect').value;
+    if(!confirm(`${plan} မှ Code အားလုံးကို ဖျက်မည် သေချာပါသလား?`)) return;
+    await set(ref(db, `inventory/${plan}`), []); window.showToast('အားလုံး ဖျက်လိုက်ပါပြီ');
+}
+
+// --- 🍔 FOOD MANAGEMENT 🌟 ---
+function renderMenu() {
+    const cont = document.getElementById('menuContainer'); cont.innerHTML = '';
+    if(Object.keys(foodMenu).length === 0) { cont.innerHTML = '<p style="text-align:center; font-size:12px; color:#888;">Menu မရှိသေးပါ</p>'; return; }
+    Object.values(foodMenu).forEach(f => {
+        cont.innerHTML += `<div class="menu-item">
+            <div class="menu-info"><span style="font-size:20px;">${f.icon}</span> <div><div>${f.name}</div><div style="font-size:11px; color:var(--green); font-family:var(--mono);">${f.price} Ks</div></div></div>
+            <button class="btn-sm btn-danger" style="border:none;" onclick="window.deleteMenu('${f.id}')"><i class="fa-solid fa-trash"></i></button>
+        </div>`;
+    });
+}
+window.saveFoodMenu = async function() {
+    const name = document.getElementById('menuName').value.trim(); const price = parseInt(document.getElementById('menuPrice').value); const icon = document.getElementById('menuIcon').value.trim() || '🍔';
+    if(!name || !price) return window.showToast('အချက်အလက် ဖြည့်ပါ');
+    const id = 'f_' + Date.now();
+    await set(ref(db, `food_menu/${id}`), { id, name, price, icon });
+    window.closeModal('addMenuModal'); document.getElementById('menuName').value=''; document.getElementById('menuPrice').value='';
+    window.showToast('✅ Menu အသစ် ထည့်ပြီးပါပြီ');
+}
+window.deleteMenu = async function(id) {
+    if(confirm('ဤ Menu ကို ဖျက်မည်လား?')) { await remove(ref(db, `food_menu/${id}`)); window.showToast('ဖျက်လိုက်ပါပြီ'); }
+}
+
+function renderOrders() {
+    const cont = document.getElementById('orderContainer'); cont.innerHTML = '';
+    let pendingOrders = Object.values(foodOrders).filter(o => o.status === 'pending');
+    if(pendingOrders.length === 0) { cont.innerHTML = '<p style="text-align:center; font-size:12px; color:#888; margin-top:10px;">လက်ရှိ အော်ဒါ မရှိပါ</p>'; return; }
+    
+    pendingOrders.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(o => {
+        let itemsStr = o.items.map(i => `${i.qty}x ${i.name}`).join(', ');
+        let addrStr = o.type === 'deli' ? `<div class="order-addr"><i class="fa-solid fa-motorcycle"></i> ပို့ရမည့်လိပ်စာ: ${o.address}</div>` : `<div class="order-addr" style="color:var(--primary);"><i class="fa-solid fa-store"></i> ဆိုင်တွင် လာယူမည်</div>`;
         
-        let currentPending = Object.values(window.foodOrders).filter(o => o.status === 'pending');
-        if (!isInitialOrderLoad && currentPending.length > previousPendingCount) {
-            
-            // 1. Play Sound
-            let ring = document.getElementById('orderRing');
-            let playPromise = ring.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => { console.log("Auto-play prevented."); });
-            }
-            
-            // 2. Show Push Notification on Phone
-            if ("Notification" in window && Notification.permission === "granted") {
-                new Notification("🍔 အော်ဒါအသစ် ဝင်လာပါပြီ!", {
-                    body: "စားစရာ Order အသစ်ကို Admin App တွင် ဝင်ရောက်စစ်ဆေးပါ။",
-                    icon: "https://cdn-icons-png.flaticon.com/512/3014/3014488.png"
-                });
-            } else {
-                alert("🔔 အော်ဒါအသစ် ဝင်လာပါပြီ!");
-            }
-        }
-        previousPendingCount = currentPending.length;
-        isInitialOrderLoad = false;
-        
-        window.renderFoodOrders();
+        cont.innerHTML += `<div class="order-card">
+            <div class="order-hdr"><span>${o.name} (${o.phone})</span> <span>${o.date.split(',')[1]}</span></div>
+            <div class="order-items">${itemsStr}</div>
+            ${addrStr}
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <b style="color:var(--green); font-family:var(--mono);">${o.total.toLocaleString()} Ks</b>
+                <button class="btn-sm btn-green" style="border:none;" onclick="window.completeOrder('${o.id}')"><i class="fa-solid fa-check"></i> ပို့ပြီး</button>
+            </div>
+        </div>`;
     });
+}
+window.completeOrder = async function(id) {
+    if(confirm('ဤအော်ဒါကို ဆောင်ရွက်ပြီးကြောင်း မှတ်သားမည်လား?')) { await update(ref(db, `food_orders/${id}`), { status: 'completed' }); window.showToast('✅ အော်ဒါ ပြီးစီးပါပြီ'); }
+}
 
-    // Listen to Menu separately
-    onValue(ref(db, 'food_menu'), (snapshot) => {
-        window.foodMenu = snapshot.exists() ? Object.values(snapshot.val()) : [];
-        if(window.foodMenu.length === 0) {
-            window.foodMenu = [
-                { id: 'f1', name: 'မာလာရှမ်းကော', price: 3500, icon: '🍲' },
-                { id: 'f2', name: 'ခေါက်ဆွဲကြော်', price: 2000, icon: '🍝' },
-                { id: 'f3', name: 'Spicy ခေါက်ဆွဲ', price: 1500, icon: '🍜' },
-                { id: 'f4', name: 'မုန့်ဟင်းခါး', price: 1500, icon: '🍜' },
-                { id: 'f5', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true },
-                { id: 'f6', name: 'French Fries', price: 1500, icon: '🍟' }
-            ];
-        }
-        if(document.getElementById('menuManageModal').style.display === 'block') window.renderAdminMenu();
+// --- USERS ---
+function renderCustomerTable() {
+    const tb = document.getElementById('customerTableBody'); tb.innerHTML = '';
+    Object.values(allCustomers).forEach(c => {
+        tb.innerHTML += `<tr><td><strong>${c.name}</strong></td><td style="font-family:var(--mono);">${c.phone}</td><td><span class="badge-green">${(c.balance||0).toLocaleString()} Ks</span></td><td><button class="btn-sm btn-outline" onclick="window.viewCusHistory('${c.phone}')">View</button></td></tr>`;
     });
-
-    onValue(ref(db, 'drink_options'), (snapshot) => {
-        window.drinkOptions = snapshot.exists() ? Object.values(snapshot.val()) : [];
-        if(window.drinkOptions.length === 0) {
-            window.drinkOptions = [
-                { id: 'd1', name: 'Vita max yellow', price: 1300 }, { id: 'd2', name: 'Vita max blue', price: 1300 },
-                { id: 'd3', name: 'Horn', price: 1200 }, { id: 'd4', name: 'Royal D', price: 1800 },
-                { id: 'd5', name: 'Zora', price: 2500 }, { id: 'd6', name: 'VeVe မကျီး', price: 1300 }
-            ];
-        }
-        if(document.getElementById('menuManageModal').style.display === 'block') window.renderAdminMenu();
-    });
-
+}
+window.viewCusHistory = function(phone) {
+    const cus = allCustomers[phone]; if(!cus) return;
+    document.getElementById('detailCusName').innerHTML = `<i class="fa-solid fa-user"></i> ${cus.name}`;
+    const tb = document.getElementById('cusDetailBody'); tb.innerHTML = '';
+    if(!cus.history) { tb.innerHTML = '<tr><td colspan="3" style="text-align:center;">မှတ်တမ်း မရှိပါ</td></tr>'; } 
+    else {
+        Object.values(cus.history).reverse().forEach(tx => {
+            let color = (tx.type === 'topup_in' || tx.type === 'tx_in' || tx.type === 'gift_in') ? 'var(--green)' : 
+                        (tx.type === 'deduct_out' ? 'var(--red)' : 'var(--text)');
+            let sign = (tx.type === 'topup_in' || tx.type === 'tx_in' || tx.type === 'gift_in') ? '+' : '-';
+            tb.innerHTML += `<tr><td style="font-size:10px; color:var(--text-light);">${tx.date}</td><td><b>${tx.title}</b><br><span style="font-size:10px; color:#888;">${tx.extra || ''}</span></td><td style="color:${color}; font-weight:700; font-family:var(--mono);">${sign}${(tx.amount||0).toLocaleString()}</td></tr>`;
+        });
+    }
+    window.openModal('cusDetailModal');
+}
 </script>
 </body>
 </html>
