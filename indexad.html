@@ -21,25 +21,31 @@
     .header-title { font-size: 24px; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 12px; }
 
     .dash-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 15px; margin-top: -40px; }
-    .dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 8px; }
+    .dash-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
     .dash-lbl { font-size: 10px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; }
-    .dash-val { font-size: 18px; font-weight: 700; font-family: var(--mono); margin-top: 5px; }
+    .dash-val { font-size: 18px; font-weight: 700; font-family: var(--mono); }
+
+    .c-users .dash-icon { background: rgba(124,106,255,0.1); color: var(--primary); }
+    .c-topup .dash-icon { background: rgba(34,211,165,0.1); color: var(--green); }
+    .c-wifi .dash-icon { background: rgba(247,201,72,0.1); color: var(--gold); }
+    .c-food .dash-icon { background: rgba(255,107,107,0.1); color: var(--red); }
 
     .tab-content { display: none; animation: slideUp 0.4s ease; padding: 15px; }
     .tab-content.active { display: block; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
     .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
-    .sec-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--primary); }
+    .sec-title { font-size: 16px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
 
     .form-control { width: 100%; padding: 14px; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 14px; font-size: 14px; color: #fff; outline: none; margin-bottom: 12px; }
     
     .btn { padding: 14px; border: none; border-radius: 14px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-    .btn-primary { background: var(--primary); color: white; width: 100%; }
-    .btn-green { background: var(--green); color: white; width: 100%; }
-    .btn-danger { background: rgba(255,107,107,0.1); color: var(--red); border: 1px solid var(--red); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), #6c5aee); color: white; width: 100%; }
+    .btn-green { background: linear-gradient(135deg, #1bac89, var(--green)); color: white; width: 100%; }
+    .btn-danger { background: rgba(255,107,107,0.1); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
     .btn-outline { background: var(--surface2); border: 1px solid var(--border); color: #fff; }
-    .btn-sm { padding: 8px 12px; font-size: 11px; width: auto; }
+    .btn-sm { padding: 6px 12px; font-size: 11px; border-radius: 8px; width: auto; }
 
     .cus-info-box { background: rgba(34,211,165,0.05); border: 1px dashed var(--green); border-radius: 16px; padding: 18px; display: none; margin-bottom: 15px; }
     
@@ -48,11 +54,6 @@
     .stock-item b { color: var(--gold); }
 
     .item-card { background: var(--surface2); border: 1px solid var(--border); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-
-    .order-card { background: var(--surface2); border: 1px solid var(--gold); padding: 15px; border-radius: 15px; margin-bottom: 12px; }
-    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
-    .st-pending { background: rgba(247,201,72,0.1); color: var(--gold); }
-    .st-accepted { background: rgba(124,106,255,0.1); color: var(--primary); }
 
     .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; left: 50%; transform: translateX(-50%); background: rgba(10,10,20,0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 0 25px; border-top: 1px solid var(--border); z-index: 100; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); flex: 1; cursor: pointer; }
@@ -71,45 +72,46 @@
 <audio id="orderRing" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
 <div class="header">
-    <div style="max-width:500px; margin:0 auto;"><div class="header-title"><i class="fa-solid fa-crown"></i> Wifipay Admin Pro</div></div>
+    <div style="max-width:500px; margin:0 auto;"><div class="header-title"><i class="fa-solid fa-crown" style="color:var(--gold);"></i> Wifipay Admin Pro Max</div></div>
 </div>
 
 <div style="max-width:500px; margin:0 auto;">
     
     <div id="tab-home" class="tab-content active">
         <div class="dash-grid">
-            <div class="dash-card"><div class="dash-lbl" style="color:var(--primary);">Users</div><div class="dash-val" id="statUsers">0</div></div>
-            <div class="dash-card"><div class="dash-lbl" style="color:var(--gold);">WiFi Stock</div><div class="dash-val" id="statVoucher">0</div></div>
-            <div class="dash-card"><div class="dash-lbl" style="color:var(--green);">Cash In</div><div class="dash-val" id="statTopup">0</div></div>
-            <div class="dash-card"><div class="dash-lbl" style="color:var(--red);">Food Sales</div><div class="dash-val" id="statFood">0</div></div>
+            <div class="dash-card c-users"><div class="dash-icon"><i class="fa-solid fa-users"></i></div><div class="dash-lbl">Users</div><div class="dash-val" id="statUsers">0</div></div>
+            <div class="dash-card c-wifi"><div class="dash-icon"><i class="fa-solid fa-wifi"></i></div><div class="dash-lbl">WiFi Stock</div><div class="dash-val" id="statVoucher">0</div></div>
+            <div class="dash-card c-topup"><div class="dash-icon"><i class="fa-solid fa-wallet"></i></div><div class="dash-lbl">Cash In</div><div class="dash-val" id="statTopup">0</div></div>
+            <div class="dash-card c-food"><div class="dash-icon"><i class="fa-solid fa-burger"></i></div><div class="dash-lbl">Food Sales</div><div class="dash-val" id="statFood">0</div></div>
         </div>
 
         <div class="section" style="margin-top:20px;">
             <div class="sec-title"><i class="fa-solid fa-warehouse"></i> ၁။ ဂိုဒေါင် စီမံခန့်ခွဲမှု</div>
             <div id="stockSummary" class="stock-grid"></div>
-            <textarea id="newCodes" class="form-control" style="height:100px;" placeholder="Ruijie မှ Code များကို ကူးထည့်ပါ..."></textarea>
-            <button class="btn btn-primary" onclick="window.addStock()"><i class="fa-solid fa-plus"></i> ဂိုဒေါင်ထဲ ထည့်မည်</button>
+            <textarea id="newCodes" class="form-control" style="height:100px; font-family:var(--mono); font-size:12px;" placeholder="Ruijie မှ Code များကို ကူးထည့်ပါ..."></textarea>
+            <button class="btn btn-primary" onclick="window.addStock()"><i class="fa-solid fa-download"></i> ဂိုဒေါင်ထဲ ထည့်မည်</button>
             <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openModal('logModal')">📋 မှတ်တမ်း</button>
-                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openManageStock()">📦 Code များပြင်ရန်</button>
+                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openModal('logModal')"><i class="fa-solid fa-clipboard-list"></i> မှတ်တမ်းကြည့်ရန်</button>
+                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openManageStock()"><i class="fa-solid fa-trash-can"></i> Code များဖျက်ရန်</button>
             </div>
         </div>
 
         <div class="section">
-            <div class="sec-title"><i class="fa-solid fa-wallet"></i> ၂။ ငွေဖြည့်/နုတ် စနစ်</div>
+            <div class="sec-title"><i class="fa-solid fa-money-bill-transfer"></i> ၂။ ငွေဖြည့်/နုတ် စနစ်</div>
             <div style="display:flex; gap:8px;">
-                <input type="tel" id="topupPhone" class="form-control" placeholder="ဖုန်းနံပါတ် (သို့) အမည်" list="pList" style="margin-bottom:0;">
-                <button class="btn btn-outline" style="width:55px;" onclick="window.checkCus()"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <input type="text" id="topupPhone" class="form-control" placeholder="ဖုန်းနံပါတ် (သို့) အမည်" list="pList" style="margin-bottom:0;">
+                <button class="btn btn-outline" style="width:60px;" onclick="window.searchCustomer()"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
             <datalist id="pList"></datalist>
             
             <div id="cusInfoBox" class="cus-info-box" style="margin-top:15px;">
+                <p style="font-size:11px; color:var(--text-sub);"><i class="fa-solid fa-user-check"></i> Customer Details</p>
                 <p>အမည်: <b id="infoName" style="color:#fff;">-</b></p>
-                <p>လက်ကျန်ငွေ: <b id="infoBal" style="color:var(--green); font-size:18px;">0</b> Ks</p>
+                <p>လက်ကျန်ငွေ: <b id="infoBal" style="color:var(--green); font-size:20px;">0</b> Ks</p>
                 <input type="number" id="topupAmt" class="form-control" style="margin-top:10px;" placeholder="ပမာဏ (Ks)">
                 <div style="display:flex; gap:10px;">
-                    <button class="btn btn-green" style="flex:2;" onclick="window.doTopup('in')">ငွေဖြည့်မည်</button>
-                    <button class="btn btn-danger btn-sm" style="flex:1;" onclick="window.doTopup('out')">နုတ်မည်</button>
+                    <button class="btn btn-green" style="flex:2;" onclick="window.doTopup('in')"><i class="fa-solid fa-plus"></i> ငွေဖြည့်မည်</button>
+                    <button class="btn btn-danger btn-sm" style="flex:1;" onclick="window.doTopup('out')"><i class="fa-solid fa-minus"></i> နုတ်မည်</button>
                 </div>
             </div>
         </div>
@@ -131,14 +133,14 @@
 
     <div id="tab-food" class="tab-content">
         <div class="section">
-            <div class="sec-title"><i class="fa-solid fa-utensils"></i> ဟင်းပွဲ Menu စီမံရန်</div>
+            <div class="sec-title"><i class="fa-solid fa-utensils"></i> ၇။ ဟင်းပွဲ Menu စီမံရန်</div>
             <div style="display:grid; grid-template-columns: 1fr 2fr 1fr; gap:8px; margin-bottom:10px;">
                 <input type="text" id="foodIcon" class="form-control" placeholder="Icon 🍲" style="margin-bottom:0;">
                 <input type="text" id="foodName" class="form-control" placeholder="အမည်" style="margin-bottom:0;">
                 <input type="number" id="foodPrice" class="form-control" placeholder="စျေး" style="margin-bottom:0;">
             </div>
-            <button class="btn btn-primary btn-sm" style="width:100%;" onclick="window.saveMenu('food')">+ ဟင်းပွဲအသစ် ထည့်မည်</button>
-            <div id="foodList" style="margin-top:20px;"></div>
+            <button class="btn btn-primary btn-sm" style="width:100%; padding:12px;" onclick="window.saveFood()"><i class="fa-solid fa-plus"></i> ဟင်းပွဲအသစ် ထည့်မည်</button>
+            <div id="foodAdminList" style="margin-top:20px;"></div>
         </div>
         
         <div class="section">
@@ -147,20 +149,20 @@
                 <input type="text" id="drinkName" class="form-control" placeholder="အမည်" style="margin-bottom:0;">
                 <input type="number" id="drinkPrice" class="form-control" placeholder="စျေး" style="margin-bottom:0;">
             </div>
-            <button class="btn btn-primary btn-sm" style="width:100%;" onclick="window.saveMenu('drink')">+ အအေးအသစ် ထည့်မည်</button>
-            <div id="drinkList" style="margin-top:20px;"></div>
+            <button class="btn btn-primary btn-sm" style="width:100%; padding:12px;" onclick="window.saveDrink()"><i class="fa-solid fa-plus"></i> အအေးအသစ် ထည့်မည်</button>
+            <div id="drinkAdminList" style="margin-top:20px;"></div>
         </div>
     </div>
 </div>
 
-<div class="modal" id="logModal"><div class="modal-content"><button class="btn btn-sm btn-outline" style="position:absolute; top:15px; right:15px;" onclick="window.closeModal('logModal')">X</button><h3 style="margin-bottom:15px;">ဂိုဒေါင် မှတ်တမ်း</h3><div id="logBody"></div></div></div>
-<div class="modal" id="manageModal"><div class="modal-content"><button class="btn btn-sm btn-outline" style="position:absolute; top:15px; right:15px;" onclick="window.closeModal('manageModal')">X</button><h3 style="margin-bottom:15px;">Code များ ပြင်ဆင်ရန်</h3><select id="pSelect" class="form-control" onchange="window.renderManage()"></select><div id="manageBody"></div></div></div>
+<div class="modal" id="logModal"><div class="modal-content"><button class="btn btn-sm btn-outline" style="position:absolute; top:15px; right:15px;" onclick="window.closeModal('logModal')">X</button><h3 style="margin-bottom:15px;"><i class="fa-solid fa-clipboard-list"></i> ဂိုဒေါင် မှတ်တမ်း</h3><div id="logBody"></div></div></div>
+<div class="modal" id="manageModal"><div class="modal-content"><button class="btn btn-sm btn-outline" style="position:absolute; top:15px; right:15px;" onclick="window.closeModal('manageModal')">X</button><h3 style="margin-bottom:15px;"><i class="fa-solid fa-trash-can"></i> Code များ ဖျက်ရန်</h3><select id="pSelect" class="form-control" onchange="window.renderManage()"></select><div id="manageBody"></div></div></div>
 
 <nav class="bottom-nav">
     <div class="nav-item active" onclick="window.switchTab('home',this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
     <div class="nav-item" onclick="window.switchTab('users',this)"><i class="fa-solid fa-users"></i><span>Users</span></div>
     <div class="nav-item" onclick="window.switchTab('orders',this)"><i class="fa-solid fa-bell-concierge"></i><span>Orders</span></div>
-    <div class="nav-item" onclick="window.switchTab('food',this)"><i class="fa-solid fa-gear"></i><span>Menu</span></div>
+    <div class="nav-item" onclick="window.switchTab('food',this)"><i class="fa-solid fa-utensils"></i><span>Menu</span></div>
 </nav>
 
 <div id="toast"></div>
@@ -172,7 +174,15 @@ import { getDatabase, ref, get, set, update, onValue, remove } from "https://www
 const fc = { apiKey: "AIzaSyCWtLbUKGHG6ZHXzU69YLwNvH2Z5EWOyV4", authDomain: "wifipay-ff292.firebaseapp.com", projectId: "wifipay-ff292", storageBucket: "wifipay-ff292.firebasestorage.app", messagingSenderId: "429630230761", appId: "1:429630230761:web:8c7f29457326c1f0c02078", databaseURL: "https://wifipay-ff292-default-rtdb.asia-southeast1.firebasedatabase.app/" };
 const app = initializeApp(fc); const db = getDatabase(app);
 
-let data = { customers:{}, inventory:{}, food_menu:{}, drink_options:{}, food_orders:{}, inventoryLog:[] };
+// Global Variables
+window.allCustomers = {}; 
+window.allInventory = {}; 
+window.foodMenu = {}; 
+window.drinkOptions = {}; 
+window.foodOrders = {}; 
+window.inventoryLog = [];
+window.currentTopupCus = null;
+
 let isInitialLoad = true; let prevPendingCount = 0;
 
 window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); };
@@ -182,51 +192,61 @@ window.switchTab = (tab, el) => {
     document.getElementById(`tab-${tab}`).classList.add('active'); el.classList.add('active');
 };
 window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+window.openModal = (id) => document.getElementById(id).style.display = 'flex';
 
 // === MAIN DATA LISTENER ===
 onValue(ref(db, '/'), snap => {
     if(snap.exists()){
-        data = snap.val();
-        renderDash(); renderStock(); renderCusList(); renderMenuAdmin();
+        const data = snap.val();
+        window.allCustomers = data.customers || {};
+        window.allInventory = data.inventory || { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] };
+        window.foodMenu = data.food_menu || {};
+        window.drinkOptions = data.drink_options || {};
+        window.inventoryLog = data.inventoryLog ? Object.values(data.inventoryLog) : [];
+        window.foodOrders = data.food_orders || {};
         
-        let orders = data.food_orders ? Object.values(data.food_orders) : [];
-        let pending = orders.filter(o => o.status === 'pending');
+        renderDash(); renderStock(); renderCusList(); renderMenuLists();
+        
+        let ordersArray = Object.values(window.foodOrders);
+        let pending = ordersArray.filter(o => o.status === 'pending');
         if(!isInitialLoad && pending.length > prevPendingCount) {
             document.getElementById('orderRing').play().catch(e=>{});
             alert("🔔 အော်ဒါအသစ် ဝင်လာပါပြီ!");
         }
         prevPendingCount = pending.length; isInitialLoad = false;
-        renderOrders(orders);
+        renderOrders(ordersArray);
     }
 });
 
 // === DASHBOARD ===
 function renderDash(){
-    document.getElementById('statUsers').innerText = Object.keys(data.customers||{}).length;
-    let invCount = 0; Object.values(data.inventory||{}).forEach(a => invCount += a.length);
+    document.getElementById('statUsers').innerText = Object.keys(window.allCustomers).length;
+    let invCount = 0; Object.values(window.allInventory).forEach(a => invCount += (a?a.length:0));
     document.getElementById('statVoucher').innerText = invCount;
+    
     let topup=0, food=0;
-    Object.values(data.customers||{}).forEach(c => {
+    Object.values(window.allCustomers).forEach(c => {
         if(c.history) Object.values(c.history).forEach(h => {
-            if(h.type==='topup_in') topup += h.amount;
-            if(h.type==='food') food += h.amount;
+            if(h.type==='topup_in') topup += (h.amount||0);
+            if(h.type==='food') food += (h.amount||h.price||0);
         });
     });
     document.getElementById('statTopup').innerText = topup.toLocaleString();
     document.getElementById('statFood').innerText = food.toLocaleString();
     
-    // Update Datalist for Search
     const list = document.getElementById('pList'); list.innerHTML = '';
-    Object.values(data.customers||{}).forEach(c => { list.innerHTML += `<option value="${c.phone}">${c.name}</option>`; });
+    Object.values(window.allCustomers).forEach(c => { list.innerHTML += `<option value="${c.phone}">${c.name}</option>`; });
 }
 
-// === 1. STOCK SYSTEM (Duplicate Check & Logs) ===
+// === 1. STOCK SYSTEM (Ruijie Tab Format & Duplicate Check) ===
 window.addStock = async () => {
     const text = document.getElementById('newCodes').value; if(!text.trim()) return;
     const lines = text.split('\n');
-    let inv = data.inventory || { "1 Hour":[], "4 Hours":[], "1 Day":[], "1 Week":[], "1 Month":[] };
+    let inv = JSON.parse(JSON.stringify(window.allInventory));
+    if(!inv["1 Hour"]) inv["1 Hour"]=[]; if(!inv["4 Hours"]) inv["4 Hours"]=[]; if(!inv["1 Day"]) inv["1 Day"]=[]; if(!inv["1 Week"]) inv["1 Week"]=[]; if(!inv["1 Month"]) inv["1 Month"]=[];
+    
     let existing = new Set();
-    Object.values(inv).forEach(arr => arr.forEach(i => existing.add(i.code)));
+    Object.values(inv).forEach(arr => { if(arr) arr.forEach(i => existing.add(i.code)) });
     
     let added = { "1 Hour":0, "4 Hours":0, "1 Day":0, "1 Week":0, "1 Month":0 };
     let dupCount = 0;
@@ -247,35 +267,29 @@ window.addStock = async () => {
         }
     });
     
-    let logDetail = Object.entries(added).filter(a=>a[1]>0).map(a=>`${a[0]}: ${a[1]}`).join(', ');
+    let logDetail = Object.entries(added).filter(a=>a[1]>0).map(a=>`${a[0]}: ${a[1]} ခု`).join(', ');
     if(logDetail) {
-        let logs = data.inventoryLog ? Object.values(data.inventoryLog) : [];
+        let logs = JSON.parse(JSON.stringify(window.inventoryLog));
         logs.unshift({ date: new Date().toLocaleString(), detail: logDetail });
         await update(ref(db), { inventory: inv, inventoryLog: logs });
         document.getElementById('newCodes').value = '';
-        window.showToast("ဂိုဒေါင်ထဲ သိမ်းဆည်းပြီးပါပြီ!");
+        window.showToast("✅ ဂိုဒေါင်ထဲ သိမ်းဆည်းပြီးပါပြီ!");
     } else if (dupCount > 0) {
-        alert("အသစ်မဝင်ပါ။ ထည့်ထားသော Code များသည် ရှိပြီးသား (သို့) ရောင်းပြီးသားများ ဖြစ်နေပါသည်။");
+        alert("❌ အသစ်မဝင်ပါ။ ထည့်ထားသော Code များသည် ရှိပြီးသား (သို့) ရောင်းပြီးသားများ ဖြစ်နေပါသည်။");
     }
 };
 
 function renderStock(){
     const cont = document.getElementById('stockSummary'); cont.innerHTML = '';
     ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => {
-        let c = (data.inventory && data.inventory[p]) ? data.inventory[p].length : 0;
-        cont.innerHTML += `<div class="stock-item"><span>${p}</span> <b>${c} ခု</b></div>`;
+        let c = (window.allInventory && window.allInventory[p]) ? window.allInventory[p].length : 0;
+        cont.innerHTML += `<div class="stock-item"><span><i class="fa-solid fa-wifi"></i> ${p}</span> <b>${c} ခု</b></div>`;
     });
+    
+    const lb = document.getElementById('logBody'); lb.innerHTML = '';
+    if(window.inventoryLog.length === 0) lb.innerHTML = '<p style="color:var(--text-sub); font-size:12px;">မှတ်တမ်း မရှိသေးပါ</p>';
+    window.inventoryLog.forEach(l => { lb.innerHTML += `<div style="padding:12px; border-bottom:1px solid var(--border); font-size:12px;"><b style="color:var(--gold);">${l.date}</b><br>${l.detail}</div>`; });
 }
-
-window.openModal = (id) => {
-    document.getElementById(id).style.display = 'flex';
-    if(id==='logModal'){
-        const lb = document.getElementById('logBody'); lb.innerHTML = '';
-        let logs = data.inventoryLog ? Object.values(data.inventoryLog) : [];
-        if(logs.length === 0) lb.innerHTML = '<p style="color:var(--text-sub); font-size:12px;">မှတ်တမ်း မရှိသေးပါ</p>';
-        logs.forEach(l => { lb.innerHTML += `<div style="padding:12px; border-bottom:1px solid var(--border); font-size:12px;"><b style="color:var(--gold);">${l.date}</b><br>${l.detail}</div>`; });
-    }
-};
 
 window.openManageStock = () => {
     const sel = document.getElementById('pSelect'); sel.innerHTML = '';
@@ -284,75 +298,76 @@ window.openManageStock = () => {
 };
 window.renderManage = () => {
     const p = document.getElementById('pSelect').value; const mb = document.getElementById('manageBody'); mb.innerHTML = '';
-    let items = data.inventory ? data.inventory[p] : [];
-    if(!items || items.length === 0) mb.innerHTML = '<p style="color:var(--text-sub); font-size:12px;">Code များ မရှိပါ</p>';
-    (items || []).forEach((item, i) => {
-        mb.innerHTML += `<div class="item-card"><span>${item.code}</span><button class="btn btn-sm btn-danger" onclick="window.delCode('${p}',${i})">X</button></div>`;
-    });
+    let items = window.allInventory ? window.allInventory[p] : [];
+    if(!items || items.length === 0) { mb.innerHTML = '<p style="color:var(--text-sub); font-size:12px;">Code များ မရှိပါ</p>'; return; }
+    items.forEach((item, i) => { mb.innerHTML += `<div class="item-card"><span style="font-family:var(--mono);">${item.code}</span><button class="btn btn-sm btn-danger" onclick="window.delCode('${p}',${i})">ဖျက်မည်</button></div>`; });
 };
-window.delCode = async (p, i) => { let inv = data.inventory[p]; inv.splice(i, 1); await set(ref(db, `inventory/${p}`), inv); window.renderManage(); };
+window.delCode = async (p, i) => { let inv = window.allInventory[p]; inv.splice(i, 1); await set(ref(db, `inventory/${p}`), inv); window.renderManage(); };
 
-// === 2. TOPUP & SEARCH ===
-window.checkCus = () => {
-    const ph = document.getElementById('topupPhone').value.trim();
-    if(!ph) return window.showToast("ဖုန်းနံပါတ် သို့မဟုတ် အမည် ထည့်ပါ");
-    const cus = Object.values(data.customers||{}).find(c => c.phone===ph || c.name===ph);
-    if(cus){
-        document.getElementById('infoName').innerText = cus.name;
-        document.getElementById('infoBal').innerText = (cus.balance||0).toLocaleString();
+// === 2. SEARCH & TOPUP ===
+window.searchCustomer = () => {
+    const val = document.getElementById('topupPhone').value.trim();
+    if(!val) return window.showToast("ဖုန်းနံပါတ် သို့မဟုတ် အမည် ထည့်ပါ");
+    let found = null;
+    for(let key in window.allCustomers) {
+        if(window.allCustomers[key].phone === val || window.allCustomers[key].name === val) { found = window.allCustomers[key]; break; }
+    }
+    if(found){
+        window.currentTopupCus = found;
+        document.getElementById('infoName').innerText = found.name;
+        document.getElementById('infoBal').innerText = (found.balance||0).toLocaleString();
         document.getElementById('cusInfoBox').style.display = 'block';
-    } else { alert("❌ ရှာမတွေ့ပါ! အကောင့် ဖွင့်ထားသူ မဟုတ်ပါ။"); document.getElementById('cusInfoBox').style.display = 'none'; }
+    } else { alert("❌ အကောင့် ရှာမတွေ့ပါ! စာလုံးပေါင်း သေချာစစ်ပါ။"); document.getElementById('cusInfoBox').style.display = 'none'; }
 };
 
 window.doTopup = async (type) => {
-    const ph = document.getElementById('topupPhone').value.trim();
-    const cus = Object.values(data.customers||{}).find(c => c.phone===ph || c.name===ph);
+    if(!window.currentTopupCus) return;
     const amt = parseInt(document.getElementById('topupAmt').value);
-    if(!cus || !amt) return window.showToast("ပမာဏ ထည့်ပါ");
+    if(!amt || amt <= 0) return window.showToast("ပမာဏ အမှန်ထည့်ပါ");
     
-    if(type==='out' && (cus.balance||0) < amt) return window.showToast("လက်ကျန်ငွေ မလောက်ပါ");
+    let cus = window.currentTopupCus;
+    if(type === 'out' && (cus.balance||0) < amt) return window.showToast("❌ လက်ကျန်ငွေ မလောက်ပါ");
 
-    let newBal = (type==='in') ? (cus.balance||0)+amt : (cus.balance||0)-amt;
+    let newBal = (type === 'in') ? (cus.balance||0)+amt : (cus.balance||0)-amt;
     let u = {}; let now = new Date().toLocaleString();
     u[`customers/${cus.phone}/balance`] = newBal;
     u[`customers/${cus.phone}/history/tx_${Date.now()}`] = { type: type==='in'?'topup_in':'deduct_out', title: type==='in'?'Admin Topup':'Admin Deduct', amount: amt, date: now };
     await update(ref(db), u);
-    window.showToast("အောင်မြင်ပါသည်!");
+    window.showToast("✅ အောင်မြင်ပါသည်!");
     document.getElementById('cusInfoBox').style.display='none'; document.getElementById('topupPhone').value=''; document.getElementById('topupAmt').value='';
+    window.currentTopupCus = null;
 };
 
 // === 5. USERS LIST ===
 function renderCusList(){
     const cont = document.getElementById('userList'); cont.innerHTML = '';
-    const list = Object.values(data.customers||{}).sort((a,b)=>(b.balance||0)-(a.balance||0));
+    const list = Object.values(window.allCustomers).sort((a,b)=>(b.balance||0)-(a.balance||0));
     list.forEach(c => {
-        cont.innerHTML += `<div class="item-card"><div><b>${c.name}</b><br><span style="font-size:11px; color:var(--text-sub);">${c.phone}</span></div><b style="color:var(--green); font-size:16px;">${(c.balance||0).toLocaleString()} Ks</b></div>`;
+        cont.innerHTML += `<div class="item-card"><div><b><i class="fa-solid fa-user"></i> ${c.name}</b><br><span style="font-size:11px; color:var(--text-sub);">${c.phone}</span></div><b style="color:var(--green); font-size:16px;">${(c.balance||0).toLocaleString()} Ks</b></div>`;
     });
 }
 
 // === 6. FOOD ORDERS & REFUND LOGIC ===
 function renderOrders(orders){
     const cont = document.getElementById('orderList'); cont.innerHTML = '';
-    let activeOrders = orders.filter(o => o.status !== 'completed' && o.status !== 'cancelled').sort((a,b) => new Date(a.date) - new Date(b.date));
+    let pending = orders.filter(o => o.status !== 'completed' && o.status !== 'cancelled').sort((a,b) => new Date(a.date) - new Date(b.date));
     
-    if(!activeOrders.length) { cont.innerHTML = '<p style="text-align:center; color:var(--text-sub); font-size:12px;">အော်ဒါ အသစ်မရှိသေးပါ</p>'; return; }
+    if(!pending.length) { cont.innerHTML = '<div class="item-card"><p style="text-align:center; width:100%; color:var(--text-sub); font-size:12px;">အော်ဒါ အသစ်မရှိသေးပါ</p></div>'; return; }
     
-    activeOrders.forEach(o => {
-        let itemsText = o.items ? o.items.map(i=>`${i.qty}x ${i.name}`).join(', ') : '';
-        let payType = o.payment_method === 'cash' ? '💵 Cash (ဆိုင်ရှင်း)' : '💳 Wallet (ငွေဖြတ်ပြီး)';
-        
-        cont.innerHTML += `<div class="order-card">
+    pending.forEach(o => {
+        let itemsText = o.items ? o.items.map(i=>`${i.qty}x ${i.name}`).join('<br>') : '';
+        cont.innerHTML += `<div class="item-card" style="flex-direction:column; align-items:stretch; border-left: 4px solid var(--gold);">
             <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <b>${o.name}</b> <span class="status-badge ${o.status==='pending'?'st-pending':'st-accepted'}">${o.status}</span>
+                <b><i class="fa-solid fa-user"></i> ${o.name}</b> <span style="font-size:10px; padding:4px 8px; border-radius:10px; background:rgba(247,201,72,0.1); color:var(--gold); text-transform:uppercase;">${o.status}</span>
             </div>
-            <div style="font-size:12px; color:var(--text-sub); margin-bottom:8px;">${itemsText}</div>
-            <div style="font-size:11px; color:var(--text); margin-bottom:5px;">${payType}</div>
-            <div style="font-size:11px; color:var(--primary); margin-bottom:12px;"><i class="fa-solid fa-location-dot"></i> ${o.address}</div>
+            <div style="font-size:13px; color:var(--text-sub); margin-bottom:10px;">${itemsText}</div>
+            <div style="font-size:11px; color:var(--primary); margin-bottom:5px;"><i class="fa-solid fa-location-dot"></i> ${o.address}</div>
+            <div style="font-size:11px; color:#fff; margin-bottom:15px;"><i class="fa-solid fa-money-bill"></i> ${o.payment_method==='cash'?'Cash (ဆိုင်ရှင်း)':'Wallet (ငွေဖြတ်ပြီး)'}</div>
             
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <b style="color:var(--green);">${(o.total||0).toLocaleString()} Ks</b>
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:10px;">
+                <b style="color:var(--green); font-size:16px;">${(o.total||0).toLocaleString()} Ks</b>
                 <div style="display:flex; gap:5px;">
-                    ${o.status==='pending' ? `<button class="btn btn-sm btn-green" onclick="window.updOrder('${o.id}','accepted')">လက်ခံမည်</button>` : ''}
+                    ${o.status==='pending' ? `<button class="btn btn-sm btn-green" onclick="window.updOrder('${o.id}','accepted')">Accept</button>` : ''}
                     <button class="btn btn-sm btn-primary" onclick="window.updOrder('${o.id}','completed')">Done</button>
                     <button class="btn btn-sm btn-danger" onclick="window.cancelOrder('${o.id}', '${o.phone}', ${o.total}, '${o.payment_method}')">X Cancel</button>
                 </div>
@@ -363,61 +378,66 @@ function renderOrders(orders){
 
 window.updOrder = async (id, status) => { 
     await update(ref(db, `food_orders/${id}`), { status }); 
-    window.showToast("အော်ဒါ အခြေအနေ ပြောင်းလဲပြီး"); 
+    window.showToast("✅ အော်ဒါ အခြေအနေ ပြောင်းလဲပြီး"); 
 };
 
+// REFUND LOGIC
 window.cancelOrder = async (orderId, phone, amount, payMethod) => {
-    if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား?\n(Wallet ဖြင့် ရှင်းထားပါက ငွေပြန်အမ်းပေးပါမည်)")) return;
+    if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား?\n(Wallet ဖြင့် ရှင်းထားပါက Customer ထံသို့ ငွေပြန်အမ်းပေးပါမည်)")) return;
     
     let updates = {};
     updates[`food_orders/${orderId}/status`] = 'cancelled';
     
-    // REFUND LOGIC (ငွေပြန်အမ်းခြင်း)
     if(payMethod !== 'cash') {
-        const cSnap = await get(ref(db, `customers/${phone}`));
-        if(cSnap.exists()) {
-            let cus = cSnap.val();
+        let cus = window.allCustomers[phone];
+        if(cus) {
             let newBal = (cus.balance || 0) + amount;
             updates[`customers/${phone}/balance`] = newBal;
             updates[`customers/${phone}/history/tx_refund_${Date.now()}`] = {
-                type: 'tx_in', title: 'Refund: Cancelled Order', amount: amount, date: new Date().toLocaleString()
+                type: 'tx_in', title: 'Refund (Cancel Order)', amount: amount, date: new Date().toLocaleString()
             };
         }
     }
-    
     await update(ref(db), updates);
-    window.showToast("အော်ဒါ ပယ်ဖျက်ပြီး ငွေပြန်အမ်းပေးပါပြီ!");
+    window.showToast("❌ အော်ဒါ ပယ်ဖျက်ပြီး ငွေပြန်အမ်းပေးပါပြီ!");
 };
 
-// === 7. MENU ADMIN (Icons & Lists) ===
-window.saveMenu = async (type) => {
-    let id = type==='food' ? 'f_'+Date.now() : 'd_'+Date.now();
-    let name = document.getElementById(type==='food'?'foodName':'drinkName').value;
-    let price = parseInt(document.getElementById(type==='food'?'foodPrice':'drinkPrice').value);
+// === 7. MENU ADMIN (With Icons & Live List) ===
+window.saveFood = async () => {
+    let id = 'f_'+Date.now();
+    let name = document.getElementById('foodName').value;
+    let price = parseInt(document.getElementById('foodPrice').value);
+    let icon = document.getElementById('foodIcon').value || '🍲';
     
     if(!name || !price) return window.showToast("အချက်အလက် ပြည့်စုံစွာ ထည့်ပါ");
     
-    if(type==='food') {
-        let icon = document.getElementById('foodIcon').value || '🍲';
-        await set(ref(db, `food_menu/${id}`), { id, name, price, icon });
-        document.getElementById('foodIcon').value=''; document.getElementById('foodName').value=''; document.getElementById('foodPrice').value='';
-    } else {
-        await set(ref(db, `drink_options/${id}`), { id, name, price });
-        document.getElementById('drinkName').value=''; document.getElementById('drinkPrice').value='';
-    }
-    window.showToast("Menu သို့ သိမ်းဆည်းပြီးပါပြီ");
+    await set(ref(db, `food_menu/${id}`), { id, name, price, icon });
+    document.getElementById('foodIcon').value=''; document.getElementById('foodName').value=''; document.getElementById('foodPrice').value='';
+    window.showToast("✅ ဟင်းပွဲ သိမ်းဆည်းပြီးပါပြီ");
 };
 
-function renderMenuAdmin(){
-    const fl = document.getElementById('foodList'); fl.innerHTML = '<p style="font-size:11px; color:var(--text-sub); margin-bottom:10px;">လက်ရှိ ဟင်းပွဲများ:</p>';
-    Object.values(data.food_menu||{}).forEach(f => {
+window.saveDrink = async () => {
+    let id = 'd_'+Date.now();
+    let name = document.getElementById('drinkName').value;
+    let price = parseInt(document.getElementById('drinkPrice').value);
+    
+    if(!name || !price) return window.showToast("အချက်အလက် ပြည့်စုံစွာ ထည့်ပါ");
+    
+    await set(ref(db, `drink_options/${id}`), { id, name, price });
+    document.getElementById('drinkName').value=''; document.getElementById('drinkPrice').value='';
+    window.showToast("✅ အအေး သိမ်းဆည်းပြီးပါပြီ");
+};
+
+function renderMenuLists(){
+    const fl = document.getElementById('foodAdminList'); fl.innerHTML = '<p style="font-size:11px; color:var(--text-sub); margin-bottom:10px;">လက်ရှိ ဟင်းပွဲစာရင်း:</p>';
+    Object.values(window.foodMenu).forEach(f => {
         if(f.isOptions) return;
-        fl.innerHTML += `<div class="item-card"><span>${f.icon} <b>${f.name}</b> (${f.price} Ks)</span><button class="btn btn-sm btn-danger" onclick="window.delMenu('food_menu','${f.id}')">ဖျက်မည်</button></div>`;
+        fl.innerHTML += `<div class="item-card" style="padding:10px 15px;"><span>${f.icon} <b>${f.name}</b> <span style="color:var(--green); font-family:var(--mono);">(${f.price} Ks)</span></span><button class="btn btn-sm btn-danger" onclick="window.delMenu('food_menu','${f.id}')"><i class="fa-solid fa-trash"></i></button></div>`;
     });
     
-    const dl = document.getElementById('drinkList'); dl.innerHTML = '<p style="font-size:11px; color:var(--text-sub); margin-bottom:10px;">လက်ရှိ အအေးများ:</p>';
-    Object.values(data.drink_options||{}).forEach(d => {
-        dl.innerHTML += `<div class="item-card"><span>🥤 <b>${d.name}</b> (${d.price} Ks)</span><button class="btn btn-sm btn-danger" onclick="window.delMenu('drink_options','${d.id}')">ဖျက်မည်</button></div>`;
+    const dl = document.getElementById('drinkAdminList'); dl.innerHTML = '<p style="font-size:11px; color:var(--text-sub); margin-bottom:10px;">လက်ရှိ အအေးစာရင်း:</p>';
+    Object.values(window.drinkOptions).forEach(d => {
+        dl.innerHTML += `<div class="item-card" style="padding:10px 15px;"><span>🥤 <b>${d.name}</b> <span style="color:var(--green); font-family:var(--mono);">(${d.price} Ks)</span></span><button class="btn btn-sm btn-danger" onclick="window.delMenu('drink_options','${d.id}')"><i class="fa-solid fa-trash"></i></button></div>`;
     });
 }
 
