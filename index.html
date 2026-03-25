@@ -289,12 +289,39 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 
   <div id="tab-transfer" class="tab-content">
     <div style="padding:0 20px;">
-      <div style="padding:26px 0 18px;"><div class="sec-title" style="font-size:20px;">💸 Send Money</div><p style="font-size:13px;color:var(--text-sub);margin-top:4px;">Safe & instant transfers</p></div>
+      <div style="padding:26px 0 18px;">
+        <div class="sec-title" style="font-size:20px;">💸 Send Money</div>
+        <p style="font-size:13px;color:var(--text-sub);margin-top:4px;">Safe & instant transfers</p>
+      </div>
+      
       <div id="form-transfer" class="form-card">
-        <div class="field"><label>လက်ခံမည့်သူ ဖုန်းနံပါတ်</label><div class="fi"><input type="tel" id="txPhone" placeholder="09xxxxxxxxx"><i class="fa-solid fa-phone"></i></div></div>
+        <div class="field">
+          <label>လက်ခံမည့်သူ ဖုန်းနံပါတ်</label>
+          <div class="fi" style="display: flex; gap: 8px;">
+            <div style="position: relative; flex: 1;">
+              <input type="tel" id="txPhone" placeholder="09xxxxxxxxx">
+              <i class="fa-solid fa-phone" style="position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--text-dim);"></i>
+            </div>
+            <button class="btn-green" style="width: 50px; border-radius: 13px; border:none; display: flex; justify-content: center; align-items: center; cursor:pointer;" onclick="window.verifyTxPhone()">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+          <div id="txReceiverName" style="font-size: 13px; color: var(--green); margin-top: 8px; font-weight: 700; display: none;"></div>
+        </div>
+
         <div class="field"><label>လွှဲမည့် ပမာဏ (Ks)</label><div class="fi"><input type="number" id="txAmount" placeholder="0"><i class="fa-solid fa-coins"></i></div></div>
-        <div class="quick-chips"><span class="qchip" onclick="window.setQ('txAmount',500)">+500</span><span class="qchip" onclick="window.setQ('txAmount',1000)">+1,000</span><span class="qchip" onclick="window.setQ('txAmount',5000)">+5,000</span></div>
+        <div class="quick-chips">
+          <span class="qchip" onclick="window.setQ('txAmount',500)">+500</span>
+          <span class="qchip" onclick="window.setQ('txAmount',1000)">+1,000</span>
+          <span class="qchip" onclick="window.setQ('txAmount',5000)">+5,000</span>
+        </div>
         <button class="btn btn-green" onclick="window.prepareTx('normal')"><i class="fa-solid fa-paper-plane"></i> &nbsp;ငွေလွှဲမည်</button>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-weight:700;">လွှဲဖူးသူများ (Recent)</div>
+        <div id="recentTxList" style="display: flex; flex-direction: column; gap: 8px;">
+          </div>
       </div>
     </div>
   </div>
@@ -475,7 +502,6 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import{getDatabase,ref,get,set,update,onValue}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
-// NEW FIREBASE CONFIG (wifipay-ff292)
 const fc={apiKey:"AIzaSyCWtLbUKGHG6ZHXzU69YLwNvH2Z5EWOyV4",authDomain:"wifipay-ff292.firebaseapp.com",projectId:"wifipay-ff292",storageBucket:"wifipay-ff292.firebasestorage.app",messagingSenderId:"429630230761",appId:"1:429630230761:web:8c7f29457326c1f0c02078",databaseURL:"https://wifipay-ff292-default-rtdb.asia-southeast1.firebasedatabase.app/"};
 const app=initializeApp(fc);const db=getDatabase(app);
 
@@ -484,7 +510,6 @@ let pendingTxType = null;
 let prevBalance = null; 
 let isFirstLogin = true;
 
-// 🌟 AUTO-FILL ACCOUNTS FOR LOGIN 🌟
 window.loadSavedAccounts = function() {
     let saved = JSON.parse(localStorage.getItem('wp_accounts') || '[]');
     let dl = document.getElementById('savedUsers'); dl.innerHTML = '';
@@ -506,7 +531,76 @@ document.getElementById('loginPhone').addEventListener('input', function(e) {
     if(match) { document.getElementById('loginPhone').value = match.phone; document.getElementById('loginPass').value = match.pw; }
 });
 
-// 🌟 FOOD ORDER SYSTEM VARIABLES 🌟
+// 🌟 လွှဲဖူးသူများကို မှတ်သားမည့်၊ ပြန်ခေါ်မည့် Functions များ 🌟
+window.saveRecentTx = function(phone, name) {
+    let recents = JSON.parse(localStorage.getItem('wp_recent_tx') || '[]');
+    recents = recents.filter(r => r.phone !== phone);
+    recents.unshift({phone, name});
+    if(recents.length > 5) recents.pop();
+    localStorage.setItem('wp_recent_tx', JSON.stringify(recents));
+    window.loadRecentTx();
+};
+
+window.loadRecentTx = function() {
+    const list = document.getElementById('recentTxList');
+    if(!list) return;
+    let recents = JSON.parse(localStorage.getItem('wp_recent_tx') || '[]');
+    list.innerHTML = '';
+    
+    if(recents.length === 0) {
+        list.innerHTML = '<p style="font-size:12px;color:var(--text-sub);text-align:center;padding:15px 0;">မှတ်တမ်း မရှိသေးပါ</p>'; 
+        return;
+    }
+    
+    recents.forEach(r => {
+        list.innerHTML += `<div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:8px; transition:0.2s;" onclick="window.selectRecentTx('${r.phone}')">
+            <div style="display:flex; align-items:center; gap:14px;">
+                <div style="width:38px; height:38px; border-radius:50%; background:rgba(34,211,165,0.12); color:var(--green); display:flex; justify-content:center; align-items:center;"><i class="fa-solid fa-user"></i></div>
+                <div>
+                    <div style="font-size:13px; font-weight:700; color:var(--text);">${r.name}</div>
+                    <div style="font-size:11px; color:var(--text-sub); font-family:var(--mono); margin-top:2px;">${r.phone}</div>
+                </div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color:var(--text-dim); font-size:12px;"></i>
+        </div>`;
+    });
+};
+
+window.selectRecentTx = function(phone) {
+    document.getElementById('txPhone').value = phone;
+    window.verifyTxPhone();
+};
+
+// 🌟 ဖုန်းနံပါတ် စစ်ဆေးပြီး နာမည်ပေါ်စေမည့် Function 🌟
+window.verifyTxPhone = async function() {
+    const tp = document.getElementById('txPhone').value.trim();
+    const nameDisplay = document.getElementById('txReceiverName');
+    
+    if(!tp) return window.showToast('ဖုန်းနံပါတ် ရိုက်ထည့်ပါ', 'error');
+    if(cu && tp === cu.phone) {
+        nameDisplay.style.display = 'block'; nameDisplay.style.color = 'var(--red)';
+        nameDisplay.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> မိမိကိုယ်တိုင် မလွှဲနိုင်ပါ';
+        return;
+    }
+    
+    try {
+        nameDisplay.style.display = 'block'; nameDisplay.style.color = 'var(--text-sub)';
+        nameDisplay.textContent = 'ရှာဖွေနေပါသည်...';
+        
+        const snap = await get(ref(db, 'customers/' + tp));
+        if(snap.exists()) {
+            const tgt = snap.val();
+            nameDisplay.style.color = 'var(--green)';
+            nameDisplay.innerHTML = '<i class="fa-solid fa-circle-check"></i> လက်ခံမည့်သူ: ' + tgt.name;
+        } else {
+            nameDisplay.style.color = 'var(--red)';
+            nameDisplay.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ဒီဖုန်းနံပါတ်ဖြင့် အကောင့်မရှိပါ';
+        }
+    } catch(e) {
+        console.error(e); window.showToast('ချိတ်ဆက်မှု အခက်အခဲဖြစ်နေပါသည်', 'error');
+    }
+};
+
 window.foodMenu = []; window.drinkOptions = [];
 let cart = []; let deliveryType = 'pickup';
 let deferredPrompt; const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -547,6 +641,7 @@ window.switchTab=function(tab,el=null){
   
   if(tab==='food') window.renderFood();
   if(tab==='history') window.renderHistory();
+  if(tab==='transfer') window.loadRecentTx(); // 🌟 Recent Tx ခေါ်ပေးမည့်နေရာ
   document.getElementById('cartFloat').style.display = (tab==='food' && cart.length>0) ? 'flex' : 'none';
 };
 
@@ -564,14 +659,12 @@ window.requestNotiPermission = function() {
     });
 }
 
-// --- AUTH & PROFILE ---
 window.register=async function(){
   const n=document.getElementById('regName').value.trim(); const p=document.getElementById('regPhone').value.trim(); const pw=document.getElementById('regPass').value.trim();
   if(!n||!p||!pw)return window.showToast('အချက်အလက် ဖြည့်ပါ','error');
   const snap=await get(ref(db,'customers/'+p));
   if(snap.exists())return window.showToast('အကောင့်ရှိပြီးသားပါ','error');
   
-  // 🌟 ADD hasReceivedBonus FLAG TO NEW USER 🌟
   await set(ref(db,'customers/'+p),{name:n,phone:p,password:pw,balance:0,hasReceivedBonus:false});
   window.saveAccountToLocal(p, n, pw);
   window.showToast('အောင်မြင်ပါသည် ✓','success');window.showLogin();
@@ -592,7 +685,6 @@ window.loadDash=function(ph){
   document.getElementById('loginScreen').style.display='none'; document.getElementById('registerScreen').style.display='none';
   const ma=document.getElementById('mainApp');ma.style.display='flex';ma.style.flexDirection='column';ma.style.height='100%';
   
-  // 🌟 AD BANNER SYNC 🌟
   onValue(ref(db, 'settings/ad_banner'), snap => {
     let adBox = document.getElementById('adBannerBox'); let adText = document.getElementById('adBannerText');
     if(snap.exists() && snap.val().trim() !== "") { adText.textContent = snap.val(); adBox.style.display = 'flex'; } 
@@ -605,7 +697,6 @@ window.loadDash=function(ph){
     let currentBal = cu.balance || 0;
     document.getElementById('balanceText').textContent=currentBal.toLocaleString();
     
-    // Top-up Notification Logic & BONUS LOGIC
     if (prevBalance !== null && currentBal > prevBalance) {
         let diff = currentBal - prevBalance;
         let msg = `💰 အကောင့်ထဲသို့ ငွေ ${diff.toLocaleString()} Ks ဝင်လာပါပြီ!`;
@@ -613,7 +704,6 @@ window.loadDash=function(ph){
         document.getElementById('coinSound')?.play().catch(e=>console.log(e));
         if ("Notification" in window && Notification.permission === "granted") { new Notification("Wifipay ငွေဝင်လာပါပြီ", { body: msg, icon: "icon.png" }); }
         
-        // 🌟 AUTOMATIC 500 Ks BONUS IF FIRST TIME >= 5000 🌟
         if(diff >= 5000 && cu.hasReceivedBonus === false) {
             setTimeout(async () => {
                 let u = {}; let now = new Date().toLocaleString();
@@ -622,7 +712,7 @@ window.loadDash=function(ph){
                 u[`customers/${cu.phone}/history/tx_bonus_${Date.now()}`] = { type: 'gift_in', title: 'Welcome Bonus 🎉', amount: 500, date: now };
                 await update(ref(db), u);
                 window.showToast('🎉 ပထမဆုံးအကြိမ် ငွေဖြည့်သည့်အတွက် 500 Ks Bonus ရရှိပါသည်!', 'success');
-            }, 3000); // 3 seconds delay for wow factor
+            }, 3000); 
         }
     }
     prevBalance = currentBal;
@@ -656,7 +746,6 @@ window.loadDash=function(ph){
   onValue(ref(db, 'drink_options'), snap => { if(snap.exists()) { window.drinkOptions = Object.values(snap.val()); } });
 };
 
-// --- UPDATE PROFILE NAME ---
 window.updateProfileName=async function(){
   const newName=document.getElementById('editNameInput').value.trim();
   if(!newName)return window.showToast('နာမည် အသစ်ထည့်ပါ','error');
@@ -666,7 +755,6 @@ window.updateProfileName=async function(){
   document.getElementById('profileSection').style.display='none';
 };
 
-// --- UPLOAD AVATAR ---
 window.triggerAvatarUpload=()=>document.getElementById('avatarUpload').click();
 window.handleAvatarChange=function(e){
   const file = e.target.files[0]; if(!file) return;
@@ -688,7 +776,6 @@ window.handleAvatarChange=function(e){
   reader.readAsDataURL(file);
 };
 
-// --- FOOD ORDER LOGIC ---
 window.renderFood = function() {
   const fg = document.getElementById('foodGrid'); fg.innerHTML = '';
   window.foodMenu.forEach(f => {
@@ -752,7 +839,6 @@ window.calcCart = function() {
   document.getElementById('cartTotal').textContent = (sub + deli).toLocaleString() + ' Ks';
 };
 
-// --- TRANSACTION PREP ---
 window.prepareTx = function(type) {
   let total = 0; let isCash = false;
   if(type === 'normal') {
@@ -775,7 +861,6 @@ window.prepareTx = function(type) {
   document.getElementById('pinOverlay').style.display = 'flex';
 };
 
-// --- TRANSACTION CONFIRM ---
 window.confirmTx = async function() {
   const pw = document.getElementById('modalPinInput').value;
   if(pw !== cu.password) return window.showToast('စကားဝှက် မှားနေပါသည်', 'error');
@@ -791,8 +876,14 @@ window.confirmTx = async function() {
       updates[`customers/${cu.phone}/history/tx_out_${Date.now()}`]={type:'tx_out',title:'To: '+tgt.name,amount:amt,date:now};
       updates[`customers/${tp}/balance`]=(tgt.balance||0)+amt;
       updates[`customers/${tp}/history/tx_in_${Date.now()}`]={type:'tx_in',title:'From: '+cu.name,amount:amt,date:now};
-      await update(ref(db),updates); window.showToast('✓ '+tgt.name+' ထံ ငွေလွှဲပြီးပါပြီ','success');
+      await update(ref(db),updates); 
+      window.showToast('✓ '+tgt.name+' ထံ ငွေလွှဲပြီးပါပြီ','success');
+      
+      // 🌟 ငွေလွှဲအောင်မြင်ရင် ဖုန်းထဲမှာ မှတ်ထားပေးမည့် အပိုင်း 🌟
+      window.saveRecentTx(tp, tgt.name);
+      
       document.getElementById('txPhone').value='';document.getElementById('txAmount').value='';
+      document.getElementById('txReceiverName').style.display='none';
     }catch(e){console.error(e);}
   } else if(pendingTxType === 'order') {
     let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0); let deliFee = deliveryType === 'deli' ? 500 : 0; let total = sub + deliFee;
@@ -812,19 +903,39 @@ window.confirmTx = async function() {
   }
 };
 
-window.buyVoucher=async function(plan,price){
-  if(!cu)return; if(cu.balance<price)return window.showToast('ငွေမလောက်ပါ 😢','error');
-  if(!confirm(plan+' Voucher — '+price.toLocaleString()+' Ks ဝယ်မည်လား?'))return;
-  try{
-    const inv=await get(ref(db,'inventory/'+plan)); let vl=inv.exists()?inv.val():[];
-    if(!vl.length)return window.showToast('Code ကုန်နေပါသည်','error');
-    const v=vl.shift();const now=new Date().toLocaleString();let u={};
-    u['inventory/'+plan]=vl;
-    u['customers/'+cu.phone+'/balance']=cu.balance-price;
-    u['customers/'+cu.phone+'/history/tx_'+Date.now()]={type:'buy',title:plan,amount:price,extra:v.code,date:now};
-    u['records/web_'+Date.now()]={id:'web_'+Date.now(),date:new Date().toLocaleDateString(),name:'Customer_('+cu.phone+')',plan,qty:1,totalPrice:price,codes:[v.code]};
-    await update(ref(db),u);window.showToast('✓ Code: '+v.code,'success');
-  }catch(e){console.error(e);}
+// 🌟 Voucher ဆွဲထုတ်တာ Error မတက်အောင် ပြင်ထားတဲ့အပိုင်း 🌟
+window.buyVoucher = async function(plan, price) {
+  if(!cu) return; 
+  if(cu.balance < price) return window.showToast('ငွေမလောက်ပါ 😢', 'error');
+  if(!confirm(plan + ' Voucher — ' + price.toLocaleString() + ' Ks ဝယ်မည်လား?')) return;
+  
+  try {
+    const inv = await get(ref(db, 'inventory/' + plan)); 
+    let vl = inv.exists() ? inv.val() : [];
+    
+    // Firebase က Object အနေနဲ့ ပြန်ပေးလာရင် Array ပြောင်းပေးမည့် အပိုင်း
+    let arr = Array.isArray(vl) ? vl : Object.values(vl).filter(x => x !== null);
+    
+    if(!arr.length) return window.showToast('Code ကုန်နေပါသည်', 'error');
+    
+    const v = arr.shift(); // Code တစ်ခုကို ဆွဲထုတ်မယ်
+    const now = new Date().toLocaleString();
+    let u = {};
+    
+    u['inventory/' + plan] = arr;
+    u['customers/' + cu.phone + '/balance'] = cu.balance - price;
+    u['customers/' + cu.phone + '/history/tx_' + Date.now()] = {type: 'buy', title: plan, amount: price, extra: v.code, date: now};
+    
+    u['records/web_' + Date.now()] = {id: 'web_' + Date.now(), date: new Date().toLocaleDateString(), name: 'Customer_(' + cu.phone + ')', plan: plan, qty: 1, totalPrice: price, codes: [v.code]};
+    
+    await update(ref(db), u);
+    
+    window.showToast('✓ Code: ' + v.code, 'success');
+    
+  } catch(e) {
+    console.error("Voucher ဝယ်ယူမှု Error:", e);
+    window.showToast('ဝယ်ယူမှု မအောင်မြင်ပါ၊ စနစ်ချို့ယွင်းနေပါသည်။', 'error');
+  }
 };
 
 window.changePassword=async function(){
