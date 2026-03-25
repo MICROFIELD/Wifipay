@@ -24,7 +24,7 @@
     .dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 8px; }
     .dash-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
     .dash-lbl { font-size: 10px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; }
-    .dash-val { font-size: 18px; font-weight: 700; font-family: var(--mono); }
+    .dash-val { font-size: 17px; font-weight: 700; font-family: var(--mono); }
 
     .c-users .dash-icon { background: rgba(124,106,255,0.1); color: var(--primary); }
     .c-topup .dash-icon { background: rgba(34,211,165,0.1); color: var(--green); }
@@ -65,22 +65,44 @@
 
     #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1px solid var(--primary); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 700; opacity: 0; transition: 0.3s; z-index: 2000; pointer-events: none; }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+
+    /* Login Screen */
+    #loginScreen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; justify-content: center; padding: 30px; }
+    .login-box { background: var(--surface); border: 1px solid var(--border); border-radius: 25px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 </style>
 </head>
 <body onclick="document.getElementById('orderRing').load()">
 
 <audio id="orderRing" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
 
-<div class="header">
-    <div style="max-width:500px; margin:0 auto;"><div class="header-title"><i class="fa-solid fa-crown" style="color:var(--gold);"></i> Wifipay Admin Pro Max</div></div>
+<div id="loginScreen">
+    <div style="text-align:center; margin-bottom:40px;">
+        <i class="fa-solid fa-shield-halved" style="font-size:50px; color:var(--primary); margin-bottom:15px;"></i>
+        <h2 style="font-size:24px;">Admin Portal</h2>
+        <p style="color:var(--text-sub); font-size:13px;">ကျေးဇူးပြု၍ Admin အကောင့် ဝင်ပါ</p>
+    </div>
+    <div class="login-box">
+        <label style="font-size:12px; color:var(--text-sub); font-weight:700; margin-bottom:8px; display:block;">Admin Email</label>
+        <input type="email" id="adminEmail" class="form-control" placeholder="admin@gmail.com">
+        <label style="font-size:12px; color:var(--text-sub); font-weight:700; margin-bottom:8px; margin-top:10px; display:block;">Password</label>
+        <input type="password" id="adminPass" class="form-control" placeholder="••••••••">
+        <button class="btn btn-primary" style="margin-top:20px;" onclick="window.loginAdmin()"><i class="fa-solid fa-right-to-bracket"></i> Login ဝင်မည်</button>
+    </div>
 </div>
 
-<div style="max-width:500px; margin:0 auto;">
+<div id="mainAdminApp" style="display:none; max-width:500px; margin:0 auto;">
     
+    <div class="header">
+        <div class="header-title" style="justify-content:space-between;">
+            <div><i class="fa-solid fa-crown" style="color:var(--gold);"></i> Wifipay Admin</div>
+            <button class="btn btn-sm btn-outline" onclick="window.logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i></button>
+        </div>
+    </div>
+
     <div id="tab-home" class="tab-content active">
         <div class="dash-grid">
             <div class="dash-card c-users"><div class="dash-icon"><i class="fa-solid fa-users"></i></div><div class="dash-lbl" style="color:var(--primary);">Users</div><div class="dash-val" id="statUsers">0</div></div>
-            <div class="dash-card c-wifi"><div class="dash-icon"><i class="fa-solid fa-wifi"></i></div><div class="dash-lbl" style="color:var(--gold);">WiFi Stock</div><div class="dash-val" id="statVoucher">0</div></div>
+            <div class="dash-card c-wifi"><div class="dash-icon"><i class="fa-solid fa-wifi"></i></div><div class="dash-lbl" style="color:var(--gold);">WiFi Sales</div><div class="dash-val" id="statVoucher">0</div></div>
             <div class="dash-card c-topup"><div class="dash-icon"><i class="fa-solid fa-wallet"></i></div><div class="dash-lbl" style="color:var(--green);">Cash In</div><div class="dash-val" id="statTopup">0</div></div>
             <div class="dash-card c-food"><div class="dash-icon"><i class="fa-solid fa-burger"></i></div><div class="dash-lbl" style="color:var(--red);">Food Sales</div><div class="dash-val" id="statFood">0</div></div>
         </div>
@@ -127,6 +149,7 @@
     <div id="tab-orders" class="tab-content">
         <div class="section">
             <div class="sec-title" style="color:var(--gold);"><i class="fa-solid fa-bell-concierge"></i> အစားအသောက် အော်ဒါများ</div>
+            <p style="font-size:11px; color:var(--text-sub); margin-bottom:15px;">* Done/Cancel ဖြစ်သော အော်ဒါများကို ၂ ရက်အထိသာ ပြသပါမည်။</p>
             <div id="orderList"></div>
         </div>
     </div>
@@ -153,90 +176,90 @@
             <div id="drinkAdminList" style="margin-top:20px;"></div>
         </div>
     </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="window.switchTab('home',this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+        <div class="nav-item" onclick="window.switchTab('users',this)"><i class="fa-solid fa-users"></i><span>Users</span></div>
+        <div class="nav-item" onclick="window.switchTab('orders',this)"><i class="fa-solid fa-bell-concierge"></i><span>Orders</span></div>
+        <div class="nav-item" onclick="window.switchTab('food',this)"><i class="fa-solid fa-utensils"></i><span>Menu</span></div>
+    </nav>
 </div>
 
 <div class="modal" id="logModal"><div class="modal-content"><button class="btn btn-sm btn-outline" style="position:absolute; top:15px; right:15px;" onclick="window.closeModal('logModal')">X</button><h3 style="margin-bottom:15px; color:var(--primary);"><i class="fa-solid fa-clipboard-list"></i> ဂိုဒေါင် မှတ်တမ်း</h3><div id="logBody"></div></div></div>
 <div class="modal" id="manageModal"><div class="modal-content"><button class="btn btn-sm btn-outline" style="position:absolute; top:15px; right:15px;" onclick="window.closeModal('manageModal')">X</button><h3 style="margin-bottom:15px; color:var(--primary);"><i class="fa-solid fa-trash-can"></i> Code များ ဖျက်ရန်</h3><select id="pSelect" class="form-control" onchange="window.renderManage()"></select><div id="manageBody"></div></div></div>
-
-<nav class="bottom-nav">
-    <div class="nav-item active" onclick="window.switchTab('home',this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
-    <div class="nav-item" onclick="window.switchTab('users',this)"><i class="fa-solid fa-users"></i><span>Users</span></div>
-    <div class="nav-item" onclick="window.switchTab('orders',this)"><i class="fa-solid fa-bell-concierge"></i><span>Orders</span></div>
-    <div class="nav-item" onclick="window.switchTab('food',this)"><i class="fa-solid fa-utensils"></i><span>Menu</span></div>
-</nav>
-
 <div id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getDatabase, ref, get, set, update, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 const fc = { apiKey: "AIzaSyCWtLbUKGHG6ZHXzU69YLwNvH2Z5EWOyV4", authDomain: "wifipay-ff292.firebaseapp.com", projectId: "wifipay-ff292", storageBucket: "wifipay-ff292.firebasestorage.app", messagingSenderId: "429630230761", appId: "1:429630230761:web:8c7f29457326c1f0c02078", databaseURL: "https://wifipay-ff292-default-rtdb.asia-southeast1.firebasedatabase.app/" };
-const app = initializeApp(fc); const db = getDatabase(app);
+const app = initializeApp(fc); const db = getDatabase(app); const auth = getAuth(app);
 
-// Global Variables
-window.allCustomers = {}; 
-window.allInventory = {}; 
-window.foodMenu = {}; 
-window.drinkOptions = {}; 
-window.foodOrders = {}; 
-window.inventoryLog = [];
-window.currentTopupCus = null;
-
+window.allCustomers = {}; window.allInventory = {}; window.foodMenu = {}; window.drinkOptions = {}; window.foodOrders = {}; window.inventoryLog = []; window.currentTopupCus = null;
 let isInitialLoad = true; let prevPendingCount = 0;
 
 window.showToast = (m) => { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); };
-window.switchTab = (tab, el) => {
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.getElementById(`tab-${tab}`).classList.add('active'); el.classList.add('active');
-};
+window.switchTab = (tab, el) => { document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active')); document.getElementById(`tab-${tab}`).classList.add('active'); el.classList.add('active'); };
 window.closeModal = (id) => document.getElementById(id).style.display = 'none';
-window.openModal = (id) => {
-    document.getElementById(id).style.display = 'flex';
-    if(id === 'logModal') window.renderLog();
-    if(id === 'manageModal') window.renderManage();
-};
+window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; if(id === 'logModal') window.renderLog(); if(id === 'manageModal') window.renderManage(); };
 
-// === MAIN DATA LISTENER ===
-onValue(ref(db, '/'), snap => {
-    if(snap.exists()){
-        const data = snap.val();
-        window.allCustomers = data.customers || {};
-        window.allInventory = data.inventory || { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] };
-        window.foodMenu = data.food_menu || {};
-        window.drinkOptions = data.drink_options || {};
-        window.inventoryLog = data.inventoryLog ? Object.values(data.inventoryLog) : [];
-        window.foodOrders = data.food_orders || {};
-        
-        renderDash(); renderStock(); renderCusList(); renderMenuLists();
-        
-        let ordersArray = Object.values(window.foodOrders);
-        let pending = ordersArray.filter(o => o.status === 'pending');
-        if(!isInitialLoad && pending.length > prevPendingCount) {
-            document.getElementById('orderRing').play().catch(e=>{});
-            window.showToast("🔔 အော်ဒါအသစ် ဝင်လာပါပြီ!");
-        }
-        prevPendingCount = pending.length; isInitialLoad = false;
-        renderOrders(ordersArray);
+// === AUTHENTICATION LOGIC ===
+onAuthStateChanged(auth, user => {
+    if(user) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('mainAdminApp').style.display = 'block';
+        startDatabaseListeners();
+    } else {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('mainAdminApp').style.display = 'none';
     }
 });
 
-// === DASHBOARD ===
+window.loginAdmin = () => {
+    const e = document.getElementById('adminEmail').value; const p = document.getElementById('adminPass').value;
+    if(!e || !p) return window.showToast("Email နှင့် Password ထည့်ပါ");
+    signInWithEmailAndPassword(auth, e, p).catch(err => alert("Login Failed: " + err.message));
+};
+window.logoutAdmin = () => { if(confirm("Log out ထွက်မှာ သေချာလား?")) signOut(auth); };
+
+// === DATABASE LISTENERS (Starts only after Login) ===
+function startDatabaseListeners() {
+    onValue(ref(db, 'customers'), snap => { window.allCustomers = snap.exists() ? snap.val() : {}; renderDash(); renderCusList(); });
+    onValue(ref(db, 'inventory'), snap => { window.allInventory = snap.exists() ? snap.val() : { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] }; renderStock(); });
+    onValue(ref(db, 'inventoryLog'), snap => { window.inventoryLog = snap.exists() ? Object.values(snap.val()) : []; if(document.getElementById('logModal').style.display === 'flex') window.renderLog(); });
+    onValue(ref(db, 'food_menu'), snap => { window.foodMenu = snap.exists() ? snap.val() : {}; renderMenuLists(); });
+    onValue(ref(db, 'drink_options'), snap => { window.drinkOptions = snap.exists() ? snap.val() : {}; renderMenuLists(); });
+    onValue(ref(db, 'food_orders'), snap => { 
+        window.foodOrders = snap.exists() ? snap.val() : {};
+        let ordersArray = Object.values(window.foodOrders);
+        let pending = ordersArray.filter(o => o.status === 'pending');
+        if(!isInitialLoad && pending.length > prevPendingCount) { document.getElementById('orderRing').play().catch(e=>{}); window.showToast("🔔 အော်ဒါအသစ် ဝင်လာပါပြီ!"); }
+        prevPendingCount = pending.length; isInitialLoad = false;
+        renderOrders(ordersArray); renderDash(); // Update Food Sales
+    });
+}
+
+// === DASHBOARD (ACCURATE CALCULATIONS) ===
 function renderDash(){
     document.getElementById('statUsers').innerText = Object.keys(window.allCustomers).length;
-    let invCount = 0; Object.values(window.allInventory).forEach(a => invCount += (a?a.length:0));
-    document.getElementById('statVoucher').innerText = invCount;
     
-    let topup=0, food=0;
+    let wifiSales = 0, topup = 0;
     Object.values(window.allCustomers).forEach(c => {
         if(c.history) Object.values(c.history).forEach(h => {
+            if(h.type==='buy') wifiSales += (h.amount||0);
             if(h.type==='topup_in') topup += (h.amount||0);
-            if(h.type==='food') food += (h.amount||h.price||0);
         });
     });
-    document.getElementById('statTopup').innerText = topup.toLocaleString();
-    document.getElementById('statFood').innerText = food.toLocaleString();
+    document.getElementById('statVoucher').innerText = wifiSales.toLocaleString() + ' Ks';
+    document.getElementById('statTopup').innerText = topup.toLocaleString() + ' Ks';
+    
+    let foodSales = 0;
+    Object.values(window.foodOrders).forEach(o => {
+        if(o.status === 'completed') foodSales += (o.total||0); // ONLY COMPLETED ORDERS
+    });
+    document.getElementById('statFood').innerText = foodSales.toLocaleString() + ' Ks';
     
     const list = document.getElementById('pList'); list.innerHTML = '';
     Object.values(window.allCustomers).forEach(c => { list.innerHTML += `<option value="${c.phone}">${c.name}</option>`; });
@@ -252,35 +275,21 @@ window.addStock = async () => {
     let existing = new Set();
     Object.values(inv).forEach(arr => { if(arr) arr.forEach(i => existing.add(i.code)) });
     
-    let added = { "1 Hour":0, "4 Hours":0, "1 Day":0, "1 Week":0, "1 Month":0 };
-    let dupCount = 0;
-
+    let added = { "1 Hour":0, "4 Hours":0, "1 Day":0, "1 Week":0, "1 Month":0 }; let dupCount = 0;
     lines.forEach(line => {
         let cols = line.trim().split(/\s+/);
         if(cols.length >= 2){
-            const code = cols[0]; const pRaw = cols[1].toLowerCase();
-            let p = "";
-            if(pRaw.includes('1hour')) p="1 Hour"; else if(pRaw.includes('4hour')) p="4 Hours";
-            else if(pRaw.includes('1day')) p="1 Day"; else if(pRaw.includes('1week')) p="1 Week";
-            else if(pRaw.includes('1month')) p="1 Month";
-            
-            if(p) {
-                if(!existing.has(code)) { inv[p].push({code, price:0}); existing.add(code); added[p]++; }
-                else { dupCount++; }
-            }
+            const code = cols[0]; const pRaw = cols[1].toLowerCase(); let p = "";
+            if(pRaw.includes('1hour')) p="1 Hour"; else if(pRaw.includes('4hour')) p="4 Hours"; else if(pRaw.includes('1day')) p="1 Day"; else if(pRaw.includes('1week')) p="1 Week"; else if(pRaw.includes('1month')) p="1 Month";
+            if(p) { if(!existing.has(code)) { inv[p].push({code, price:0}); existing.add(code); added[p]++; } else { dupCount++; } }
         }
     });
     
     let logDetail = Object.entries(added).filter(a=>a[1]>0).map(a=>`${a[0]}: ${a[1]} ခု`).join(', ');
     if(logDetail) {
-        let logs = JSON.parse(JSON.stringify(window.inventoryLog));
-        logs.unshift({ date: new Date().toLocaleString(), detail: logDetail });
-        await update(ref(db), { inventory: inv, inventoryLog: logs });
-        document.getElementById('newCodes').value = '';
-        window.showToast("✅ ဂိုဒေါင်ထဲ သိမ်းဆည်းပြီးပါပြီ!");
-    } else if (dupCount > 0) {
-        alert("❌ အသစ်မဝင်ပါ။ ထည့်ထားသော Code များသည် ရှိပြီးသား (သို့) မှားယွင်းနေပါသည်။");
-    }
+        let logs = JSON.parse(JSON.stringify(window.inventoryLog)); logs.unshift({ date: new Date().toLocaleString(), detail: logDetail });
+        await update(ref(db), { inventory: inv, inventoryLog: logs }); document.getElementById('newCodes').value = ''; window.showToast("✅ ဂိုဒေါင်ထဲ သိမ်းဆည်းပြီးပါပြီ!");
+    } else if (dupCount > 0) { alert("❌ အသစ်မဝင်ပါ။ Code များ ထပ်နေပါသည်။"); }
 };
 
 function renderStock(){
@@ -290,17 +299,10 @@ function renderStock(){
         cont.innerHTML += `<div class="stock-item"><span><i class="fa-solid fa-wifi"></i> ${p}</span> <b style="color:var(--gold);">${c} ခု</b></div>`;
     });
 }
-
 window.renderLog = () => {
     const lb = document.getElementById('logBody'); lb.innerHTML = '';
     if(window.inventoryLog.length === 0) { lb.innerHTML = '<p style="color:var(--text-sub); font-size:12px; text-align:center;">မှတ်တမ်း မရှိသေးပါ</p>'; return; }
     window.inventoryLog.forEach(l => { lb.innerHTML += `<div style="padding:12px; border-bottom:1px solid var(--border); font-size:12px;"><b style="color:var(--gold);">${l.date}</b><br>${l.detail}</div>`; });
-};
-
-window.openManageStock = () => {
-    const sel = document.getElementById('pSelect'); sel.innerHTML = '';
-    ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => sel.innerHTML += `<option value="${p}">${p}</option>`);
-    window.openModal('manageModal'); window.renderManage();
 };
 window.renderManage = () => {
     const p = document.getElementById('pSelect').value; const mb = document.getElementById('manageBody'); mb.innerHTML = '';
@@ -315,146 +317,117 @@ window.searchCustomer = () => {
     const val = document.getElementById('topupPhone').value.trim();
     if(!val) return window.showToast("ဖုန်းနံပါတ် သို့မဟုတ် အမည် ထည့်ပါ");
     let found = null;
-    for(let key in window.allCustomers) {
-        if(window.allCustomers[key].phone === val || window.allCustomers[key].name === val) { found = window.allCustomers[key]; break; }
-    }
+    for(let key in window.allCustomers) { if(window.allCustomers[key].phone === val || window.allCustomers[key].name === val) { found = window.allCustomers[key]; break; } }
     if(found){
-        window.currentTopupCus = found;
-        document.getElementById('infoName').innerText = found.name;
-        document.getElementById('infoBal').innerText = (found.balance||0).toLocaleString();
-        document.getElementById('cusInfoBox').style.display = 'block';
-    } else { alert("❌ အကောင့် ရှာမတွေ့ပါ! အကောင့်မရှိပါ။"); document.getElementById('cusInfoBox').style.display = 'none'; }
+        window.currentTopupCus = found; document.getElementById('infoName').innerText = found.name; document.getElementById('infoBal').innerText = (found.balance||0).toLocaleString(); document.getElementById('cusInfoBox').style.display = 'block';
+    } else { alert("❌ ရှာမတွေ့ပါ! အကောင့်မရှိပါ။"); document.getElementById('cusInfoBox').style.display = 'none'; }
 };
-
 window.doTopup = async (type) => {
     if(!window.currentTopupCus) return;
-    const amt = parseInt(document.getElementById('topupAmt').value);
-    if(!amt || amt <= 0) return window.showToast("ပမာဏ အမှန်ထည့်ပါ");
-    
+    const amt = parseInt(document.getElementById('topupAmt').value); if(!amt || amt <= 0) return window.showToast("ပမာဏ အမှန်ထည့်ပါ");
     let cus = window.currentTopupCus;
     if(type === 'out' && (cus.balance||0) < amt) return window.showToast("❌ လက်ကျန်ငွေ မလောက်ပါ");
-
     let newBal = (type === 'in') ? (cus.balance||0)+amt : (cus.balance||0)-amt;
     let u = {}; let now = new Date().toLocaleString();
-    u[`customers/${cus.phone}/balance`] = newBal;
-    u[`customers/${cus.phone}/history/tx_${Date.now()}`] = { type: type==='in'?'topup_in':'deduct_out', title: type==='in'?'Admin Topup':'Admin Deduct', amount: amt, date: now };
-    await update(ref(db), u);
-    window.showToast("✅ အောင်မြင်ပါသည်!");
-    document.getElementById('cusInfoBox').style.display='none'; document.getElementById('topupPhone').value=''; document.getElementById('topupAmt').value='';
-    window.currentTopupCus = null;
+    u[`customers/${cus.phone}/balance`] = newBal; u[`customers/${cus.phone}/history/tx_${Date.now()}`] = { type: type==='in'?'topup_in':'deduct_out', title: type==='in'?'Admin Topup':'Admin Deduct', amount: amt, date: now };
+    await update(ref(db), u); window.showToast("✅ အောင်မြင်ပါသည်!"); document.getElementById('cusInfoBox').style.display='none'; document.getElementById('topupPhone').value=''; document.getElementById('topupAmt').value=''; window.currentTopupCus = null;
 };
 
 // === 5. USERS LIST ===
 function renderCusList(){
     const cont = document.getElementById('userList'); cont.innerHTML = '';
     const list = Object.values(window.allCustomers).sort((a,b)=>(b.balance||0)-(a.balance||0));
-    list.forEach(c => {
-        cont.innerHTML += `<div class="item-card"><div><b><i class="fa-solid fa-user" style="color:var(--primary);"></i> ${c.name}</b><br><span style="font-size:11px; color:var(--text-sub);">${c.phone}</span></div><b style="color:var(--green); font-size:16px;">${(c.balance||0).toLocaleString()} Ks</b></div>`;
-    });
+    list.forEach(c => { cont.innerHTML += `<div class="item-card"><div><b><i class="fa-solid fa-user" style="color:var(--primary);"></i> ${c.name}</b><br><span style="font-size:11px; color:var(--text-sub);">${c.phone}</span></div><b style="color:var(--green); font-size:16px;">${(c.balance||0).toLocaleString()} Ks</b></div>`; });
 }
 
-// === 6. FOOD ORDERS & REFUND LOGIC ===
+// === 6. FOOD ORDERS (2-Days Retention & Refund Logic) ===
 function renderOrders(orders){
     const cont = document.getElementById('orderList'); cont.innerHTML = '';
-    let pending = orders.filter(o => o.status !== 'completed' && o.status !== 'cancelled').sort((a,b) => new Date(a.date) - new Date(b.date));
+    const TWO_DAYS_MS = 48 * 60 * 60 * 1000; const now = Date.now();
     
-    if(!pending.length) { cont.innerHTML = '<div class="item-card"><p style="text-align:center; width:100%; color:var(--text-sub); font-size:12px;">အော်ဒါ အသစ်မရှိသေးပါ</p></div>'; return; }
+    // Filter out Done/Cancelled orders that are older than 2 days
+    let visibleOrders = orders.filter(o => {
+        if(o.status === 'completed' || o.status === 'cancelled') {
+            let oTime = new Date(o.date).getTime();
+            if(now - oTime > TWO_DAYS_MS) return false;
+        }
+        return true;
+    }).sort((a,b) => {
+        if(a.status === 'pending' && b.status !== 'pending') return -1;
+        if(b.status === 'pending' && a.status !== 'pending') return 1;
+        return new Date(b.date) - new Date(a.date);
+    });
     
-    pending.forEach(o => {
+    if(!visibleOrders.length) { cont.innerHTML = '<div class="item-card"><p style="text-align:center; width:100%; color:var(--text-sub); font-size:12px;">အော်ဒါ မရှိသေးပါ</p></div>'; return; }
+    
+    visibleOrders.forEach(o => {
         let itemsText = o.items ? o.items.map(i=>`${i.qty}x ${i.name}`).join('<br>') : '';
         let payType = o.payment_method === 'cash' ? '💵 Cash (ဆိုင်ရှင်း)' : '💳 Wallet (ငွေဖြတ်ပြီး)';
+        let bdgClass = o.status==='pending' ? 'st-pending' : 'st-accepted';
+        let borderColor = o.status==='completed' ? 'var(--green)' : (o.status==='cancelled' ? 'var(--red)' : 'var(--gold)');
         
-        cont.innerHTML += `<div class="item-card" style="flex-direction:column; align-items:stretch; border-left: 4px solid var(--gold);">
+        cont.innerHTML += `<div class="item-card" style="flex-direction:column; align-items:stretch; border-left: 4px solid ${borderColor};">
             <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <b><i class="fa-solid fa-user"></i> ${o.name}</b> <span class="status-badge ${o.status==='pending'?'st-pending':'st-accepted'}">${o.status}</span>
+                <b><i class="fa-solid fa-user"></i> ${o.name}</b> <span class="status-badge ${bdgClass}">${o.status}</span>
             </div>
             <div style="font-size:13px; color:var(--text-sub); margin-bottom:10px;">${itemsText}</div>
             <div style="font-size:11px; color:var(--primary); margin-bottom:5px;"><i class="fa-solid fa-location-dot"></i> ${o.address}</div>
             <div style="font-size:11px; color:#fff; margin-bottom:15px;">${payType}</div>
-            
             <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:10px;">
                 <b style="color:var(--green); font-size:16px;">${(o.total||0).toLocaleString()} Ks</b>
                 <div style="display:flex; gap:5px;">
                     ${o.status==='pending' ? `<button class="btn btn-sm btn-green" onclick="window.updOrder('${o.id}','accepted')">Accept</button>` : ''}
-                    <button class="btn btn-sm btn-primary" onclick="window.updOrder('${o.id}','completed')">Done</button>
-                    <button class="btn btn-sm btn-danger" onclick="window.cancelOrder('${o.id}', '${o.phone}', ${o.total}, '${o.payment_method}')">X Cancel</button>
+                    ${o.status!=='completed' && o.status!=='cancelled' ? `<button class="btn btn-sm btn-primary" onclick="window.updOrder('${o.id}','completed')">Done</button>` : ''}
+                    ${o.status!=='completed' && o.status!=='cancelled' ? `<button class="btn btn-sm btn-danger" onclick="window.cancelOrder('${o.id}', '${o.phone}', ${o.total}, '${o.payment_method}')">X Cancel</button>` : ''}
                 </div>
             </div>
         </div>`;
     });
 }
 
-window.updOrder = async (id, status) => { 
-    await update(ref(db, `food_orders/${id}`), { status }); 
-    window.showToast("✅ အော်ဒါ အခြေအနေ ပြောင်းလဲပြီး"); 
-};
+window.updOrder = async (id, status) => { await update(ref(db, `food_orders/${id}`), { status }); window.showToast("✅ အော်ဒါ ပြောင်းလဲပြီး"); };
 
 // REFUND LOGIC
 window.cancelOrder = async (orderId, phone, amount, payMethod) => {
-    if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား?\n(Wallet ဖြင့် ရှင်းထားပါက Customer ထံသို့ ငွေပြန်အမ်းပေးပါမည်)")) return;
-    
-    let updates = {};
-    updates[`food_orders/${orderId}/status`] = 'cancelled';
-    
+    if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား?\n(Wallet ဖြင့် ရှင်းထားပါက Customer ထံသို့ ငွေအလိုလို ပြန်အမ်းပေးပါမည်)")) return;
+    let updates = {}; updates[`food_orders/${orderId}/status`] = 'cancelled';
     if(payMethod !== 'cash') {
         let cus = window.allCustomers[phone];
         if(cus) {
             let newBal = (cus.balance || 0) + amount;
             updates[`customers/${phone}/balance`] = newBal;
-            updates[`customers/${phone}/history/tx_refund_${Date.now()}`] = {
-                type: 'tx_in', title: 'Refund (Cancel Order)', amount: amount, date: new Date().toLocaleString()
-            };
+            updates[`customers/${phone}/history/tx_refund_${Date.now()}`] = { type: 'tx_in', title: 'Refund (Cancel Order)', amount: amount, date: new Date().toLocaleString() };
         }
     }
-    await update(ref(db), updates);
-    window.showToast("❌ အော်ဒါ ပယ်ဖျက်ပြီး ငွေပြန်အမ်းပေးပါပြီ!");
+    await update(ref(db), updates); window.showToast("❌ အော်ဒါ ပယ်ဖျက်ပြီး ငွေပြန်အမ်းပေးပါပြီ!");
 };
 
-// === 7. MENU ADMIN (With Icons & Live List) ===
+// === 7. MENU ADMIN ===
 window.saveFood = async () => {
-    let id = 'f_'+Date.now();
-    let name = document.getElementById('foodName').value;
-    let price = parseInt(document.getElementById('foodPrice').value);
-    let icon = document.getElementById('foodIcon').value || '🍲';
-    
+    let id = 'f_'+Date.now(); let name = document.getElementById('foodName').value; let price = parseInt(document.getElementById('foodPrice').value); let icon = document.getElementById('foodIcon').value || '🍲';
     if(!name || !price) return window.showToast("အချက်အလက် ပြည့်စုံစွာ ထည့်ပါ");
-    
     await set(ref(db, `food_menu/${id}`), { id, name, price, icon });
-    document.getElementById('foodIcon').value=''; document.getElementById('foodName').value=''; document.getElementById('foodPrice').value='';
-    window.showToast("✅ ဟင်းပွဲ သိမ်းဆည်းပြီးပါပြီ");
+    document.getElementById('foodIcon').value=''; document.getElementById('foodName').value=''; document.getElementById('foodPrice').value=''; window.showToast("✅ ဟင်းပွဲ သိမ်းဆည်းပြီးပါပြီ");
 };
-
 window.saveDrink = async () => {
-    let id = 'd_'+Date.now();
-    let name = document.getElementById('drinkName').value;
-    let price = parseInt(document.getElementById('drinkPrice').value);
-    
+    let id = 'd_'+Date.now(); let name = document.getElementById('drinkName').value; let price = parseInt(document.getElementById('drinkPrice').value);
     if(!name || !price) return window.showToast("အချက်အလက် ပြည့်စုံစွာ ထည့်ပါ");
-    
     await set(ref(db, `drink_options/${id}`), { id, name, price });
-    document.getElementById('drinkName').value=''; document.getElementById('drinkPrice').value='';
-    window.showToast("✅ အအေး သိမ်းဆည်းပြီးပါပြီ");
+    document.getElementById('drinkName').value=''; document.getElementById('drinkPrice').value=''; window.showToast("✅ အအေး သိမ်းဆည်းပြီးပါပြီ");
 };
 
 function renderMenuLists(){
     const fl = document.getElementById('foodAdminList'); fl.innerHTML = '<p style="font-size:11px; color:var(--text-sub); margin-bottom:10px;">လက်ရှိ ဟင်းပွဲစာရင်း:</p>';
     let foods = Object.values(window.foodMenu).filter(f => !f.isOptions);
     if(foods.length === 0) fl.innerHTML += '<p style="font-size:12px; color:var(--text-sub);">ဟင်းပွဲများ မရှိသေးပါ</p>';
-    foods.forEach(f => {
-        fl.innerHTML += `<div class="item-card" style="padding:10px 15px;"><span>${f.icon} <b>${f.name}</b> <span style="color:var(--green); font-family:var(--mono);">(${f.price} Ks)</span></span><button class="btn btn-sm btn-danger" onclick="window.delMenu('food_menu','${f.id}')"><i class="fa-solid fa-trash"></i></button></div>`;
-    });
+    foods.forEach(f => { fl.innerHTML += `<div class="item-card" style="padding:10px 15px;"><span>${f.icon} <b>${f.name}</b> <span style="color:var(--green); font-family:var(--mono);">(${f.price} Ks)</span></span><button class="btn btn-sm btn-danger" onclick="window.delMenu('food_menu','${f.id}')"><i class="fa-solid fa-trash"></i></button></div>`; });
     
     const dl = document.getElementById('drinkAdminList'); dl.innerHTML = '<p style="font-size:11px; color:var(--text-sub); margin-bottom:10px;">လက်ရှိ အအေးစာရင်း:</p>';
     let drinks = Object.values(window.drinkOptions);
     if(drinks.length === 0) dl.innerHTML += '<p style="font-size:12px; color:var(--text-sub);">အအေးများ မရှိသေးပါ</p>';
-    drinks.forEach(d => {
-        dl.innerHTML += `<div class="item-card" style="padding:10px 15px;"><span>🥤 <b>${d.name}</b> <span style="color:var(--green); font-family:var(--mono);">(${d.price} Ks)</span></span><button class="btn btn-sm btn-danger" onclick="window.delMenu('drink_options','${d.id}')"><i class="fa-solid fa-trash"></i></button></div>`;
-    });
+    drinks.forEach(d => { dl.innerHTML += `<div class="item-card" style="padding:10px 15px;"><span>🥤 <b>${d.name}</b> <span style="color:var(--green); font-family:var(--mono);">(${d.price} Ks)</span></span><button class="btn btn-sm btn-danger" onclick="window.delMenu('drink_options','${d.id}')"><i class="fa-solid fa-trash"></i></button></div>`; });
 }
-
-window.delMenu = async (path, id) => {
-    if(confirm("ဤ Menu ကို ဖျက်မှာ သေချာပြီလား?")) await remove(ref(db, `${path}/${id}`));
-};
+window.delMenu = async (path, id) => { if(confirm("ဤ Menu ကို ဖျက်မှာ သေချာပြီလား?")) await remove(ref(db, `${path}/${id}`)); };
 </script>
 </body>
 </html>
