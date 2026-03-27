@@ -15,6 +15,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <style>
 :root{
   --bg:#0a0a14;--surface:#12121e;--surface2:#1a1a2e;
@@ -118,7 +120,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 .vc-price{font-size:14px;font-weight:700;color:var(--green);font-family:var(--mono);}
 .vc-btn{background:linear-gradient(135deg,var(--accent),#6c5aee);color:white;border:none;padding:7px 15px;border-radius:18px;font-size:11px;font-weight:700;}
 
-/* 🌟 FOOD MENU CSS 🌟 */
+/* FOOD MENU */
 .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 20px;}
 .food-item{background:var(--surface);border:1px solid var(--border-bright);border-radius:18px;overflow:hidden;transition:0.2s;position:relative;}
 .food-item:active{transform:scale(0.97);}
@@ -167,7 +169,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 .s-item{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:16px;margin-bottom:8px;display:flex;align-items:center;gap:13px;cursor:pointer;}
 .s-ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
 
-/* 🌟 BOTTOM NAV (5 Items) 🌟 */
+/* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:0;background:rgba(10,10,20,0.93);backdrop-filter:blur(20px);border-top:1px solid var(--border-bright);display:flex;justify-content:space-around;padding:10px 0;z-index:200;max-width:430px;width:100%;left:50%;transform:translateX(-50%);}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-dim);padding:5px;flex:1;cursor:pointer;transition:all 0.22s;}
 .nav-item i{font-size:20px;transition:0.22s;}
@@ -182,7 +184,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 .pin-modal{background:var(--surface);width:90%;max-width:320px;border:1px solid var(--border-bright);border-radius:28px;padding:30px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6);animation:popIn 0.3s ease;}
 .pin-icon{width:60px;height:60px;background:rgba(124,106,255,0.15);color:var(--accent);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:24px;margin:0 auto 15px;}
 
-/* 🌟 CART MODAL UI 🌟 */
+/* CART MODAL UI */
 .cart-modal{background:var(--surface);width:92%;max-width:380px;max-height:80vh;border:1px solid var(--border-bright);border-radius:24px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.7);animation:slideUp 0.3s ease;}
 .cart-hdr{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
 .cart-body{padding:20px;overflow-y:auto;flex:1;}
@@ -193,10 +195,13 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 .dt-btn{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--text-sub);transition:0.2s;}
 .dt-btn.active{background:var(--accent);color:white;}
 .cart-total-row{display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-top:15px;padding-top:15px;border-top:1px solid var(--border-bright);}
-
-/* CHECKBOX */
 .shop-pay-check {display:flex; align-items:center; gap:8px; font-size:13px; padding:10px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:12px; margin-bottom:15px; cursor:pointer;}
 .shop-pay-check input {width:18px; height:18px; accent-color:var(--accent);}
+
+/* 🌟 SHARE MODAL CSS 🌟 */
+.share-modal{background:var(--surface);width:90%;max-width:340px;border:1px solid var(--border-bright);border-radius:26px;padding:30px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6);animation:popIn 0.3s ease;}
+#qrcodeCanvas { background:white; padding:15px; border-radius:18px; margin: 0 auto 20px; display: inline-block; }
+#qrcodeCanvas img { max-width: 100%; height: auto; }
 
 #toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(18px);background:var(--surface2);border:1px solid var(--border-bright);padding:11px 20px;border-radius:28px;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;z-index:999;opacity:0;transition:all 0.28s;pointer-events:none;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -320,8 +325,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 
       <div style="margin-top: 24px;">
         <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-weight:700;">လွှဲဖူးသူများ (Recent)</div>
-        <div id="recentTxList" style="display: flex; flex-direction: column; gap: 8px;">
-          </div>
+        <div id="recentTxList" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
     </div>
   </div>
@@ -354,7 +358,19 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
         <div style="margin-top:10px;"><span style="font-size:11px;color:var(--green);background:rgba(34,211,165,0.1);padding:4px 12px;border-radius:20px;border:1px solid rgba(34,211,165,0.2);">✓ Verified</span></div>
       </div>
 
-      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:700;">Profile</div>
+      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Share & Invite</div>
+      <div class="s-item" onclick="window.nativeShare()">
+        <div class="s-ico" style="background:rgba(124,106,255,0.12);color:var(--accent2);"><i class="fa-solid fa-share-nodes"></i></div>
+        <div><div class="s-title">သူငယ်ချင်းကို ဖိတ်ခေါ်မည်</div><div class="s-sub">App Link ကို ပို့ပေးရန်</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
+      </div>
+      <div class="s-item" onclick="window.openQrShareModal()">
+        <div class="s-ico" style="background:rgba(247,201,72,0.12);color:var(--gold);"><i class="fa-solid fa-qrcode"></i></div>
+        <div><div class="s-title">QR Code ဖြင့် မျှဝေမည်</div><div class="s-sub">သူငယ်ချင်းကို Scan ဖတ်ခိုင်းရန်</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Profile</div>
       <div class="s-item" onclick="document.getElementById('profileSection').style.display=document.getElementById('profileSection').style.display==='none'?'block':'none'">
         <div class="s-ico" style="background:rgba(34,211,165,0.12);color:var(--green);"><i class="fa-solid fa-user-pen"></i></div>
         <div><div class="s-title">Edit Profile</div><div class="s-sub">Change your name</div></div>
@@ -393,7 +409,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
       
       <div style="text-align:center;padding:28px 0 10px;">
         <div style="font-size:20px;font-weight:700;font-style:italic;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Wifipay</div>
-        <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">Powered by HMH · v2.0 · © 2026</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">Powered by HMH · v2.1 · © 2026</div>
       </div>
     </div>
   </div>
@@ -458,6 +474,15 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
       </div>
       <button class="btn btn-primary" style="margin-top:15px;" onclick="window.prepareTx('order')">Order တင်မည်</button>
     </div>
+  </div>
+</div>
+
+<div id="qrShareOverlay" class="gift-overlay">
+  <div class="share-modal">
+    <h3 style="color:var(--text); margin-bottom:15px;">QR Code ဖြင့် မျှဝေမည်</h3>
+    <div id="qrcodeCanvas"></div>
+    <p style="font-size:12px; color:var(--text-sub); margin-bottom:20px; line-height:1.6;">သူငယ်ချင်းကို ဤ QR Code အား Scan ဖတ်ခိုင်းခြင်းဖြင့် Wifipay App သို့ အလွယ်တကူ ရောက်ရှိစေနိုင်ပါသည်။</p>
+    <button class="btn btn-primary" onclick="document.getElementById('qrShareOverlay').style.display='none'">ပိတ်မည်</button>
   </div>
 </div>
 
@@ -531,7 +556,6 @@ document.getElementById('loginPhone').addEventListener('input', function(e) {
     if(match) { document.getElementById('loginPhone').value = match.phone; document.getElementById('loginPass').value = match.pw; }
 });
 
-// 🌟 လွှဲဖူးသူများကို မှတ်သားမည့်၊ ပြန်ခေါ်မည့် Functions များ 🌟
 window.saveRecentTx = function(phone, name) {
     let recents = JSON.parse(localStorage.getItem('wp_recent_tx') || '[]');
     recents = recents.filter(r => r.phone !== phone);
@@ -571,7 +595,6 @@ window.selectRecentTx = function(phone) {
     window.verifyTxPhone();
 };
 
-// 🌟 ဖုန်းနံပါတ် စစ်ဆေးပြီး နာမည်ပေါ်စေမည့် Function 🌟
 window.verifyTxPhone = async function() {
     const tp = document.getElementById('txPhone').value.trim();
     const nameDisplay = document.getElementById('txReceiverName');
@@ -641,7 +664,7 @@ window.switchTab=function(tab,el=null){
   
   if(tab==='food') window.renderFood();
   if(tab==='history') window.renderHistory();
-  if(tab==='transfer') window.loadRecentTx(); // 🌟 Recent Tx ခေါ်ပေးမည့်နေရာ
+  if(tab==='transfer') window.loadRecentTx(); 
   document.getElementById('cartFloat').style.display = (tab==='food' && cart.length>0) ? 'flex' : 'none';
 };
 
@@ -879,7 +902,6 @@ window.confirmTx = async function() {
       await update(ref(db),updates); 
       window.showToast('✓ '+tgt.name+' ထံ ငွေလွှဲပြီးပါပြီ','success');
       
-      // 🌟 ငွေလွှဲအောင်မြင်ရင် ဖုန်းထဲမှာ မှတ်ထားပေးမည့် အပိုင်း 🌟
       window.saveRecentTx(tp, tgt.name);
       
       document.getElementById('txPhone').value='';document.getElementById('txAmount').value='';
@@ -903,7 +925,6 @@ window.confirmTx = async function() {
   }
 };
 
-// 🌟 Voucher ဆွဲထုတ်တာ Error မတက်အောင် ပြင်ထားတဲ့အပိုင်း 🌟
 window.buyVoucher = async function(plan, price) {
   if(!cu) return; 
   if(cu.balance < price) return window.showToast('ငွေမလောက်ပါ 😢', 'error');
@@ -913,12 +934,10 @@ window.buyVoucher = async function(plan, price) {
     const inv = await get(ref(db, 'inventory/' + plan)); 
     let vl = inv.exists() ? inv.val() : [];
     
-    // Firebase က Object အနေနဲ့ ပြန်ပေးလာရင် Array ပြောင်းပေးမည့် အပိုင်း
     let arr = Array.isArray(vl) ? vl : Object.values(vl).filter(x => x !== null);
-    
     if(!arr.length) return window.showToast('Code ကုန်နေပါသည်', 'error');
     
-    const v = arr.shift(); // Code တစ်ခုကို ဆွဲထုတ်မယ်
+    const v = arr.shift(); 
     const now = new Date().toLocaleString();
     let u = {};
     
@@ -929,7 +948,6 @@ window.buyVoucher = async function(plan, price) {
     u['records/web_' + Date.now()] = {id: 'web_' + Date.now(), date: new Date().toLocaleDateString(), name: 'Customer_(' + cu.phone + ')', plan: plan, qty: 1, totalPrice: price, codes: [v.code]};
     
     await update(ref(db), u);
-    
     window.showToast('✓ Code: ' + v.code, 'success');
     
   } catch(e) {
@@ -965,6 +983,36 @@ window.renderHistory=function(){
   document.getElementById('statIn').textContent=tIn.toLocaleString(); document.getElementById('statOut').textContent=tOut.toLocaleString();
 };
 
+// 🌟 SHARING FUNCTIONS 🌟
+const APP_URL = "https://wifipay.store"; 
+const SHARE_TEXT = "Wifipay Wallet ဖြင့် WiFi Voucher များကို လွယ်ကူလျင်မြန်စွာ ဝယ်ယူနိုင်ပါသည်! အခုပဲ အကောင့်ဖွင့်ပြီး စမ်းသုံးကြည့်ပါ။";
+
+window.nativeShare = async function() {
+    if (navigator.share) {
+        try {
+            await navigator.share({ title: 'Wifipay Wallet', text: SHARE_TEXT, url: APP_URL });
+        } catch (e) { console.error(e); }
+    } else {
+        navigator.clipboard.writeText(APP_URL + '\n\n' + SHARE_TEXT);
+        window.showToast('✓ Link ကို Copy ကူးပြီးပါပြီ', 'success');
+    }
+};
+
+let qrcode = null; 
+window.openQrShareModal = function() {
+    const cont = document.getElementById('qrcodeCanvas');
+    if(!qrcode) {
+        qrcode = new QRCode(cont, {
+            text: APP_URL, width: 160, height: 160,
+            colorDark: "#000000", colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H 
+        });
+    } else {
+        qrcode.makeCode(APP_URL);
+    }
+    document.getElementById('qrShareOverlay').style.display = 'flex';
+};
+
 window.onload=()=>{
   document.getElementById('mainApp').style.display='none';
   window.loadSavedAccounts();
@@ -974,4 +1022,3 @@ window.onload=()=>{
 </script>
 </body>
 </html>
-
