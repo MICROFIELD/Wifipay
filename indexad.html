@@ -47,16 +47,23 @@
     .btn-outline { background: var(--surface2); border: 1px solid var(--border); color: #fff; }
     .btn-sm { padding: 6px 12px; font-size: 11px; border-radius: 8px; width: auto; }
 
-    .cus-info-box { background: rgba(34,211,165,0.05); border: 1px dashed var(--green); border-radius: 16px; padding: 18px; display: none; margin-bottom: 15px; }
+    /* 🌟 ပုံထဲက အတိုင်း စီစဉ်ထားသော Stock / Inventory CSS 🌟 */
+    .stock-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .stock-tab { flex: 1; padding: 12px 10px; border-radius: 14px; background: var(--surface2); color: var(--text-sub); font-size: 13px; font-weight: 700; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid var(--border); display: flex; justify-content: center; align-items: center; gap: 6px; }
+    .stock-tab.active-sale { background: rgba(124, 106, 255, 0.15); color: var(--primary); border-color: var(--primary); }
+    .stock-tab.active-spin { background: rgba(34, 211, 165, 0.15); color: var(--green); border-color: var(--green); }
     
-    .stock-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-    .stock-item { background: var(--surface2); border: 1px solid var(--border); padding: 12px; border-radius: 14px; font-size: 12px; display: flex; justify-content: space-between; }
-    .stock-item b { color: var(--gold); }
+    .stock-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .stock-item { background: rgba(124, 106, 255, 0.08); border: 1px solid rgba(124, 106, 255, 0.2); padding: 14px; border-radius: 16px; font-size: 13px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; color: var(--text); }
+    .stock-item.spin-item { background: rgba(34, 211, 165, 0.08); border: 1px solid rgba(34, 211, 165, 0.2); }
+    .stock-item b { color: var(--gold); font-size: 15px; }
+    .spin-item b { color: var(--green); font-size: 15px; }
 
+    .cus-info-box { background: rgba(34,211,165,0.05); border: 1px dashed var(--green); border-radius: 16px; padding: 18px; display: none; margin-bottom: 15px; }
     .item-card { background: var(--surface2); border: 1px solid var(--border); padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
 
     .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; left: 50%; transform: translateX(-50%); background: rgba(10,10,20,0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 0 25px; border-top: 1px solid var(--border); z-index: 100; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); flex: 1; cursor: pointer; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); flex: 1; cursor: pointer; transition: 0.2s; }
     .nav-item.active { color: var(--primary); }
     .nav-item span { font-size: 9px; font-weight: 700; margin-top: 4px; }
 
@@ -107,33 +114,43 @@
             <div class="dash-card c-food"><div class="dash-icon"><i class="fa-solid fa-burger"></i></div><div class="dash-lbl" style="color:var(--red);">Food Sales</div><div class="dash-val" id="statFood">0</div></div>
         </div>
 
-        <div class="section" style="margin-top:20px;">
-            <div class="sec-title"><i class="fa-solid fa-warehouse"></i> ၁။ ရောင်းမည့် ဂိုဒေါင်</div>
-            <div id="stockSummary" class="stock-grid"></div>
-            <textarea id="newCodes" class="form-control" style="height:100px; font-family:var(--mono); font-size:12px;" placeholder="Ruijie မှ Code များကို ကူးထည့်ပါ..."></textarea>
-            <button class="btn btn-primary" onclick="window.addStock()"><i class="fa-solid fa-download"></i> ဂိုဒေါင်ထဲ ထည့်မည်</button>
-            <div style="display:flex; gap:10px; margin-top:10px;">
+        <div class="section" style="margin-top:20px; padding: 20px 15px;">
+            
+            <div class="stock-tabs">
+                <div class="stock-tab active-sale" onclick="window.switchStockTab('sale')" id="st-sale">
+                    <i class="fa-solid fa-warehouse"></i> ၁။ ရောင်းမည့် ဂိုဒေါင်
+                </div>
+                <div class="stock-tab" onclick="window.switchStockTab('spin')" id="st-spin">
+                    <i class="fa-solid fa-gift"></i> ၂။ Spin & Win ဂိုဒေါင်
+                </div>
+            </div>
+
+            <div id="stockUiSale">
+                <div id="stockSummary" class="stock-grid"></div>
+                <textarea id="newCodes" class="form-control" style="height:120px; font-family:var(--mono); font-size:13px;" placeholder="Ruijie မှ Code များကို ကူးထည့်ပါ..."></textarea>
+                <button class="btn btn-primary" onclick="window.addStock()"><i class="fa-solid fa-download"></i> ဂိုဒေါင်ထဲ ထည့်မည်</button>
+            </div>
+
+            <div id="stockUiSpin" style="display:none;">
+                <div id="spinStockSummary" class="stock-grid"></div>
+                <select id="spinPlan" class="form-control" style="border-color: rgba(34,211,165,0.4); background: rgba(34,211,165,0.05); color: var(--green); font-weight:bold;">
+                    <option value="Free_5Mins">5 Mins Free Code</option>
+                    <option value="Free_30Mins">30 Mins Free Code</option>
+                    <option value="Free_1Hour">1 Hour Free Code</option>
+                    <option value="Free_4Hours">4 Hours Free Code</option>
+                </select>
+                <textarea id="newSpinCodes" class="form-control" style="height:100px; font-family:var(--mono); font-size:13px; border-color:rgba(34,211,165,0.4);" placeholder="FREE-CODE-001&#10;FREE-CODE-002..."></textarea>
+                <button class="btn btn-green" onclick="window.addSpinStock()"><i class="fa-solid fa-plus-circle"></i> Spin ဂိုဒေါင်ထဲ ထည့်မည်</button>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
                 <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openModal('logModal')"><i class="fa-solid fa-clipboard-list"></i> မှတ်တမ်းကြည့်ရန်</button>
                 <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openModal('manageModal')"><i class="fa-solid fa-trash-can"></i> Code များဖျက်ရန်</button>
             </div>
         </div>
 
-        <div class="section" style="border-color: rgba(34, 211, 165, 0.3);">
-            <div class="sec-title" style="color:var(--green);"><i class="fa-solid fa-gift"></i> ၂။ Spin & Win ဂိုဒေါင်</div>
-            <p style="font-size:11px; color:var(--text-sub); margin-bottom:12px;">Spin ကံစမ်းမဲအတွက် အလကားပေးမည့် Code များ သီးသန့်ထည့်ရန်</p>
-            <div id="spinStockSummary" class="stock-grid"></div>
-            <select id="spinPlan" class="form-control">
-                <option value="Free_5Mins">5 Mins Free Code</option>
-                <option value="Free_30Mins">30 Mins Free Code</option>
-                <option value="Free_1Hour">1 Hour Free Code</option>
-                <option value="Free_4Hours">4 Hours Free Code</option>
-            </select>
-            <textarea id="newSpinCodes" class="form-control" style="height:80px; font-family:var(--mono); font-size:12px; border-color:rgba(34,211,165,0.4);" placeholder="FREE-5M-001&#10;FREE-5M-002..."></textarea>
-            <button class="btn btn-green" onclick="window.addSpinStock()"><i class="fa-solid fa-plus-circle"></i> Spin ဂိုဒေါင်ထဲ ထည့်မည်</button>
-        </div>
-
         <div class="section">
-            <div class="sec-title"><i class="fa-solid fa-money-bill-transfer"></i> ၃။ ငွေဖြည့်/နုတ် စနစ်</div>
+            <div class="sec-title"><i class="fa-solid fa-money-bill-transfer"></i> ငွေဖြည့်/နုတ် စနစ်</div>
             <div style="display:flex; gap:8px;">
                 <input type="text" id="topupPhone" class="form-control" placeholder="ဖုန်းနံပါတ် (သို့) အမည်" list="pList" style="margin-bottom:0;">
                 <button class="btn btn-outline" style="width:60px;" onclick="window.searchCustomer()"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -222,7 +239,23 @@ window.switchTab = (tab, el) => { document.querySelectorAll('.tab-content').forE
 window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; if(id === 'logModal') window.renderLog(); if(id === 'manageModal') window.renderManage(); };
 
-// 🌟 AUTHENTICATION LOGIC (မူရင်း Firebase) 🌟
+// 🌟 Stock Tab များကို အလွယ်တကူ ပြောင်းရန် 🌟
+window.switchStockTab = (type) => {
+    document.getElementById('st-sale').classList.remove('active-sale');
+    document.getElementById('st-spin').classList.remove('active-spin');
+    document.getElementById('stockUiSale').style.display = 'none';
+    document.getElementById('stockUiSpin').style.display = 'none';
+
+    if (type === 'sale') {
+        document.getElementById('st-sale').classList.add('active-sale');
+        document.getElementById('stockUiSale').style.display = 'block';
+    } else {
+        document.getElementById('st-spin').classList.add('active-spin');
+        document.getElementById('stockUiSpin').style.display = 'block';
+    }
+};
+
+// === AUTHENTICATION LOGIC ===
 onAuthStateChanged(auth, user => {
     if(user) {
         document.getElementById('loginScreen').style.display = 'none';
@@ -302,7 +335,7 @@ window.addStock = async () => {
     
     let logDetail = Object.entries(added).filter(a=>a[1]>0).map(a=>`${a[0]}: ${a[1]} ခု`).join(', ');
     if(logDetail) {
-        let logs = JSON.parse(JSON.stringify(window.inventoryLog)); logs.unshift({ date: new Date().toLocaleString(), detail: logDetail });
+        let logs = JSON.parse(JSON.stringify(window.inventoryLog)); logs.unshift({ date: new Date().toLocaleString(), detail: "ရောင်းမည့် ကတ်: " + logDetail });
         await update(ref(db), { inventory: inv, inventoryLog: logs }); document.getElementById('newCodes').value = ''; window.showToast("✅ ဂိုဒေါင်ထဲ သိမ်းဆည်းပြီးပါပြီ!");
     } else if (dupCount > 0) { alert("❌ အသစ်မဝင်ပါ။ Code များ ထပ်နေပါသည်။"); }
 };
@@ -311,7 +344,7 @@ function renderStock(){
     const cont = document.getElementById('stockSummary'); cont.innerHTML = '';
     ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => {
         let c = (window.allInventory && window.allInventory[p]) ? window.allInventory[p].length : 0;
-        cont.innerHTML += `<div class="stock-item"><span><i class="fa-solid fa-wifi"></i> ${p}</span> <b style="color:var(--gold);">${c} ခု</b></div>`;
+        cont.innerHTML += `<div class="stock-item"><span><i class="fa-solid fa-wifi"></i> ${p}</span> <b>${c} ခု</b></div>`;
     });
     const pSelect = document.getElementById('pSelect');
     if(pSelect.options.length === 0) { ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => pSelect.innerHTML += `<option value="${p}">${p}</option>`); }
@@ -340,7 +373,10 @@ window.addSpinStock = async () => {
     });
 
     if(addedCount > 0) {
-        await set(ref(db, `spin_inventory/${plan}`), inv[plan]);
+        let logs = JSON.parse(JSON.stringify(window.inventoryLog)); 
+        logs.unshift({ date: new Date().toLocaleString(), detail: `Spin ဆုမဲ: ${plan.replace('Free_', '')} (${addedCount} ခု)` });
+        
+        await update(ref(db), { [`spin_inventory/${plan}`]: inv[plan], inventoryLog: logs });
         document.getElementById('newSpinCodes').value = '';
         window.showToast(`✅ ${plan} သို့ Spin Code ${addedCount} ခု ထည့်သွင်းပြီးပါပြီ`);
     } else {
@@ -354,7 +390,7 @@ function renderSpinStock() {
     ["Free_5Mins", "Free_30Mins", "Free_1Hour", "Free_4Hours"].forEach(p => {
         let name = p.replace('Free_', '').replace('Mins', ' Mins').replace('Hour', ' Hour');
         let c = (window.allSpinInventory && window.allSpinInventory[p]) ? window.allSpinInventory[p].length : 0;
-        cont.innerHTML += `<div class="stock-item"><span><i class="fa-solid fa-gift"></i> ${name}</span> <b style="color:var(--secondary);">${c} ခု</b></div>`;
+        cont.innerHTML += `<div class="stock-item spin-item"><span><i class="fa-solid fa-gift"></i> ${name}</span> <b>${c} ခု</b></div>`;
     });
 }
 
@@ -381,7 +417,7 @@ window.searchCustomer = () => {
         window.currentTopupCus = found; 
         document.getElementById('infoName').innerText = found.name; 
         document.getElementById('infoBal').innerText = (found.balance||0).toLocaleString(); 
-        document.getElementById('infoTickets').innerText = (found.spinTickets||0);
+        document.getElementById('infoTickets').innerText = (found.spinTickets||0); // Spin Tickets ပြပေးမည်
         document.getElementById('cusInfoBox').style.display = 'block';
     } else { alert("❌ ရှာမတွေ့ပါ! အကောင့်မရှိပါ။"); document.getElementById('cusInfoBox').style.display = 'none'; }
 };
@@ -397,9 +433,10 @@ window.doTopup = async (type) => {
     
     u[`customers/${cus.phone}/balance`] = newBal; 
     
+    // 🌟 SPIN TICKET CALCULATION 🌟
     let earnedTickets = 0;
     if (type === 'in') {
-        earnedTickets = Math.floor(amt / 5000);
+        earnedTickets = Math.floor(amt / 5000); // ၅၀၀၀ လျှင် ၁ ကတ်
         if (earnedTickets > 0) {
             u[`customers/${cus.phone}/spinTickets`] = (cus.spinTickets || 0) + earnedTickets;
         }
@@ -469,6 +506,7 @@ function renderOrders(orders){
 
 window.updOrder = async (id, status) => { await update(ref(db, `food_orders/${id}`), { status }); window.showToast("✅ အော်ဒါ ပြောင်းလဲပြီး"); };
 
+// REFUND LOGIC
 window.cancelOrder = async (orderId, phone, amount, payMethod) => {
     if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား?\n(Wallet ဖြင့် ရှင်းထားပါက Customer ထံသို့ ငွေအလိုလို ပြန်အမ်းပေးပါမည်)")) return;
     let updates = {}; updates[`food_orders/${orderId}/status`] = 'cancelled';
