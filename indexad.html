@@ -47,7 +47,7 @@
     .btn-outline { background: var(--surface2); border: 1px solid var(--border); color: #fff; }
     .btn-sm { padding: 6px 12px; font-size: 11px; border-radius: 8px; width: auto; }
 
-    /* 🌟 ပုံထဲက အတိုင်း စီစဉ်ထားသော Stock / Inventory CSS 🌟 */
+    /* Stock UI */
     .stock-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
     .stock-tab { flex: 1; padding: 12px 10px; border-radius: 14px; background: var(--surface2); color: var(--text-sub); font-size: 13px; font-weight: 700; text-align: center; cursor: pointer; transition: 0.3s; border: 1px solid var(--border); display: flex; justify-content: center; align-items: center; gap: 6px; }
     .stock-tab.active-sale { background: rgba(124, 106, 255, 0.15); color: var(--primary); border-color: var(--primary); }
@@ -139,7 +139,7 @@
                     <option value="Free_1Hour">1 Hour Free Code</option>
                     <option value="Free_4Hours">4 Hours Free Code</option>
                 </select>
-                <textarea id="newSpinCodes" class="form-control" style="height:100px; font-family:var(--mono); font-size:13px; border-color:rgba(34,211,165,0.4);" placeholder="FREE-CODE-001&#10;FREE-CODE-002..."></textarea>
+                <textarea id="newSpinCodes" class="form-control" style="height:100px; font-family:var(--mono); font-size:13px; border-color:rgba(34,211,165,0.4);" placeholder="Ruijie မှ Spin အတွက် Code များကို ကူးထည့်ပါ..."></textarea>
                 <button class="btn btn-green" onclick="window.addSpinStock()"><i class="fa-solid fa-plus-circle"></i> Spin ဂိုဒေါင်ထဲ ထည့်မည်</button>
             </div>
 
@@ -239,7 +239,7 @@ window.switchTab = (tab, el) => { document.querySelectorAll('.tab-content').forE
 window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; if(id === 'logModal') window.renderLog(); if(id === 'manageModal') window.renderManage(); };
 
-// 🌟 Stock Tab များကို အလွယ်တကူ ပြောင်းရန် 🌟
+// 🌟 Stock Tab ပြောင်းရန် 🌟
 window.switchStockTab = (type) => {
     document.getElementById('st-sale').classList.remove('active-sale');
     document.getElementById('st-spin').classList.remove('active-spin');
@@ -350,37 +350,54 @@ function renderStock(){
     if(pSelect.options.length === 0) { ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => pSelect.innerHTML += `<option value="${p}">${p}</option>`); }
 }
 
-// 🌟 SPIN INVENTORY SYSTEM 🌟
+// 🌟 SPIN INVENTORY SYSTEM (Ruijie Smart Extracting) 🌟
 window.addSpinStock = async () => {
     const plan = document.getElementById('spinPlan').value;
     const text = document.getElementById('newSpinCodes').value;
     if(!text.trim()) return window.showToast("Code များ ထည့်ပါ");
     
-    const codes = text.split(/[\n,]+/).map(c => c.trim()).filter(c => c !== "");
-    if(codes.length === 0) return;
+    // Line ခွဲမည်
+    const lines = text.split('\n');
+    let newCodes = [];
+
+    lines.forEach(line => {
+        // Space ဖြင့် Column ခွဲမည်
+        let cols = line.trim().split(/\s+/);
+        if(cols.length > 0 && cols[0] !== "") {
+            // ပထမဆုံး Column က Code အသန့်ဖြစ်သည်
+            newCodes.push(cols[0]);
+        }
+    });
+
+    if(newCodes.length === 0) return window.showToast("Code များ မတွေ့ပါ");
 
     let inv = JSON.parse(JSON.stringify(window.allSpinInventory || {}));
     if(!inv[plan]) inv[plan] = [];
     
     let existing = new Set(inv[plan].map(i => i.code));
-    let addedCount = 0;
+    let addedCount = 0; let dupCount = 0;
 
-    codes.forEach(c => {
+    newCodes.forEach(c => {
         if(!existing.has(c)) {
             inv[plan].push({ code: c });
             existing.add(c); addedCount++;
+        } else {
+            dupCount++;
         }
     });
 
     if(addedCount > 0) {
         let logs = JSON.parse(JSON.stringify(window.inventoryLog)); 
-        logs.unshift({ date: new Date().toLocaleString(), detail: `Spin ဆုမဲ: ${plan.replace('Free_', '')} (${addedCount} ခု)` });
+        let planName = plan.replace('Free_', '').replace('Mins', ' Mins').replace('Hour', ' Hour');
+        logs.unshift({ date: new Date().toLocaleString(), detail: `Spin ဆုမဲ: ${planName} (${addedCount} ခု)` });
         
         await update(ref(db), { [`spin_inventory/${plan}`]: inv[plan], inventoryLog: logs });
         document.getElementById('newSpinCodes').value = '';
-        window.showToast(`✅ ${plan} သို့ Spin Code ${addedCount} ခု ထည့်သွင်းပြီးပါပြီ`);
+        window.showToast(`✅ ${planName} သို့ Spin Code ${addedCount} ခု ထည့်သွင်းပြီးပါပြီ`);
+    } else if (dupCount > 0) {
+        alert("❌ အသစ်မဝင်ပါ။ Code များ ထပ်နေပါသည်။");
     } else {
-        window.showToast("❌ အသစ်မဝင်ပါ။ Code များ ထပ်နေပါသည်။");
+        window.showToast("❌ Code များ မတွေ့ပါ");
     }
 };
 
@@ -417,7 +434,7 @@ window.searchCustomer = () => {
         window.currentTopupCus = found; 
         document.getElementById('infoName').innerText = found.name; 
         document.getElementById('infoBal').innerText = (found.balance||0).toLocaleString(); 
-        document.getElementById('infoTickets').innerText = (found.spinTickets||0); // Spin Tickets ပြပေးမည်
+        document.getElementById('infoTickets').innerText = (found.spinTickets||0); 
         document.getElementById('cusInfoBox').style.display = 'block';
     } else { alert("❌ ရှာမတွေ့ပါ! အကောင့်မရှိပါ။"); document.getElementById('cusInfoBox').style.display = 'none'; }
 };
@@ -433,10 +450,9 @@ window.doTopup = async (type) => {
     
     u[`customers/${cus.phone}/balance`] = newBal; 
     
-    // 🌟 SPIN TICKET CALCULATION 🌟
     let earnedTickets = 0;
     if (type === 'in') {
-        earnedTickets = Math.floor(amt / 5000); // ၅၀၀၀ လျှင် ၁ ကတ်
+        earnedTickets = Math.floor(amt / 5000); 
         if (earnedTickets > 0) {
             u[`customers/${cus.phone}/spinTickets`] = (cus.spinTickets || 0) + earnedTickets;
         }
@@ -506,7 +522,6 @@ function renderOrders(orders){
 
 window.updOrder = async (id, status) => { await update(ref(db, `food_orders/${id}`), { status }); window.showToast("✅ အော်ဒါ ပြောင်းလဲပြီး"); };
 
-// REFUND LOGIC
 window.cancelOrder = async (orderId, phone, amount, payMethod) => {
     if(!confirm("ဤအော်ဒါကို ပယ်ဖျက်မှာ သေချာပြီလား?\n(Wallet ဖြင့် ရှင်းထားပါက Customer ထံသို့ ငွေအလိုလို ပြန်အမ်းပေးပါမည်)")) return;
     let updates = {}; updates[`food_orders/${orderId}/status`] = 'cancelled';
