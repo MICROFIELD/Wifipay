@@ -36,56 +36,82 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 .orb3{width:220px;height:220px;background:#22d3a5;bottom:18%;left:-60px;animation-delay:6s;}
 @keyframes orbFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-28px) scale(1.04);}}
 .tab-content{flex:1;overflow-y:auto;overflow-x:hidden;display:none;position:relative;z-index:1;padding-bottom:calc(var(--nav-h) + 24px);-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tab-content::-webkit-scrollbar{display:none;}
 .tab-content.active{display:block;animation:slideUp 0.32s cubic-bezier(0.16,1,0.3,1);}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 
+/* INSTALL BANNER */
+.install-banner{position:absolute;top:20px;left:20px;right:20px;background:rgba(124,106,255,0.15);backdrop-filter:blur(10px);border:1px solid var(--accent);border-radius:16px;padding:12px 16px;display:none;justify-content:space-between;align-items:center;z-index:1000;box-shadow:0 10px 25px rgba(0,0,0,0.5);animation:slideDown 0.4s ease;}
+@keyframes slideDown{from{transform:translateY(-20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.install-info{display:flex;align-items:center;gap:12px;}
+.install-icon{width:36px;height:36px;border-radius:10px;background:var(--accent);display:flex;justify-content:center;align-items:center;font-size:18px;}
+.install-text h4{font-size:13px;color:white;margin:0;}
+.install-text p{font-size:10px;color:var(--text-sub);margin:0;}
+.btn-install{background:white;color:var(--bg);border:none;padding:6px 14px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;}
+
+/* AD ANNOUNCEMENT BANNER */
+.ad-banner { background: linear-gradient(90deg, rgba(124,106,255,0.15), rgba(167,139,250,0.15)); border: 1px solid var(--accent); border-radius: 14px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 12px; display: none; }
+.ad-banner i { color: var(--gold); font-size: 18px; margin-top: 2px; }
+.ad-banner p { font-size: 12px; color: var(--text); line-height: 1.5; margin: 0; }
+
+/* AUTH & FIELDS */
 .auth-wrap{display:flex;flex-direction:column;min-height:100%;padding:40px 24px 30px;position:relative;z-index:2;overflow-y:auto;}
 .auth-logo{text-align:center;margin-bottom:36px;margin-top:auto;}
-.auth-logo .logo-mark{font-size:50px;font-weight:700;font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-2px;}
+.auth-logo .logo-mark{font-size:50px;font-weight:700;font-style:italic;background:linear-gradient(135deg,var(--accent),var(--accent2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-2px;display:block;}
 .auth-logo p{font-size:11px;color:var(--text-sub);margin-top:6px;letter-spacing:2px;text-transform:uppercase;}
-.auth-card{background:var(--surface);border:1px solid var(--border-bright);border-radius:28px;padding:30px 22px;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.auth-card{background:var(--surface);border:1px solid var(--border-bright);border-radius:28px;padding:30px 22px;box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.05);}
 .auth-card h2{font-size:21px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.auth-card>p.sub{font-size:13px;color:var(--text-sub);margin-bottom:26px;}
 .field{margin-bottom:15px;}
-.field label{display:block;font-size:11px;font-weight:700;color:var(--text-sub);text-transform:uppercase;margin-bottom:7px;}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--text-sub);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:7px;}
 .fi{position:relative;}
-.fi input{width:100%;padding:14px 44px 14px 16px;background:var(--surface2);border:1.5px solid var(--border);border-radius:13px;font-size:15px;color:var(--text);outline:none;transition:all 0.2s;}
-.fi input:focus{border-color:var(--accent);background:rgba(124,106,255,0.07);}
-.fi i{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:15px;}
-.fi i.btn-eye{pointer-events:auto;cursor:pointer;color:var(--text-sub);}
+.fi input{width:100%;padding:14px 44px 14px 16px;background:var(--surface2);border:1.5px solid var(--border);border-radius:13px;font-size:15px;font-family:var(--font);color:var(--text);outline:none;transition:all 0.22s;}
+.fi input::placeholder{color:var(--text-dim);}
+.fi input:focus{border-color:var(--accent);background:rgba(124,106,255,0.07);box-shadow:0 0 0 4px rgba(124,106,255,0.1);}
+.fi i{position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--text-dim);font-size:15px;pointer-events:none;}
+.fi i.btn-eye{pointer-events:auto;cursor:pointer;color:var(--text-sub);padding:5px;transition:0.2s;}
 
-.btn{width:100%;padding:15px;border:none;border-radius:13px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all 0.2s;}
+/* BUTTONS */
+.btn{width:100%;padding:15px;border:none;border-radius:13px;font-size:15px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all 0.2s;letter-spacing:0.2px;}
 .btn-primary{background:linear-gradient(135deg,var(--accent),#6c5aee);color:white;box-shadow:0 8px 22px rgba(124,106,255,0.35);}
-.btn-green{background:linear-gradient(135deg,#1bac89,var(--green));color:#fff;}
+.btn-primary:active{transform:scale(0.97);}
+.btn-green{background:linear-gradient(135deg,#1bac89,var(--green));color:#fff;box-shadow:0 8px 22px rgba(34,211,165,0.28);}
+.btn-green:active{transform:scale(0.97);}
 .auth-link{text-align:center;margin-top:20px;font-size:14px;color:var(--text-sub);}
 .auth-link b{color:var(--accent2);cursor:pointer;}
+.auth-footer{text-align:center;margin-top:auto;padding-top:35px;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;}
+.auth-footer span{color:var(--accent2);}
 
+/* HOME CARD & ACTIONS */
 .home-header{padding:20px 20px 0;}
 @supports(padding:max(0px)){.home-header{padding-top:max(20px,env(safe-area-inset-top));}}
 .hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
-.hdr-greet p{font-size:12px;color:var(--text-sub);margin-bottom:3px;}
+.hdr-greet p{font-size:12px;color:var(--text-sub);letter-spacing:0.5px;margin-bottom:3px;}
 .hdr-greet h3{font-size:21px;font-weight:700;}
 .hdr-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#a855f7);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;cursor:pointer;position:relative;}
 .notif-dot{position:absolute;top:0;right:0;width:11px;height:11px;background:var(--red);border-radius:50%;border:2px solid var(--bg);}
 .bal-card{margin:0 0 22px;background:linear-gradient(135deg,#1a1040 0%,#0d0d24 60%,#14103a 100%);border:1px solid var(--border-bright);border-radius:26px;padding:26px 22px;position:relative;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.6);}
-.bc-top{display:flex;justify-content:space-between;margin-bottom:22px;position:relative;z-index:1;}
+.bal-card::before{content:'';position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(124,106,255,0.2) 0%,transparent 70%);top:-100px;right:-70px;}
+.bc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;position:relative;z-index:1;}
 .bc-lbl{font-size:11px;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;}
 .bc-logo{font-size:17px;font-weight:700;font-style:italic;background:linear-gradient(135deg,var(--accent2),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
 .bc-amount{position:relative;z-index:1;margin-bottom:18px;}
 .bc-currency{font-size:13px;color:rgba(255,255,255,0.45);font-family:var(--mono);}
-.bc-num{font-size:42px;font-weight:700;color:#fff;font-family:var(--mono);letter-spacing:-2px;}
-.bc-bot{display:flex;justify-content:space-between;position:relative;z-index:1;font-size:13px;color:rgba(255,255,255,0.3);font-family:var(--mono);}
-
-.qa-row{display:flex;gap:10px;margin-bottom:25px;}
+.bc-num{font-size:42px;font-weight:700;color:#fff;font-family:var(--mono);letter-spacing:-2px;line-height:1.1;}
+.bc-bot{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
+.bc-cardno{font-size:13px;font-family:var(--mono);color:rgba(255,255,255,0.3);letter-spacing:3px;}
+.qa-row{display:flex;gap:10px;margin-bottom:28px;}
 .qa-btn{flex:1;background:var(--surface);border:1px solid var(--border-bright);border-radius:var(--radius-sm);padding:16px 6px;display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;}
 .qa-ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;}
 .qa-ico.blue{background:rgba(96,165,250,0.12);color:#60a5fa;}
 .qa-ico.green{background:rgba(34,211,165,0.12);color:var(--green);}
 .qa-lbl{font-size:11px;font-weight:700;color:var(--text-sub);}
 
+/* VOUCHERS */
 .sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;}
 .sec-title{font-size:16px;font-weight:700;color:var(--text);}
 .vc-list{display:flex;flex-direction:column;gap:9px;}
-.vc-card{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:15px 16px;display:flex;justify-content:space-between;align-items:center; cursor:pointer;}
+.vc-card{background:var(--surface);border:1px solid var(--border);border-radius:17px;padding:15px 16px;display:flex;justify-content:space-between;align-items:center;}
 .vc-l{display:flex;align-items:center;gap:12px;}
 .vc-ico{width:40px;height:40px;border-radius:10px;background:rgba(124,106,255,0.1);color:var(--accent2);display:flex;align-items:center;justify-content:center;font-size:17px;}
 .vc-name{font-size:14px;font-weight:700;color:var(--text);}
@@ -94,50 +120,97 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 .vc-price{font-size:14px;font-weight:700;color:var(--green);font-family:var(--mono);}
 .vc-btn{background:linear-gradient(135deg,var(--accent),#6c5aee);color:white;border:none;padding:7px 15px;border-radius:18px;font-size:11px;font-weight:700;}
 
-/* 🌟 SPIN WHEEL CSS (Integrated) 🌟 */
-.wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto 40px; }
+/* 🌟 SPIN WHEEL CSS 🌟 */
+.wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto 30px; }
 .pointer { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #ff6b6b; z-index: 20; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6)); }
 .wheel { width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#a855f7 0deg 60deg, #333344 60deg 120deg, #3b82f6 120deg 180deg, #22d3a5 180deg 240deg, #333344 240deg 300deg, #f7c948 300deg 360deg); border: 6px solid #ffffff; box-shadow: 0 0 40px rgba(124, 106, 255, 0.4); transition: transform 5s cubic-bezier(0.1, 0.8, 0.2, 1); position: relative; overflow: hidden; }
 .slice-text { position: absolute; width: 50%; height: 20px; top: 50%; left: 50%; margin-top: -10px; transform-origin: 0% 50%; font-size: 14px; font-weight: bold; text-align: right; padding-right: 20px; box-sizing: border-box; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
 .t1 { transform: rotate(-60deg); } .t2 { transform: rotate(0deg); color: #ccc; } .t3 { transform: rotate(60deg); } .t4 { transform: rotate(120deg); color: #000; text-shadow: none; } .t5 { transform: rotate(180deg); color: #ccc; } .t6 { transform: rotate(240deg); color: #000; text-shadow: none; }
 
-/* FOOD MENU */
+/* FOOD MENU CSS */
 .food-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;padding:0 20px;}
-.food-item{background:var(--surface);border:1px solid var(--border-bright);border-radius:18px;overflow:hidden;position:relative;}
+.food-item{background:var(--surface);border:1px solid var(--border-bright);border-radius:18px;overflow:hidden;transition:0.2s;position:relative;}
+.food-item:active{transform:scale(0.97);}
 .food-img{width:100%;height:100px;background:linear-gradient(135deg,var(--surface2),var(--surface));display:flex;justify-content:center;align-items:center;font-size:45px;}
 .food-info{padding:12px 14px;}
-.food-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.food-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .food-price{font-size:13px;color:var(--green);font-family:var(--mono);font-weight:700;}
-.btn-add{position:absolute;bottom:10px;right:10px;background:var(--accent);color:white;width:28px;height:28px;border-radius:10px;border:none;display:flex;justify-content:center;align-items:center;cursor:pointer;}
+.btn-add{position:absolute;bottom:10px;right:10px;background:var(--accent);color:white;width:28px;height:28px;border-radius:10px;border:none;display:flex;justify-content:center;align-items:center;font-size:14px;box-shadow:0 4px 10px rgba(124,106,255,0.4);cursor:pointer;}
+.btn-add:active{background:var(--accent2);transform:scale(0.9);}
 
-.cart-float{position:fixed;bottom:calc(var(--nav-h) + 20px);right:20px;background:linear-gradient(135deg,#ff6b6b,#ff4b4b);color:white;width:56px;height:56px;border-radius:28px;display:none;justify-content:center;align-items:center;font-size:22px;box-shadow:0 8px 25px rgba(255,107,107,0.4);z-index:90;cursor:pointer;}
+/* DRINK MODAL */
+.drink-modal{background:var(--surface);width:90%;max-width:320px;border:1px solid var(--border-bright);border-radius:24px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,0.6);animation:popIn 0.3s ease;}
+.drink-item{display:flex;justify-content:space-between;align-items:center;padding:14px 10px;border-bottom:1px solid var(--border);cursor:pointer;transition:0.2s;}
+.drink-item:last-child{border-bottom:none;}
+.drink-item:active{background:rgba(124,106,255,0.1);border-radius:12px;}
+.d-name{font-size:14px;font-weight:600;} .d-price{font-size:13px;color:var(--green);font-family:var(--mono);}
+
+/* CART FLOATING BUTTON */
+.cart-float{position:fixed;bottom:calc(var(--nav-h) + 20px);right:20px;background:linear-gradient(135deg,#ff6b6b,#ff4b4b);color:white;width:56px;height:56px;border-radius:28px;display:none;justify-content:center;align-items:center;font-size:22px;box-shadow:0 8px 25px rgba(255,107,107,0.4);z-index:90;cursor:pointer;animation:popIn 0.3s ease;}
 .cart-badge{position:absolute;top:-4px;right:-4px;background:var(--text);color:var(--red);width:22px;height:22px;border-radius:11px;font-size:12px;font-weight:800;display:flex;justify-content:center;align-items:center;border:2px solid var(--bg);}
 
 /* TRANSFER & FORMS */
 .form-card{background:var(--surface);border:1px solid var(--border-bright);border-radius:22px;padding:22px 18px;margin-bottom:14px;}
 .quick-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
 .qchip{cursor:pointer;padding:6px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:18px;font-size:12px;}
+.qchip:active{background:rgba(124,106,255,0.15);border-color:var(--accent);}
 
-/* SETTINGS & HISTORY */
+/* HISTORY */
 .hist-stats{display:flex;gap:9px;margin-bottom:18px;}
 .stat-chip{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:13px 10px;text-align:center;}
+.stat-val{font-size:16px;font-weight:700;font-family:var(--mono);}
+.stat-lbl{font-size:10px;color:var(--text-sub);margin-top:3px;}
+.stat-in .stat-val{color:var(--green);} .stat-out .stat-val{color:var(--red);} .stat-cnt .stat-val{color:var(--accent2);}
 .tx-item{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;}
+.tx-l{display:flex;align-items:center;gap:12px;}
+.tx-ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.tx-ico.buy{background:rgba(96,165,250,0.1);color:#60a5fa;} .tx-ico.out{background:rgba(255,107,107,0.1);color:var(--red);}
+.tx-ico.in{background:rgba(34,211,165,0.1);color:var(--green);} .tx-ico.food{background:rgba(247,201,72,0.1);color:var(--gold);}
+.tx-name{font-size:13px;font-weight:700;color:var(--text);} .tx-date{font-size:11px;color:var(--text-sub);margin-top:3px;}
+.tx-amt{font-size:15px;font-weight:700;font-family:var(--mono);} .tx-amt.plus{color:var(--green);}
+
+/* SETTINGS */
+.prof-card{background:linear-gradient(135deg,rgba(124,106,255,0.14),rgba(124,106,255,0.04));border:1px solid rgba(124,106,255,0.22);border-radius:20px;padding:22px 18px;margin-bottom:18px;text-align:center;}
+.pc-av{width:68px;height:68px;border-radius:50%;margin:0 auto 10px;background:linear-gradient(135deg,var(--accent),#a855f7);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:700;position:relative;}
+.pc-name{font-size:17px;font-weight:700;} .pc-phone{font-size:12px;color:var(--text-sub);margin-top:3px;font-family:var(--mono);}
 .s-item{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:16px;margin-bottom:8px;display:flex;align-items:center;gap:13px;cursor:pointer;}
 .s-ico{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;}
 
 /* BOTTOM NAV */
 .bottom-nav{position:fixed;bottom:0;background:rgba(10,10,20,0.93);backdrop-filter:blur(20px);border-top:1px solid var(--border-bright);display:flex;justify-content:space-around;padding:10px 0;z-index:200;max-width:430px;width:100%;left:50%;transform:translateX(-50%);}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-dim);padding:5px;flex:1;cursor:pointer;transition:all 0.22s;}
-.nav-item i{font-size:20px;}
-.nav-item span{font-size:9px;font-weight:700;text-transform:uppercase;}
+.nav-item i{font-size:20px;transition:0.22s;}
+.nav-item span{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;}
 .nav-item.active{color:var(--accent2);}
+.nav-item.active i{transform:scale(1.15) translateY(-2px);}
 
 /* MODALS */
-.overlay{position:fixed;inset:0;z-index:500;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,0.87);backdrop-filter:blur(14px);}
-.modal-box{background:var(--surface);width:90%;max-width:340px;border:1px solid var(--border-bright);border-radius:28px;padding:30px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6); max-height:85vh; overflow-y:auto;}
-#qrcodeCanvas { background:white; padding:15px; border-radius:18px; margin: 0 auto 20px; display: inline-block; }
+.gift-overlay{position:fixed;inset:0;z-index:500;display:none;justify-content:center;align-items:center;background:rgba(0,0,0,0.87);backdrop-filter:blur(14px);}
+@keyframes popIn{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
 
-#toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(18px);background:var(--surface2);border:1px solid var(--border-bright);padding:11px 20px;border-radius:28px;font-size:13px;font-weight:600;white-space:nowrap;z-index:999;opacity:0;transition:all 0.28s;pointer-events:none;}
+.pin-modal{background:var(--surface);width:90%;max-width:320px;border:1px solid var(--border-bright);border-radius:28px;padding:30px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6);animation:popIn 0.3s ease;}
+.pin-icon{width:60px;height:60px;background:rgba(124,106,255,0.15);color:var(--accent);border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:24px;margin:0 auto 15px;}
+
+/* CART MODAL UI */
+.cart-modal{background:var(--surface);width:92%;max-width:380px;max-height:80vh;border:1px solid var(--border-bright);border-radius:24px;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.7);animation:slideUp 0.3s ease;}
+.cart-hdr{padding:20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.cart-body{padding:20px;overflow-y:auto;flex:1;}
+.cart-item{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:12px;border-bottom:1px dashed var(--border);}
+.cart-item-name{font-size:14px;font-weight:700;}
+.cart-item-price{font-size:13px;color:var(--green);font-family:var(--mono);}
+.deli-toggle{display:flex;background:var(--surface2);border-radius:12px;padding:4px;margin-bottom:15px;border:1px solid var(--border);}
+.dt-btn{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;color:var(--text-sub);transition:0.2s;}
+.dt-btn.active{background:var(--accent);color:white;}
+.cart-total-row{display:flex;justify-content:space-between;font-size:16px;font-weight:700;margin-top:15px;padding-top:15px;border-top:1px solid var(--border-bright);}
+.shop-pay-check {display:flex; align-items:center; gap:8px; font-size:13px; padding:10px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:12px; margin-bottom:15px; cursor:pointer;}
+.shop-pay-check input {width:18px; height:18px; accent-color:var(--accent);}
+
+/* SHARE MODAL CSS */
+.share-modal{background:var(--surface);width:90%;max-width:340px;border:1px solid var(--border-bright);border-radius:26px;padding:30px 24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.6);animation:popIn 0.3s ease;}
+#qrcodeCanvas { background:white; padding:15px; border-radius:18px; margin: 0 auto 20px; display: inline-block; }
+#qrcodeCanvas img { max-width: 100%; height: auto; }
+
+#toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(18px);background:var(--surface2);border:1px solid var(--border-bright);padding:11px 20px;border-radius:28px;font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;z-index:999;opacity:0;transition:all 0.28s;pointer-events:none;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.success{border-color:rgba(34,211,165,0.35);color:var(--green);} #toast.error{border-color:rgba(255,107,107,0.35);color:var(--red);}
 .home-inner{padding:0 20px 10px;}
@@ -145,155 +218,344 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 </head>
 <body>
 <div class="bg-orbs"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+
 <audio id="coinSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
 
+<div id="installPrompt" class="install-banner">
+  <div class="install-info"><div class="install-icon"><i class="fa-solid fa-download"></i></div><div class="install-text"><h4>Wifipay App</h4><p>ဖုန်းထဲသို့ Install လုပ်ပါ</p></div></div>
+  <button class="btn-install" onclick="installPWA()">Install</button>
+</div>
+
 <div class="app" id="app">
-  <div id="loginScreen" class="tab-content active" style="display:block;">
-    <div class="auth-wrap">
-      <div class="auth-logo"><span class="logo-mark">Wifipay</span><p>Digital Wallet</p></div>
-      <div class="auth-card">
-        <h2>ကြိုဆိုပါတယ် 👋</h2><p class="sub" style="color:var(--text-sub);font-size:13px;margin-bottom:20px;">အကောင့်ဝင်ပြီး ဆက်ရှေ့ဆောင်ရွက်ပါ</p>
-        <div class="field"><label>ဖုန်းနံပါတ် (သို့) အမည်</label><div class="fi"><input type="tel" id="loginPhone" list="savedUsers" placeholder="09xxxxxxxxx သို့ အမည်ရိုက်ပါ"><i class="fa-solid fa-phone"></i></div><datalist id="savedUsers"></datalist></div>
-        <div class="field"><label>စကားဝှက်</label><div class="fi"><input type="password" id="loginPass" placeholder="••••••••"><i class="fa-solid fa-eye btn-eye" onclick="window.togglePw('loginPass', this)"></i></div></div>
-        <button class="btn btn-primary" onclick="window.login()"><i class="fa-solid fa-arrow-right-to-bracket"></i> &nbsp;အကောင့်ဝင်မည်</button>
-        <p class="auth-link">အကောင့်မရှိသေးဘူးလား? <b onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</b></p>
+<div id="loginScreen" class="tab-content active" style="display:block;">
+<div class="auth-wrap">
+  <div class="auth-logo"><span class="logo-mark">Wifipay</span><p>Digital Wallet</p></div>
+  <div class="auth-card">
+    <h2>ကြိုဆိုပါတယ် 👋</h2><p class="sub">အကောင့်ဝင်ပြီး ဆက်ရှေ့ဆောင်ရွက်ပါ</p>
+    <div class="field"><label>ဖုန်းနံပါတ် (သို့) အမည်</label><div class="fi"><input type="tel" id="loginPhone" list="savedUsers" placeholder="09xxxxxxxxx သို့ အမည်ရိုက်ပါ"><i class="fa-solid fa-phone"></i></div><datalist id="savedUsers"></datalist></div>
+    <div class="field"><label>စကားဝှက်</label><div class="fi"><input type="password" id="loginPass" placeholder="••••••••"><i class="fa-solid fa-eye btn-eye" onclick="window.togglePw('loginPass', this)"></i></div></div>
+    <button class="btn btn-primary" onclick="window.login()"><i class="fa-solid fa-arrow-right-to-bracket"></i> &nbsp;အကောင့်ဝင်မည်</button>
+    <p class="auth-link">အကောင့်မရှိသေးဘူးလား? <b onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</b></p>
+  </div>
+  <div class="auth-footer">Digital Wallet <span>Myanmar</span></div>
+</div>
+</div>
+
+<div id="registerScreen" class="tab-content" style="display:none;">
+<div class="auth-wrap">
+  <div class="auth-logo"><span class="logo-mark">Wifipay</span><p>Digital Wallet</p></div>
+  <div class="auth-card">
+    <h2>အကောင့်သစ်ဖွင့်မည် ✨</h2><p class="sub">မိနစ်ပိုင်းအတွင်း အကောင့်ဖွင့်ပါ</p>
+    <div class="field"><label>အမည်</label><div class="fi"><input type="text" id="regName" placeholder="ကျော်ကျော်"><i class="fa-solid fa-user"></i></div></div>
+    <div class="field"><label>ဖုန်းနံပါတ်</label><div class="fi"><input type="tel" id="regPhone" placeholder="09xxxxxxxxx"><i class="fa-solid fa-phone"></i></div></div>
+    <div class="field"><label>စကားဝှက်</label><div class="fi"><input type="password" id="regPass" placeholder="လျှို့ဝှက်နံပါတ်"><i class="fa-solid fa-eye btn-eye" onclick="window.togglePw('regPass', this)"></i></div></div>
+    <button class="btn btn-primary" onclick="window.register()"><i class="fa-solid fa-user-plus"></i> &nbsp;အကောင့်သစ်ဖွင့်မည်</button>
+    <p class="auth-link">အကောင့်ရှိပြီးသားလား? <b onclick="window.showLogin()">အကောင့်ဝင်ရန်</b></p>
+  </div>
+  <div class="auth-footer">Digital Wallet <span>Myanmar</span></div>
+</div>
+</div>
+
+<div id="mainApp" style="display:none;height:100%;flex-direction:column;">
+
+  <div id="tab-home" class="tab-content active">
+    <div class="home-header">
+      <div class="hdr-top">
+        <div class="hdr-greet"><p>Hello,</p><h3 id="userNameDisplay">—</h3></div>
+        <div class="hdr-av" id="avatarEl"><span id="avatarInitial">?</span><div class="notif-dot"></div></div>
+      </div>
+      <div class="bal-card">
+        <div class="bc-top"><div class="bc-lbl">Total Balance</div><div class="bc-logo">Wifipay</div></div>
+        <div class="bc-amount"><div class="bc-currency">Ks</div><div class="bc-num" id="balanceText">0</div></div>
+        <div class="bc-bot"><div class="bc-cardno">**** **** <span id="userPhoneTail">0000</span></div><div class="bc-status"><div class="bc-dot"></div>Active</div></div>
       </div>
     </div>
-  </div>
-
-  <div id="registerScreen" class="tab-content" style="display:none;">
-    <div class="auth-wrap">
-      <div class="auth-logo"><span class="logo-mark">Wifipay</span></div>
-      <div class="auth-card">
-        <h2>အကောင့်သစ်ဖွင့်မည် ✨</h2>
-        <div class="field"><label>အမည်</label><div class="fi"><input type="text" id="regName" placeholder="ကျော်ကျော်"><i class="fa-solid fa-user"></i></div></div>
-        <div class="field"><label>ဖုန်းနံပါတ်</label><div class="fi"><input type="tel" id="regPhone" placeholder="09xxxxxxxxx"><i class="fa-solid fa-phone"></i></div></div>
-        <div class="field"><label>စကားဝှက်</label><div class="fi"><input type="password" id="regPass" placeholder="လျှို့ဝှက်နံပါတ်"><i class="fa-solid fa-eye btn-eye" onclick="window.togglePw('regPass', this)"></i></div></div>
-        <button class="btn btn-primary" onclick="window.register()">အကောင့်သစ်ဖွင့်မည်</button>
-        <p class="auth-link">အကောင့်ရှိပြီးသားလား? <b onclick="window.showLogin()">အကောင့်ဝင်ရန်</b></p>
-      </div>
-    </div>
-  </div>
-
-  <div id="mainApp" style="display:none;height:100%;flex-direction:column;">
     
-    <div id="tab-home" class="tab-content active">
-      <div class="home-header">
-        <div class="hdr-top">
-          <div class="hdr-greet"><p>Hello,</p><h3 id="userNameDisplay">—</h3></div>
-          <div class="hdr-av" id="avatarEl"><span id="avatarInitial">?</span><div class="notif-dot"></div></div>
+    <div class="home-inner">
+      <div id="adBannerBox" class="ad-banner">
+        <i class="fa-solid fa-bullhorn"></i>
+        <p id="adBannerText">ကြိုဆိုပါတယ်...</p>
+      </div>
+
+      <div class="qa-row">
+        <div class="qa-btn" onclick="window.openTopup()"><div class="qa-ico blue"><i class="fa-solid fa-wallet"></i></div><span class="qa-lbl">Top Up</span></div>
+        <div class="qa-btn" onclick="window.switchTab('transfer')"><div class="qa-ico green"><i class="fa-solid fa-money-bill-transfer"></i></div><span class="qa-lbl">Transfer</span></div>
+      </div>
+
+      <div class="sec-hdr"><div class="sec-title">🎁 Daily Rewards</div></div>
+      <div class="vc-card" style="border:1px solid var(--accent); background:rgba(124,106,255,0.05); margin-bottom:20px;" onclick="document.getElementById('spinOverlay').style.display='flex'">
+        <div class="vc-l">
+          <div class="vc-ico" style="background:var(--accent); color:white; font-size:20px;">🎡</div>
+          <div>
+            <div class="vc-name" style="color:var(--accent2);">Spin & Win</div>
+            <div class="vc-sub" id="ticketDisplay" style="color:var(--text); font-weight:bold;">လက်မှတ်: 0 ကတ်</div>
+          </div>
         </div>
-        <div class="bal-card">
-          <div class="bc-top"><div class="bc-lbl">Total Balance</div><div class="bc-logo">Wifipay</div></div>
-          <div class="bc-amount"><div class="bc-currency">Ks</div><div class="bc-num" id="balanceText">0</div></div>
-          <div class="bc-bot"><div class="bc-cardno">**** **** <span id="userPhoneTail">0000</span></div><div class="bc-status">Active</div></div>
-        </div>
+        <div class="vc-r"><button class="vc-btn" style="padding:8px 18px;">လှည့်မည်</button></div>
+      </div>
+
+      <div class="sec-hdr"><div class="sec-title">WiFi Vouchers</div></div>
+      <div class="vc-list">
+        <div class="vc-card"><div class="vc-l"><div class="vc-ico"><i class="fa-solid fa-wifi"></i></div><div><div class="vc-name">1 Hour</div><div class="vc-sub">High speed access</div></div></div><div class="vc-r"><div class="vc-price">500 Ks</div><button class="vc-btn" onclick="window.buyVoucher('1 Hour',500)">ဝယ်မည်</button></div></div>
+        <div class="vc-card"><div class="vc-l"><div class="vc-ico"><i class="fa-solid fa-wifi"></i></div><div><div class="vc-name">4 Hours</div><div class="vc-sub">Social media pack</div></div></div><div class="vc-r"><div class="vc-price">1,000 Ks</div><button class="vc-btn" onclick="window.buyVoucher('4 Hours',1000)">ဝယ်မည်</button></div></div>
+        <div class="vc-card"><div class="vc-l"><div class="vc-ico"><i class="fa-solid fa-wifi"></i></div><div><div class="vc-name">1 Day</div><div class="vc-sub">Unlimited daily</div></div></div><div class="vc-r"><div class="vc-price">2,000 Ks</div><button class="vc-btn" onclick="window.buyVoucher('1 Day',2000)">ဝယ်မည်</button></div></div>
+        <div class="vc-card"><div class="vc-l"><div class="vc-ico"><i class="fa-solid fa-wifi"></i></div><div><div class="vc-name">1 Week</div><div class="vc-sub">Best for students</div></div></div><div class="vc-r"><div class="vc-price">8,000 Ks</div><button class="vc-btn" onclick="window.buyVoucher('1 Week',8000)">ဝယ်မည်</button></div></div>
+        <div class="vc-card" style="border-color:rgba(247,201,72,0.22);"><div class="vc-l"><div class="vc-ico" style="background:rgba(247,201,72,0.1);border-color:rgba(247,201,72,0.18);color:var(--gold);"><i class="fa-solid fa-crown"></i></div><div><div class="vc-name">1 Month</div><div class="vc-sub" style="color:var(--gold);">Premium plan 🏆</div></div></div><div class="vc-r"><div class="vc-price" style="color:var(--gold);">35,000 Ks</div><button class="vc-btn" style="background:linear-gradient(135deg,#c9971a,var(--gold));" onclick="window.buyVoucher('1 Month',35000)">ဝယ်မည်</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-food" class="tab-content">
+    <div style="padding:0 20px;">
+      <div style="padding:26px 0 14px;"><div class="sec-title" style="font-size:20px;">🍔 Food & Drinks</div><p style="font-size:13px;color:var(--text-sub);margin-top:4px;">ဆိုင်မှ လတ်ဆတ်သော အစားအသောက်များ</p></div>
+      <div class="food-grid" id="foodGrid"></div>
+    </div>
+  </div>
+
+  <div id="tab-transfer" class="tab-content">
+    <div style="padding:0 20px;">
+      <div style="padding:26px 0 18px;">
+        <div class="sec-title" style="font-size:20px;">💸 Send Money</div>
+        <p style="font-size:13px;color:var(--text-sub);margin-top:4px;">Safe & instant transfers</p>
       </div>
       
-      <div class="home-inner">
-        <div class="qa-row">
-          <div class="qa-btn" onclick="window.openTopup()"><div class="qa-ico blue"><i class="fa-solid fa-wallet"></i></div><span class="qa-lbl">Top Up</span></div>
-          <div class="qa-btn" onclick="window.switchTab('transfer')"><div class="qa-ico green"><i class="fa-solid fa-money-bill-transfer"></i></div><span class="qa-lbl">Transfer</span></div>
-        </div>
-
-        <div class="sec-hdr"><div class="sec-title">🎁 Daily Rewards</div></div>
-        <div class="vc-card" style="border:1px solid var(--accent); background:rgba(124,106,255,0.05); margin-bottom:20px;" onclick="document.getElementById('spinOverlay').style.display='flex'">
-          <div class="vc-l">
-            <div class="vc-ico" style="background:var(--accent); color:white; font-size:20px;">🎡</div>
-            <div>
-              <div class="vc-name" style="color:var(--accent2);">Spin & Win</div>
-              <div class="vc-sub" id="ticketDisplay" style="color:var(--text); font-weight:bold;">လက်မှတ်: 0 ကတ်</div>
+      <div id="form-transfer" class="form-card">
+        <div class="field">
+          <label>လက်ခံမည့်သူ ဖုန်းနံပါတ်</label>
+          <div class="fi" style="display: flex; gap: 8px;">
+            <div style="position: relative; flex: 1;">
+              <input type="tel" id="txPhone" placeholder="09xxxxxxxxx">
+              <i class="fa-solid fa-phone" style="position:absolute;right:15px;top:50%;transform:translateY(-50%);color:var(--text-dim);"></i>
             </div>
+            <button class="btn-green" style="width: 50px; border-radius: 13px; border:none; display: flex; justify-content: center; align-items: center; cursor:pointer;" onclick="window.verifyTxPhone()">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
           </div>
-          <div class="vc-r"><button class="vc-btn" style="padding:8px 18px;">လှည့်မည်</button></div>
+          <div id="txReceiverName" style="font-size: 13px; color: var(--green); margin-top: 8px; font-weight: 700; display: none;"></div>
         </div>
 
-        <div class="sec-hdr"><div class="sec-title">WiFi Vouchers</div></div>
-        <div class="vc-list">
-          <div class="vc-card"><div class="vc-l"><div class="vc-ico"><i class="fa-solid fa-wifi"></i></div><div><div class="vc-name">1 Hour</div><div class="vc-sub">High speed access</div></div></div><div class="vc-r"><div class="vc-price">500 Ks</div><button class="vc-btn" onclick="window.buyVoucher('1 Hour',500)">ဝယ်မည်</button></div></div>
-          <div class="vc-card"><div class="vc-l"><div class="vc-ico"><i class="fa-solid fa-wifi"></i></div><div><div class="vc-name">4 Hours</div></div></div><div class="vc-r"><div class="vc-price">1,000 Ks</div><button class="vc-btn" onclick="window.buyVoucher('4 Hours',1000)">ဝယ်မည်</button></div></div>
-          <div class="vc-card"><div class="vc-l"><div class="vc-ico"><i class="fa-solid fa-wifi"></i></div><div><div class="vc-name">1 Day</div></div></div><div class="vc-r"><div class="vc-price">2,000 Ks</div><button class="vc-btn" onclick="window.buyVoucher('1 Day',2000)">ဝယ်မည်</button></div></div>
-          <div class="vc-card"><div class="vc-l"><div class="vc-ico"><i class="fa-solid fa-wifi"></i></div><div><div class="vc-name">1 Week</div></div></div><div class="vc-r"><div class="vc-price">8,000 Ks</div><button class="vc-btn" onclick="window.buyVoucher('1 Week',8000)">ဝယ်မည်</button></div></div>
-          <div class="vc-card" style="border-color:rgba(247,201,72,0.22);"><div class="vc-l"><div class="vc-ico" style="background:rgba(247,201,72,0.1);color:var(--gold);"><i class="fa-solid fa-crown"></i></div><div><div class="vc-name">1 Month</div></div></div><div class="vc-r"><div class="vc-price" style="color:var(--gold);">35,000 Ks</div><button class="vc-btn" style="background:linear-gradient(135deg,#c9971a,var(--gold));" onclick="window.buyVoucher('1 Month',35000)">ဝယ်မည်</button></div></div>
+        <div class="field"><label>လွှဲမည့် ပမာဏ (Ks)</label><div class="fi"><input type="number" id="txAmount" placeholder="0"><i class="fa-solid fa-coins"></i></div></div>
+        <div class="quick-chips">
+          <span class="qchip" onclick="window.setQ('txAmount',500)">+500</span>
+          <span class="qchip" onclick="window.setQ('txAmount',1000)">+1,000</span>
+          <span class="qchip" onclick="window.setQ('txAmount',5000)">+5,000</span>
         </div>
+        <button class="btn btn-green" onclick="window.prepareTx('normal')"><i class="fa-solid fa-paper-plane"></i> &nbsp;ငွေလွှဲမည်</button>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;font-weight:700;">လွှဲဖူးသူများ (Recent)</div>
+        <div id="recentTxList" style="display: flex; flex-direction: column; gap: 8px;"></div>
       </div>
     </div>
+  </div>
 
-    <div id="tab-food" class="tab-content"><div style="padding:20px;"><div class="sec-title" style="font-size:20px;margin-bottom:15px;">🍔 Food & Drinks</div><div class="food-grid" id="foodGrid"></div></div></div>
+  <div id="tab-history" class="tab-content">
+    <div style="padding:0 20px;">
+      <div style="padding:26px 0 14px;"><div class="sec-title" style="font-size:20px;">📋 Transactions</div></div>
+      <div class="hist-stats">
+        <div class="stat-chip stat-in"><div class="stat-val" id="statIn">0</div><div class="stat-lbl">Received</div></div>
+        <div class="stat-chip stat-out"><div class="stat-val" id="statOut">0</div><div class="stat-lbl">Sent</div></div>
+        <div class="stat-chip stat-cnt"><div class="stat-val" id="statCount">0</div><div class="stat-lbl">Total</div></div>
+      </div>
+      <div id="historyContainer"></div>
+    </div>
+  </div>
 
-    <div id="tab-transfer" class="tab-content">
-      <div style="padding:20px;">
-        <div class="sec-title" style="font-size:20px;margin-bottom:15px;">💸 Send Money</div>
-        <div class="form-card">
-          <div class="field"><label>လက်ခံမည့်သူ ဖုန်းနံပါတ်</label><div class="fi" style="display:flex;gap:8px;"><div style="position:relative;flex:1;"><input type="tel" id="txPhone" placeholder="09xxxxxxxxx"><i class="fa-solid fa-phone"></i></div><button class="btn-green" style="width:50px;border-radius:13px;border:none;cursor:pointer;" onclick="window.verifyTxPhone()"><i class="fa-solid fa-magnifying-glass"></i></button></div><div id="txReceiverName" style="font-size:13px;color:var(--green);margin-top:8px;font-weight:700;display:none;"></div></div>
-          <div class="field"><label>လွှဲမည့် ပမာဏ</label><div class="fi"><input type="number" id="txAmount" placeholder="0"><i class="fa-solid fa-coins"></i></div></div>
-          <div class="quick-chips"><span class="qchip" onclick="window.setQ('txAmount',500)">+500</span><span class="qchip" onclick="window.setQ('txAmount',1000)">+1,000</span></div>
-          <button class="btn btn-green" onclick="window.prepareTx('normal')">ငွေလွှဲမည်</button>
+  <div id="tab-settings" class="tab-content">
+    <div style="padding:0 20px;">
+      <div style="padding:26px 0 18px;"><div class="sec-title" style="font-size:20px;">⚙️ Settings</div><p style="font-size:13px;color:var(--text-sub);margin-top:4px;">Account & Security</p></div>
+      
+      <input type="file" id="avatarUpload" accept="image/*" style="display:none;" onchange="window.handleAvatarChange(event)">
+      
+      <div class="prof-card">
+        <div class="pc-av" id="settingsAvatar" onclick="window.triggerAvatarUpload()" style="cursor:pointer;">
+          ?
+          <div style="position:absolute;bottom:-4px;right:-4px;background:var(--accent);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--surface);"><i class="fa-solid fa-camera"></i></div>
         </div>
-        <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;margin:20px 0 10px;font-weight:700;">လွှဲဖူးသူများ (Recent)</div>
-        <div id="recentTxList" style="display:flex;flex-direction:column;gap:8px;"></div>
+        <div class="pc-name" id="settingsName">—</div>
+        <div class="pc-phone" id="settingsPhone">—</div>
+        <div style="margin-top:10px;"><span style="font-size:11px;color:var(--green);background:rgba(34,211,165,0.1);padding:4px 12px;border-radius:20px;border:1px solid rgba(34,211,165,0.2);">✓ Verified</span></div>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Share & Invite (Spin Rewards)</div>
+      <div class="s-item" onclick="window.nativeShare()">
+        <div class="s-ico" style="background:rgba(124,106,255,0.12);color:var(--accent2);"><i class="fa-solid fa-share-nodes"></i></div>
+        <div><div class="s-title">သူငယ်ချင်းကို ဖိတ်ခေါ်မည်</div><div class="s-sub">App Link ကို ပို့ပေးရန်</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
+      </div>
+      <div class="s-item" onclick="window.openQrShareModal()">
+        <div class="s-ico" style="background:rgba(247,201,72,0.12);color:var(--gold);"><i class="fa-solid fa-qrcode"></i></div>
+        <div><div class="s-title">QR Code ဖြင့် မျှဝေမည်</div><div class="s-sub">သူငယ်ချင်းကို Scan ဖတ်ခိုင်းရန်</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Profile</div>
+      <div class="s-item" onclick="document.getElementById('profileSection').style.display=document.getElementById('profileSection').style.display==='none'?'block':'none'">
+        <div class="s-ico" style="background:rgba(34,211,165,0.12);color:var(--green);"><i class="fa-solid fa-user-pen"></i></div>
+        <div><div class="s-title">Edit Profile</div><div class="s-sub">Change your name</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
+      </div>
+      <div id="profileSection" style="display:none;" class="form-card">
+        <div class="field" style="margin-bottom:16px;"><label>အမည်သစ်</label><input type="text" id="editNameInput" style="width:100%;padding:13px 15px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;font-size:14px;color:var(--text);outline:none;font-family:var(--font);" placeholder="နာမည်သစ်ရိုက်ထည့်ပါ"></div>
+        <button class="btn btn-green" onclick="window.updateProfileName()">နာမည်ပြောင်းမည်</button>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Notifications</div>
+      <div class="s-item" onclick="window.requestNotiPermission()">
+        <div class="s-ico" style="background:rgba(96,165,250,0.12);color:#60a5fa;"><i class="fa-solid fa-bell"></i></div>
+        <div><div class="s-title">ဖုန်း Noti ဖွင့်မည်</div><div class="s-sub">ငွေဝင်လျှင် အသိပေးရန် နှိပ်ပါ</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Security</div>
+      <div class="s-item" onclick="document.getElementById('pwSection').style.display=document.getElementById('pwSection').style.display==='none'?'block':'none'">
+        <div class="s-ico" style="background:rgba(124,106,255,0.12);color:var(--accent2);"><i class="fa-solid fa-lock"></i></div>
+        <div><div class="s-title">Change Password</div><div class="s-sub">Update your secret code</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
+      </div>
+      <div id="pwSection" style="display:none;" class="form-card">
+        <div class="field"><label>စကားဝှက် အဟောင်း</label><input type="password" id="oldPass" style="width:100%;padding:13px 15px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;font-size:14px;color:var(--text);outline:none;font-family:var(--font);" placeholder="••••••••"></div>
+        <div class="field" style="margin-bottom:16px;"><label>စကားဝှက် အသစ်</label><input type="password" id="newPass" style="width:100%;padding:13px 15px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;font-size:14px;color:var(--text);outline:none;font-family:var(--font);" placeholder="••••••••"></div>
+        <button class="btn btn-primary" onclick="window.changePassword()">ပြောင်းမည်</button>
+      </div>
+
+      <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;letter-spacing:1px;margin:18px 0 10px;font-weight:700;">Account</div>
+      <div class="s-item" onclick="window.logout()">
+        <div class="s-ico" style="background:rgba(255,107,107,0.1);color:var(--red);"><i class="fa-solid fa-right-from-bracket"></i></div>
+        <div><div class="s-title" style="color:var(--red);">Log Out</div><div class="s-sub">Sign out of your account</div></div>
+        <i class="fa-solid fa-chevron-right s-arrow"></i>
+      </div>
+      
+      <div style="text-align:center;padding:28px 0 10px;">
+        <div style="font-size:20px;font-weight:700;font-style:italic;background:linear-gradient(135deg,var(--accent),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Wifipay</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-top:6px;">Powered by HMH · v2.1 · © 2026</div>
       </div>
     </div>
+  </div>
 
-    <div id="tab-history" class="tab-content"><div style="padding:20px;"><div class="sec-title" style="font-size:20px;margin-bottom:15px;">📋 Transactions</div><div id="historyContainer"></div></div></div>
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="window.switchTab('home',this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+    <div class="nav-item" onclick="window.switchTab('food',this)"><i class="fa-solid fa-burger"></i><span>Order</span></div>
+    <div class="nav-item" onclick="window.switchTab('transfer',this)"><i class="fa-solid fa-paper-plane"></i><span>Send</span></div>
+    <div class="nav-item" onclick="window.switchTab('history',this)"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
+    <div class="nav-item" onclick="window.switchTab('settings',this)"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
+  </nav>
+</div>
+</div>
 
-    <div id="tab-settings" class="tab-content">
-      <div style="padding:20px;">
-        <div class="sec-title" style="font-size:20px;margin-bottom:15px;">⚙️ Settings</div>
-        
-        <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;margin:10px 0;font-weight:700;">Share & Invite</div>
-        <div class="s-item" onclick="window.nativeShare()"><div class="s-ico" style="background:rgba(124,106,255,0.12);color:var(--accent2);"><i class="fa-solid fa-share-nodes"></i></div><div><div class="s-title">သူငယ်ချင်းကို ဖိတ်ခေါ်မည်</div><div class="s-sub">App Link ကို ပို့ပေးရန်</div></div></div>
-        <div class="s-item" onclick="document.getElementById('qrShareOverlay').style.display='flex'; if(qrcode) qrcode.makeCode('https://wifipay.store');"><div class="s-ico" style="background:rgba(247,201,72,0.12);color:var(--gold);"><i class="fa-solid fa-qrcode"></i></div><div><div class="s-title">QR Code ဖြင့် မျှဝေမည်</div><div class="s-sub">Scan ဖတ်ခိုင်းရန်</div></div></div>
+<div id="cartFloat" class="cart-float" onclick="window.openCart()">
+  <i class="fa-solid fa-basket-shopping"></i><div class="cart-badge" id="cartCount">0</div>
+</div>
 
-        <div style="font-size:11px;color:var(--text-sub);text-transform:uppercase;margin:20px 0 10px;font-weight:700;">Account</div>
-        <div class="s-item" onclick="window.logout()"><div class="s-ico" style="background:rgba(255,107,107,0.1);color:var(--red);"><i class="fa-solid fa-right-from-bracket"></i></div><div><div class="s-title" style="color:var(--red);">Log Out</div></div></div>
-      </div>
+<div id="howToSpinOverlay" class="gift-overlay" style="z-index:700;">
+  <div class="drink-modal" style="text-align:center;">
+    <div style="font-size:40px; color:var(--accent2); margin-bottom:10px;"><i class="fa-solid fa-ticket"></i></div>
+    <h3 style="margin-bottom:15px;">Spin လက်မှတ် ဘယ်လိုရနိုင်မလဲ?</h3>
+    <div style="text-align:left; font-size:13px; color:var(--text-sub); line-height:1.8; margin-bottom:20px;">
+      <b>၁။ နေ့စဉ်လက်ဆောင် 🎁</b><br>တစ်နေ့လျှင် App ကို ဝင်ရောက်ရုံဖြင့် Free ၁ ကတ် ရရှိပါမည်။<br><br>
+      <b>၂။ ငွေဖြည့်လက်ဆောင် 💰</b><br>ငွေ ၅၀၀၀ ကျပ် ဖြည့်သွင်းတိုင်း Spin ၁ ကတ် ရရှိပါမည်။ (ဥပမာ- ၁၀၀၀၀ ဖြည့်ပါက ၂ ကတ်)<br><br>
+      <b>၃။ မျှဝေခြင်း 🤝</b><br>သူငယ်ချင်းများကို App သို့ Share ခြင်းဖြင့် Spin ၂ ကတ် ရရှိပါမည်။ (တစ်ရက်လျှင် တစ်ကြိမ်သာ)
     </div>
-
-    <nav class="bottom-nav">
-      <div class="nav-item active" onclick="window.switchTab('home',this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
-      <div class="nav-item" onclick="window.switchTab('food',this)"><i class="fa-solid fa-burger"></i><span>Order</span></div>
-      <div class="nav-item" onclick="window.switchTab('transfer',this)"><i class="fa-solid fa-paper-plane"></i><span>Send</span></div>
-      <div class="nav-item" onclick="window.switchTab('history',this)"><i class="fa-solid fa-clock-rotate-left"></i><span>History</span></div>
-      <div class="nav-item" onclick="window.switchTab('settings',this)"><i class="fa-solid fa-gear"></i><span>Settings</span></div>
-    </nav>
+    <button class="btn btn-primary" onclick="document.getElementById('howToSpinOverlay').style.display='none'">ပိတ်မည်</button>
   </div>
 </div>
 
-<div id="cartFloat" class="cart-float" onclick="window.openCart()"><i class="fa-solid fa-basket-shopping"></i><div class="cart-badge" id="cartCount">0</div></div>
+<div id="drinkOverlay" class="gift-overlay">
+  <div class="drink-modal">
+    <h3 style="font-size:16px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+      <span>🥤 အအေး ရွေးချယ်ရန်</span>
+      <button onclick="document.getElementById('drinkOverlay').style.display='none'" style="background:none; border:none; color:var(--text-sub); font-size:18px; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+    </h3>
+    <div id="drinkList"></div>
+  </div>
+</div>
 
-<div id="qrShareOverlay" class="overlay">
-  <div class="modal-box">
+<div id="cartOverlay" class="gift-overlay">
+  <div class="cart-modal">
+    <div class="cart-hdr">
+      <h3 style="font-size:18px;">🛒 သင်၏ခြင်းတောင်း</h3>
+      <button onclick="document.getElementById('cartOverlay').style.display='none'" style="background:none;border:none;color:var(--text-sub);font-size:20px;cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="cart-body" id="cartBody"></div>
+    <div style="padding:20px; border-top:1px solid var(--border);">
+      <div class="deli-toggle">
+        <div class="dt-btn active" id="btn-pickup" onclick="window.setDeli('pickup')">ဆိုင်မှာစား/ယူမည်</div>
+        <div class="dt-btn" id="btn-deli" onclick="window.setDeli('deli')">အိမ်အရောက်ပို့</div>
+      </div>
+      
+      <div id="pickupWrap">
+        <label class="shop-pay-check">
+          <input type="checkbox" id="payAtShop"> ဆိုင်မှ ငွေရှင်းမည် (Cash)
+        </label>
+      </div>
+
+      <div id="deliAddressWrap" style="display:none; margin-bottom:15px; display:flex; flex-direction:column; gap:10px;">
+        <div class="fi"><input type="text" id="deliName" placeholder="နာမည်"><i class="fa-solid fa-user"></i></div>
+        <div class="fi"><input type="tel" id="deliPhone" placeholder="ဖုန်းနံပါတ်"><i class="fa-solid fa-phone"></i></div>
+        <div class="fi"><input type="text" id="deliAddress" placeholder="ပို့ပေးရမည့် လိပ်စာ အတိအကျ"><i class="fa-solid fa-map-location-dot"></i></div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:13px; color:var(--text-sub);">
+        <span>Subtotal:</span><span id="cartSubtotal">0 Ks</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px; color:var(--red);">
+        <span>Delivery Fee:</span><span id="cartDeliFee">0 Ks</span>
+      </div>
+      <div class="cart-total-row">
+        <span>Total:</span><span id="cartTotal" style="color:var(--green);">0 Ks</span>
+      </div>
+      <button class="btn btn-primary" style="margin-top:15px;" onclick="window.prepareTx('order')">Order တင်မည်</button>
+    </div>
+  </div>
+</div>
+
+<div id="qrShareOverlay" class="gift-overlay">
+  <div class="share-modal">
     <h3 style="color:var(--text); margin-bottom:15px;">QR Code ဖြင့် မျှဝေမည်</h3>
     <div id="qrcodeCanvas"></div>
-    <p style="font-size:12px; color:var(--text-sub); margin-bottom:20px;">သူငယ်ချင်းကို ဤ QR Code အား Scan ဖတ်ခိုင်းပါ</p>
+    <p style="font-size:12px; color:var(--text-sub); margin-bottom:20px; line-height:1.6;">သူငယ်ချင်းကို ဤ QR Code အား Scan ဖတ်ခိုင်းခြင်းဖြင့် Wifipay App သို့ အလွယ်တကူ ရောက်ရှိစေနိုင်ပါသည်။</p>
     <button class="btn btn-primary" onclick="document.getElementById('qrShareOverlay').style.display='none'">ပိတ်မည်</button>
   </div>
 </div>
 
-<div id="pinOverlay" class="overlay">
-  <div class="modal-box">
-    <h3 style="color:var(--text); margin-bottom:20px;">လုံခြုံရေး စကားဝှက်</h3>
-    <div class="fi" style="margin-bottom: 20px;"><input type="password" id="modalPinInput" placeholder="••••••••" style="text-align:center; font-size:20px;"><i class="fa-solid fa-eye btn-eye" onclick="window.togglePw('modalPinInput', this)"></i></div>
-    <button class="btn btn-primary" onclick="window.confirmTx()">အတည်ပြုမည်</button>
+<div id="pinOverlay" class="gift-overlay">
+  <div class="pin-modal">
+    <div class="pin-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <h3 style="color:var(--text); margin-bottom:8px;">လုံခြုံရေး စကားဝှက်</h3>
+    <p style="font-size:12px; color:var(--text-sub); margin-bottom:20px;">ဆက်လက်လုပ်ဆောင်ရန် စကားဝှက် ရိုက်ထည့်ပါ</p>
+    <div class="fi" style="margin-bottom: 20px;">
+      <input type="password" id="modalPinInput" placeholder="••••••••" style="text-align:center; font-size:20px; letter-spacing:3px;">
+      <i class="fa-solid fa-eye btn-eye" onclick="window.togglePw('modalPinInput', this)"></i>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn" style="background:var(--surface2); color:var(--text);" onclick="document.getElementById('pinOverlay').style.display='none'">ပိတ်မည်</button>
+      <button class="btn btn-primary" onclick="window.confirmTx()">အတည်ပြုမည်</button>
+    </div>
   </div>
 </div>
 
-<div id="topupOverlay" class="overlay">
-  <div class="modal-box" style="padding:35px 20px;">
+<div id="topupOverlay" class="gift-overlay">
+  <div class="drink-modal" style="text-align:center; padding:35px 20px;">
     <div style="font-size:46px; margin-bottom:12px; color:var(--green);"><i class="fa-solid fa-building-columns"></i></div>
-    <h3 style="color:var(--text); margin-bottom:8px;">ငွေဖြည့်ရန်</h3>
-    <p style="font-size:12px; color:var(--gold); margin-bottom:20px; font-weight:bold;">🎉 5000 Ks ဖြည့်တိုင်း Spin လက်မှတ် ၁ ကတ် ရရှိပါမည်!</p>
-    <p style="font-size:13px; color:var(--text-sub); margin-bottom:20px;">အောက်ပါ <b>KPay</b> သို့ ငွေလွှဲပြီး Screenshot ပြပါ</p>
+    <h3 style="color:var(--text); margin-bottom:8px; font-size:20px;">ငွေဖြည့်ရန်</h3>
+    <p style="font-size:12px; color:var(--gold); margin-bottom:8px; font-weight:bold;">🎉 5000 Ks ဖြည့်တိုင်း Spin လက်မှတ် ၁ ကတ် ရရှိပါမည်!</p>
+    
+    <p style="font-size:13px; color:var(--text-sub); margin-bottom:24px; line-height:1.6;">အောက်ပါ <b>KPay</b> သို့ ငွေလွှဲပြီး<br>Viber / Messenger မှ Screenshot ပြပါ</p>
     <div style="background:var(--surface2); border:1px solid var(--border); border-radius:18px; padding:20px; margin-bottom:24px;">
-      <p style="font-size:17px; font-weight:700; margin-bottom:16px;">Han min htet</p>
-      <div style="display:flex; justify-content:center; align-items:center; gap:12px;"><span style="font-size:22px; font-family:var(--mono); color:var(--green);">09977123184</span></div>
+      <p style="font-size:11px; color:var(--text-sub); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;">KPay Account Name</p>
+      <p style="font-size:17px; font-weight:700; color:var(--text); margin-bottom:16px;">Han min htet</p>
+      <p style="font-size:11px; color:var(--text-sub); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Phone Number</p>
+      <div style="display:flex; justify-content:center; align-items:center; gap:12px;">
+        <span style="font-size:22px; font-family:var(--mono); font-weight:700; color:var(--green);">09977123184</span>
+        <button onclick="window.copyKpay()" style="background:rgba(34,211,165,0.15); border:1px solid rgba(34,211,165,0.3); color:var(--green); width:38px; height:38px; border-radius:10px; cursor:pointer;"><i class="fa-regular fa-copy"></i></button>
+      </div>
     </div>
     <button class="btn btn-primary" onclick="document.getElementById('topupOverlay').style.display='none'">ပိတ်မည်</button>
   </div>
 </div>
 
-<div id="spinOverlay" class="overlay" style="background:rgba(10,10,20,0.95);">
+<div id="spinOverlay" class="gift-overlay" style="background:rgba(10,10,20,0.95);">
   <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative;">
     <i class="fa-solid fa-xmark" style="position:absolute; top:30px; right:30px; font-size:24px; color:gray; cursor:pointer; z-index:100;" onclick="document.getElementById('spinOverlay').style.display='none'"></i>
     <h2 style="margin-bottom:5px;">🎁 နေ့စဉ် ကံစမ်းမဲ</h2>
@@ -311,12 +573,16 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
       </div>
     </div>
     <button class="btn btn-primary" id="spinBtn" style="width:80%; max-width:300px; margin-bottom:15px;">လှည့်မည် (Spin)</button>
-    <div style="font-size:13px; color:var(--text-dim);">လက်ကျန် လက်မှတ်: <span id="spinModalTicketCount" style="color:var(--accent2); font-weight:bold;">0</span> ကတ်</div>
+    <div style="font-size:13px; color:var(--text-dim); margin-bottom: 10px;">လက်ကျန် လက်မှတ်: <span id="spinModalTicketCount" style="color:var(--accent2); font-weight:bold;">0</span> ကတ်</div>
+    
+    <div style="text-align:center; margin-top: 15px;">
+       <span onclick="document.getElementById('howToSpinOverlay').style.display='flex'" style="color:var(--accent2); font-size:12px; cursor:pointer; text-decoration:underline;"><i class="fa-solid fa-circle-info"></i> Spin လက်မှတ် ဘယ်လိုရနိုင်မလဲ?</span>
+    </div>
   </div>
 </div>
 
-<div id="spinResultOverlay" class="overlay" style="z-index: 600;">
-  <div class="modal-box">
+<div id="spinResultOverlay" class="gift-overlay" style="z-index: 600;">
+  <div class="drink-modal" style="text-align: center;">
     <div id="resIcon" style="font-size:50px; margin-bottom:15px;">🎉</div>
     <h2 id="resTitle" style="color:#22d3a5; margin:0 0 10px;">ဂုဏ်ယူပါတယ်!</h2>
     <p id="resDesc" style="color:#aaa; font-size:14px; margin-bottom:15px;">Free WiFi Code ကို ရရှိပါသည်</p>
@@ -336,23 +602,127 @@ const app=initializeApp(fc);const db=getDatabase(app);
 let cu = null;
 let pendingTxType = null; 
 let prevBalance = null; 
+let isFirstLogin = true;
 let qrcode = null;
 
 // 🌟 ADMIN BOARD SETTINGS FOR SPIN 🌟
 const ADMIN_WIN_RATES = { tryAgain: 25, min5: 60, min30: 10, hour1: 4, hour4: 1 };
 
+window.loadSavedAccounts = function() {
+  let saved = JSON.parse(localStorage.getItem('wp_accounts') || '[]');
+  let dl = document.getElementById('savedUsers'); dl.innerHTML = '';
+  saved.forEach(acc => {
+    let opt = document.createElement('option');
+    opt.value = acc.phone; opt.text = acc.name + ' (' + acc.phone + ')';
+    dl.appendChild(opt);
+  });
+};
+window.saveAccountToLocal = function(phone, name, pw) {
+  let saved = JSON.parse(localStorage.getItem('wp_accounts') || '[]');
+  let ex = saved.find(a => a.phone === phone);
+  if(ex) { ex.name = name; ex.pw = pw; } else { saved.push({phone, name, pw}); }
+  localStorage.setItem('wp_accounts', JSON.stringify(saved));
+};
+document.getElementById('loginPhone').addEventListener('input', function(e) {
+  let val = e.target.value; let saved = JSON.parse(localStorage.getItem('wp_accounts') || '[]');
+  let match = saved.find(a => a.phone === val || a.name === val);
+  if(match) { document.getElementById('loginPhone').value = match.phone; document.getElementById('loginPass').value = match.pw; }
+});
+
+window.saveRecentTx = function(phone, name) {
+  let recents = JSON.parse(localStorage.getItem('wp_recent_tx') || '[]');
+  recents = recents.filter(r => r.phone !== phone);
+  recents.unshift({phone, name});
+  if(recents.length > 5) recents.pop();
+  localStorage.setItem('wp_recent_tx', JSON.stringify(recents));
+  window.loadRecentTx();
+};
+
+window.loadRecentTx = function() {
+  const list = document.getElementById('recentTxList');
+  if(!list) return;
+  let recents = JSON.parse(localStorage.getItem('wp_recent_tx') || '[]');
+  list.innerHTML = '';
+  if(recents.length === 0) { list.innerHTML = '<p style="font-size:12px;color:var(--text-sub);text-align:center;padding:15px 0;">မှတ်တမ်း မရှိသေးပါ</p>'; return; }
+  recents.forEach(r => {
+    list.innerHTML += `<div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; margin-bottom:8px; transition:0.2s;" onclick="window.selectRecentTx('${r.phone}')">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div style="width:38px; height:38px; border-radius:50%; background:rgba(34,211,165,0.12); color:var(--green); display:flex; justify-content:center; align-items:center;"><i class="fa-solid fa-user"></i></div>
+        <div><div style="font-size:13px; font-weight:700; color:var(--text);">${r.name}</div><div style="font-size:11px; color:var(--text-sub); font-family:var(--mono); margin-top:2px;">${r.phone}</div></div>
+      </div><i class="fa-solid fa-chevron-right" style="color:var(--text-dim); font-size:12px;"></i></div>`;
+  });
+};
+
+window.selectRecentTx = function(phone) { document.getElementById('txPhone').value = phone; window.verifyTxPhone(); };
+
+window.verifyTxPhone = async function() {
+  const tp = document.getElementById('txPhone').value.trim();
+  const nameDisplay = document.getElementById('txReceiverName');
+  if(!tp) return window.showToast('ဖုန်းနံပါတ် ရိုက်ထည့်ပါ', 'error');
+  if(cu && tp === cu.phone) { nameDisplay.style.display = 'block'; nameDisplay.style.color = 'var(--red)'; nameDisplay.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> မိမိကိုယ်တိုင် မလွှဲနိုင်ပါ'; return; }
+  try {
+    nameDisplay.style.display = 'block'; nameDisplay.style.color = 'var(--text-sub)'; nameDisplay.textContent = 'ရှာဖွေနေပါသည်...';
+    const snap = await get(ref(db, 'customers/' + tp));
+    if(snap.exists()) { const tgt = snap.val(); nameDisplay.style.color = 'var(--green)'; nameDisplay.innerHTML = '<i class="fa-solid fa-circle-check"></i> လက်ခံမည့်သူ: ' + tgt.name; } 
+    else { nameDisplay.style.color = 'var(--red)'; nameDisplay.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ဒီဖုန်းနံပါတ်ဖြင့် အကောင့်မရှိပါ'; }
+  } catch(e) { console.error(e); window.showToast('ချိတ်ဆက်မှု အခက်အခဲဖြစ်နေပါသည်', 'error'); }
+};
+
+window.foodMenu = []; window.drinkOptions = [];
+let cart = []; let deliveryType = 'pickup';
+let deferredPrompt; const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+if (!isStandalone) {
+  if (isIOS) {
+    document.getElementById('installPrompt').style.display = 'flex';
+    document.querySelector('.install-text p').innerHTML = "အောက်ခြေရှိ Share <i class='fa-solid fa-arrow-up-from-bracket'></i> ကိုနှိပ်ပြီး<br><b>Add to Home Screen</b> ကိုရွေးပါ";
+    document.querySelector('.btn-install').style.display = 'none';
+  } else {
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('installPrompt').style.display = 'flex'; });
+  }
+}
+window.installPWA = async () => { if(deferredPrompt) { deferredPrompt.prompt(); const {outcome} = await deferredPrompt.userChoice; if(outcome==='accepted') document.getElementById('installPrompt').style.display='none'; deferredPrompt=null; } };
+
 window.showToast=function(m,t=''){ const el=document.getElementById('toast'); el.textContent=m;el.className='show '+(t||''); clearTimeout(el._t);el._t=setTimeout(()=>el.className='',2800); };
-window.togglePw=function(id,el){ const inp=document.getElementById(id); if(inp.type==='password'){inp.type='text';el.style.color='var(--accent)';} else{inp.type='password';el.style.color='var(--text-sub)';} };
-window.switchTab=function(tab,el=null){ document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); document.getElementById(`tab-${tab}`).classList.add('active'); if(el)el.classList.add('active'); else document.querySelector(`.nav-item[onclick*="'${tab}'"]`)?.classList.add('active'); if(tab==='transfer') window.loadRecentTx(); if(tab==='history') window.renderHistory(); };
+window.togglePw=function(id, el){ const inp=document.getElementById(id); if(inp.type==='password'){ inp.type='text'; el.classList.remove('fa-eye');el.classList.add('fa-eye-slash'); el.style.color='var(--accent)'; } else{ inp.type='password'; el.classList.remove('fa-eye-slash');el.classList.add('fa-eye'); el.style.color='var(--text-sub)'; } };
+window.switchTab=function(tab,el=null){ document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); document.getElementById(`tab-${tab}`).classList.add('active'); if(el)el.classList.add('active'); else document.querySelector(`.nav-item[onclick*="'${tab}'"]`)?.classList.add('active'); if(tab==='food') window.renderFood(); if(tab==='history') window.renderHistory(); if(tab==='transfer') window.loadRecentTx(); document.getElementById('cartFloat').style.display = (tab==='food' && cart.length>0) ? 'flex' : 'none'; };
 window.openTopup=()=>document.getElementById('topupOverlay').style.display='flex';
+window.copyKpay=()=>{ navigator.clipboard.writeText('09977123184'); window.showToast('✓ ဖုန်းနံပါတ် Copy ကူးပြီးပါပြီ', 'success'); };
 window.setQ=(id,v)=>{ document.getElementById(id).value=(parseInt(document.getElementById(id).value)||0)+v; };
 window.showRegister=()=>{document.getElementById('loginScreen').style.display='none';document.getElementById('registerScreen').style.display='block';};
-window.showLogin=()=>{document.getElementById('registerScreen').style.display='none';document.getElementById('loginScreen').style.display='block';};
-window.logout=function(){if(confirm('Log out လုပ်မည်လား?')){localStorage.removeItem('wp');localStorage.removeItem('ww');location.reload();}};
+window.showLogin=()=>{document.getElementById('registerScreen').style.display='none';document.getElementById('loginScreen').style.display='block'; window.loadSavedAccounts(); };
+window.requestNotiPermission = function() { if (!("Notification" in window)) { window.showToast("သင့်ဖုန်းသည် Notification စနစ်ကို မထောက်ပံ့ပါ။", "error"); return; } Notification.requestPermission().then(permission => { if (permission === "granted") window.showToast("✅ Notification ဖွင့်ပြီးပါပြီ။", "success"); else window.showToast("❌ Notification ပိတ်ထားပါသည်။", "error"); }); }
+
+// 🌟 SHARE REWARD LOGIC 🌟
+window.rewardShare = async function() {
+    if(!cu) return;
+    let today = new Date().toLocaleDateString();
+    if(cu.lastShareRewardDate !== today) {
+        let currentTickets = cu.spinTickets || 0;
+        await update(ref(db, `customers/${cu.phone}`), { spinTickets: currentTickets + 2, lastShareRewardDate: today });
+        window.showToast('🎉 မျှဝေပေးတဲ့အတွက် Spin ၂ ကတ် ရရှိပါသည်!', 'success');
+    }
+};
+
+const APP_URL = "https://wifipay.store"; 
+const SHARE_TEXT = "Wifipay Wallet ဖြင့် WiFi Voucher များကို လွယ်ကူလျင်မြန်စွာ ဝယ်ယူနိုင်ပါသည်! အခုပဲ အကောင့်ဖွင့်ပြီး စမ်းသုံးကြည့်ပါ။";
 
 window.nativeShare = async function() {
-    if (navigator.share) { try { await navigator.share({ title: 'Wifipay Wallet', text: "Wifipay ဖြင့် WiFi ကို လွယ်ကူစွာ ဝယ်ယူပါ!", url: "https://wifipay.store" }); } catch (e) {} }
-    else { navigator.clipboard.writeText("https://wifipay.store"); window.showToast('Link ကို Copy ကူးပြီးပါပြီ', 'success'); }
+    if (navigator.share) {
+        try { await navigator.share({ title: 'Wifipay Wallet', text: SHARE_TEXT, url: APP_URL }); window.rewardShare(); } catch (e) { console.error(e); }
+    } else {
+        navigator.clipboard.writeText(APP_URL + '\n\n' + SHARE_TEXT);
+        window.showToast('✓ Link ကို Copy ကူးပြီးပါပြီ', 'success'); window.rewardShare();
+    }
+};
+
+window.openQrShareModal = function() {
+    const cont = document.getElementById('qrcodeCanvas');
+    if(!qrcode) { qrcode = new QRCode(cont, { text: APP_URL, width: 160, height: 160, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H }); } 
+    else { qrcode.makeCode(APP_URL); }
+    document.getElementById('qrShareOverlay').style.display = 'flex';
+    window.rewardShare();
 };
 
 window.register=async function(){
@@ -360,34 +730,55 @@ window.register=async function(){
   if(!n||!p||!pw)return window.showToast('အချက်အလက် ဖြည့်ပါ','error');
   const snap=await get(ref(db,'customers/'+p));
   if(snap.exists())return window.showToast('အကောင့်ရှိပြီးသားပါ','error');
-  // အကောင့်စဖွင့်သူကို လက်ဆောင် Ticket ၁ ကတ် ပေးမည်
-  await set(ref(db,'customers/'+p),{name:n,phone:p,password:pw,balance:0,spinTickets:1});
+  
+  await set(ref(db,'customers/'+p),{name:n,phone:p,password:pw,balance:0,hasReceivedBonus:false});
+  window.saveAccountToLocal(p, n, pw);
   window.showToast('အောင်မြင်ပါသည် ✓','success');window.showLogin();
 };
 
 window.login=async function(){
   const p=document.getElementById('loginPhone').value.trim(); const pw=document.getElementById('loginPass').value.trim();
   const snap=await get(ref(db,'customers/'+p));
-  if(snap.exists()&&snap.val().password===pw){ localStorage.setItem('wp',p);localStorage.setItem('ww',pw); window.loadDash(p); }
+  if(snap.exists()&&snap.val().password===pw){ 
+      localStorage.setItem('wp',p);localStorage.setItem('ww',pw);
+      window.saveAccountToLocal(p, snap.val().name, pw);
+      window.loadDash(p); 
+  }
   else window.showToast('ဖုန်း သို့မဟုတ် စကားဝှက် မှားနေပါ','error');
 };
+window.logout=function(){if(confirm('Log out လုပ်မည်လား?')){localStorage.removeItem('wp');localStorage.removeItem('ww');location.reload();}};
 
 window.loadDash=function(ph){
   document.getElementById('loginScreen').style.display='none'; document.getElementById('registerScreen').style.display='none';
-  document.getElementById('mainApp').style.display='flex';
+  const ma=document.getElementById('mainApp');ma.style.display='flex';ma.style.flexDirection='column';ma.style.height='100%';
   
-  if(!qrcode) qrcode = new QRCode(document.getElementById('qrcodeCanvas'), {text: "https://wifipay.store", width: 160, height: 160, colorDark: "#000000", colorLight: "#ffffff"});
+  onValue(ref(db, 'settings/ad_banner'), snap => {
+    let adBox = document.getElementById('adBannerBox'); let adText = document.getElementById('adBannerText');
+    if(snap.exists() && snap.val().trim() !== "") { adText.textContent = snap.val(); adBox.style.display = 'flex'; } 
+    else { adBox.style.display = 'none'; }
+  });
 
-  onValue(ref(db,'customers/'+ph), snap=>{
+  onValue(ref(db,'customers/'+ph), async snap=>{
     if(!snap.exists())return; cu=snap.val();
+    
+    // 🌟 DAILY FREE TICKET LOGIC 🌟
+    let today = new Date().toLocaleDateString();
+    if (cu.lastFreeTicketDate !== today) {
+        let currentTickets = cu.spinTickets || 0;
+        await update(ref(db, `customers/${cu.phone}`), { spinTickets: currentTickets + 1, lastFreeTicketDate: today });
+        window.showToast('🎁 ဒီနေ့အတွက် Free Spin ၁ ကတ် ရရှိပါသည်!', 'success');
+        return; // Will reload from onValue
+    }
+
     let currentBal = cu.balance || 0;
     document.getElementById('balanceText').textContent=currentBal.toLocaleString();
     
-    // 🌟 SPIN TICKET LOGIC (Top-up 5000 = 1 Ticket) 🌟
+    // 🌟 TOPUP SPIN TICKET LOGIC 🌟
     if (prevBalance !== null && currentBal > prevBalance) {
         let diff = currentBal - prevBalance;
-        window.showToast(`💰 ငွေ ${diff.toLocaleString()} Ks ဝင်လာပါပြီ!`, 'success');
+        window.showToast(`💰 အကောင့်ထဲသို့ ငွေ ${diff.toLocaleString()} Ks ဝင်လာပါပြီ!`, 'success');
         document.getElementById('coinSound')?.play().catch(e=>console.log(e));
+        if ("Notification" in window && Notification.permission === "granted") { new Notification("Wifipay ငွေဝင်လာပါပြီ", { body: `💰 အကောင့်ထဲသို့ ငွေ ${diff.toLocaleString()} Ks ဝင်လာပါပြီ!`, icon: "icon.png" }); }
         
         let earnedTickets = Math.floor(diff / 5000);
         if (earnedTickets > 0) {
@@ -395,21 +786,208 @@ window.loadDash=function(ph){
                 let newTickets = (cu.spinTickets || 0) + earnedTickets;
                 await update(ref(db, `customers/${cu.phone}`), { spinTickets: newTickets });
                 window.showToast(`🎉 ငွေဖြည့်သည့်အတွက် Spin လက်မှတ် ${earnedTickets} ကတ် ရရှိပါသည်!`, 'success');
-            }, 3000); 
+            }, 2500); 
+        }
+
+        if(diff >= 5000 && cu.hasReceivedBonus === false) {
+            setTimeout(async () => {
+                let u = {}; let now = new Date().toLocaleString();
+                u[`customers/${cu.phone}/balance`] = currentBal + 500;
+                u[`customers/${cu.phone}/hasReceivedBonus`] = true;
+                u[`customers/${cu.phone}/history/tx_bonus_${Date.now()}`] = { type: 'gift_in', title: 'Welcome Bonus 🎉', amount: 500, date: now };
+                await update(ref(db), u);
+                window.showToast('🎉 ပထမဆုံးအကြိမ် ငွေဖြည့်သည့်အတွက် 500 Ks Bonus ရရှိပါသည်!', 'success');
+            }, 4500); 
         }
     }
     prevBalance = currentBal;
+    isFirstLogin = false;
 
-    document.getElementById('userNameDisplay').textContent=cu.name; 
-    document.getElementById('userPhoneTail').textContent=ph.slice(-4);
+    document.getElementById('userNameDisplay').textContent=cu.name; document.getElementById('userPhoneTail').textContent=ph.slice(-4);
+    document.getElementById('settingsName').textContent=cu.name; document.getElementById('settingsPhone').textContent=ph;
+    document.getElementById('editNameInput').value=cu.name; 
     
     let tCount = cu.spinTickets || 0;
     document.getElementById('ticketDisplay').innerText = `လက်မှတ်: ${tCount} ကတ်`;
     document.getElementById('spinModalTicketCount').innerText = tCount;
+
+    if(cu.avatar) {
+      document.getElementById('avatarEl').innerHTML = `<img src="${cu.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"><div class="notif-dot"></div>`;
+      document.getElementById('settingsAvatar').innerHTML = `<img src="${cu.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"><div style="position:absolute;bottom:-4px;right:-4px;background:var(--accent);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--surface);"><i class="fa-solid fa-camera"></i></div>`;
+    } else {
+      const init=cu.name[0].toUpperCase(); 
+      document.getElementById('avatarEl').innerHTML = `<span id="avatarInitial">${init}</span><div class="notif-dot"></div>`;
+      document.getElementById('settingsAvatar').innerHTML = `${init}<div style="position:absolute;bottom:-4px;right:-4px;background:var(--accent);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--surface);"><i class="fa-solid fa-camera"></i></div>`;
+    }
+  });
+
+  onValue(ref(db, 'food_menu'), snap => {
+    if(snap.exists()) {
+      window.foodMenu = Object.values(snap.val());
+      let hasDrinks = window.foodMenu.find(f => f.isOptions);
+      if(!hasDrinks) { window.foodMenu.push({ id: 'f_drinks', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true }); }
+    } else { window.foodMenu = [{ id: 'f_drinks', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true }]; }
+    if(document.getElementById('tab-food').classList.contains('active')) window.renderFood();
+  });
+
+  onValue(ref(db, 'drink_options'), snap => { if(snap.exists()) { window.drinkOptions = Object.values(snap.val()); } });
+};
+
+window.updateProfileName=async function(){
+  const newName=document.getElementById('editNameInput').value.trim();
+  if(!newName)return window.showToast('နာမည် အသစ်ထည့်ပါ','error');
+  await update(ref(db,'customers/'+cu.phone),{name:newName});
+  window.saveAccountToLocal(cu.phone, newName, cu.password);
+  window.showToast('✓ နာမည် ပြောင်းလဲပြီးပါပြီ','success');
+  document.getElementById('profileSection').style.display='none';
+};
+
+window.triggerAvatarUpload=()=>document.getElementById('avatarUpload').click();
+window.handleAvatarChange=function(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    const img = new Image();
+    img.onload = function() {
+      const canvas = document.createElement('canvas');
+      const MAX_SIZE = 150; let width = img.width; let height = img.height;
+      if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
+      else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      update(ref(db, 'customers/' + cu.phone), { avatar: dataUrl }).then(() => { window.showToast('✓ Profile ပုံ ပြောင်းလဲပြီးပါပြီ', 'success'); });
+    }
+    img.src = event.target.result;
+  }
+  reader.readAsDataURL(file);
+};
+
+window.renderFood = function() {
+  const fg = document.getElementById('foodGrid'); fg.innerHTML = '';
+  window.foodMenu.forEach(f => {
+    let priceDisplay = f.isOptions ? f.price : f.price.toLocaleString() + ' Ks';
+    let action = f.isOptions ? `window.openDrinkModal()` : `window.addToCart('${f.id}', '${f.name}', ${f.price}, '${f.icon}')`;
+    fg.innerHTML += `<div class="food-item"><div class="food-img">${f.icon}</div><div class="food-info"><div class="food-name">${f.name}</div><div class="food-price">${priceDisplay}</div><button class="btn-add" onclick="${action}"><i class="fa-solid fa-plus"></i></button></div></div>`;
   });
 };
 
-// 🌟 SPIN WHEEL LOGIC (Integrated with Database) 🌟
+window.openDrinkModal = function() {
+  const dl = document.getElementById('drinkList'); dl.innerHTML = '';
+  if(window.drinkOptions.length === 0) { dl.innerHTML = '<p style="text-align:center;font-size:12px;color:gray;">အအေး မရှိသေးပါ</p>'; }
+  window.drinkOptions.forEach(d => {
+    dl.innerHTML += `<div class="drink-item" onclick="window.addToCart('${d.id}', '${d.name}', ${d.price}, '🥤'); document.getElementById('drinkOverlay').style.display='none';"><div class="d-name">${d.name}</div><div class="d-price">${d.price.toLocaleString()} Ks</div></div>`;
+  });
+  document.getElementById('drinkOverlay').style.display = 'flex';
+};
+
+window.addToCart = function(id, name, price, icon) {
+  let ex = cart.find(i => i.id === id); if(ex) ex.qty++; else cart.push({id, name, price, icon, qty: 1});
+  window.showToast(name + ' ကို ခြင်းထဲထည့်လိုက်ပါပြီ', 'success');
+  document.getElementById('cartCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0); document.getElementById('cartFloat').style.display = 'flex';
+};
+
+window.openCart = function() {
+  const cb = document.getElementById('cartBody'); cb.innerHTML = '';
+  if(cart.length === 0) { cb.innerHTML = '<p style="text-align:center; color:var(--text-sub); margin-top:20px;">ခြင်းတောင်း လွတ်နေပါသည်</p>'; }
+  else {
+    cart.forEach((c, idx) => {
+      cb.innerHTML += `<div class="cart-item"><div style="display:flex; align-items:center; gap:10px;"><div style="font-size:24px;">${c.icon}</div><div><div class="cart-item-name">${c.name}</div><div class="cart-item-price">${c.price.toLocaleString()} Ks</div></div></div><div style="display:flex; align-items:center; gap:8px;"><button style="background:var(--surface2); border:none; color:white; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="window.updateQty(${idx}, -1)">-</button><span style="font-size:14px; font-weight:bold;">${c.qty}</span><button style="background:var(--surface2); border:none; color:white; width:24px; height:24px; border-radius:6px; cursor:pointer;" onclick="window.updateQty(${idx}, 1)">+</button></div></div>`;
+    });
+  }
+  window.calcCart();
+  if(cu && !document.getElementById('deliName').value) document.getElementById('deliName').value = cu.name;
+  if(cu && !document.getElementById('deliPhone').value) document.getElementById('deliPhone').value = cu.phone;
+  document.getElementById('cartOverlay').style.display = 'flex';
+};
+
+window.updateQty = function(idx, val) {
+  cart[idx].qty += val; if(cart[idx].qty <= 0) cart.splice(idx, 1);
+  document.getElementById('cartCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0);
+  if(cart.length === 0) document.getElementById('cartFloat').style.display = 'none';
+  window.openCart();
+};
+
+window.setDeli = function(type) {
+  deliveryType = type;
+  document.getElementById('btn-pickup').className = 'dt-btn' + (type==='pickup'?' active':'');
+  document.getElementById('btn-deli').className = 'dt-btn' + (type==='deli'?' active':'');
+  document.getElementById('pickupWrap').style.display = type==='pickup' ? 'block' : 'none';
+  let deliWrap = document.getElementById('deliAddressWrap');
+  if(type === 'deli') { deliWrap.style.display = 'flex'; } else { deliWrap.style.display = 'none'; }
+  window.calcCart();
+};
+
+window.calcCart = function() {
+  let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+  let deli = (deliveryType === 'deli' && sub > 0) ? 500 : 0;
+  document.getElementById('cartSubtotal').textContent = sub.toLocaleString() + ' Ks';
+  document.getElementById('cartDeliFee').textContent = deli.toLocaleString() + ' Ks';
+  document.getElementById('cartTotal').textContent = (sub + deli).toLocaleString() + ' Ks';
+};
+
+window.prepareTx = function(type) {
+  let total = 0; let isCash = false;
+  if(type === 'normal') {
+    const tp = document.getElementById('txPhone').value.trim(); total = parseInt(document.getElementById('txAmount').value);
+    if(!tp || !total) return window.showToast('အချက်အလက် ဖြည့်ပါ', 'error');
+    if(tp === cu.phone) return window.showToast('မိမိကိုယ်တိုင် မလွှဲနိုင်ပါ', 'error');
+  } else if(type === 'order') {
+    if(cart.length === 0) return window.showToast('ခြင်းတောင်း လွတ်နေပါသည်', 'error');
+    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0); total = sub + (deliveryType === 'deli' ? 500 : 0);
+    isCash = (deliveryType === 'pickup' && document.getElementById('payAtShop').checked);
+    if(deliveryType === 'deli') {
+      if(!document.getElementById('deliName').value.trim() || !document.getElementById('deliPhone').value.trim() || !document.getElementById('deliAddress').value.trim()) {
+        return window.showToast('နာမည်၊ ဖုန်း နဲ့ လိပ်စာ အပြည့်အစုံ ဖြည့်ပေးပါ', 'error');
+      }
+    }
+  }
+  if(!isCash && cu.balance < total) return window.showToast('လက်ကျန်ငွေ မလောက်ပါ 😢', 'error');
+  pendingTxType = type; document.getElementById('modalPinInput').value = '';
+  if(type === 'order') document.getElementById('cartOverlay').style.display = 'none';
+  document.getElementById('pinOverlay').style.display = 'flex';
+};
+
+window.confirmTx = async function() {
+  const pw = document.getElementById('modalPinInput').value;
+  if(pw !== cu.password) return window.showToast('စကားဝှက် မှားနေပါသည်', 'error');
+  document.getElementById('pinOverlay').style.display = 'none'; 
+  let updates = {}; const now = new Date().toLocaleString();
+
+  if(pendingTxType === 'normal') {
+    const tp=document.getElementById('txPhone').value.trim(); const amt=parseInt(document.getElementById('txAmount').value);
+    try{
+      const snap=await get(ref(db,'customers/'+tp)); if(!snap.exists())return window.showToast('အကောင့်မရှိပါ','error');
+      const tgt=snap.val();
+      updates[`customers/${cu.phone}/balance`]=cu.balance-amt;
+      updates[`customers/${cu.phone}/history/tx_out_${Date.now()}`]={type:'tx_out',title:'To: '+tgt.name,amount:amt,date:now};
+      updates[`customers/${tp}/balance`]=(tgt.balance||0)+amt;
+      updates[`customers/${tp}/history/tx_in_${Date.now()}`]={type:'tx_in',title:'From: '+cu.name,amount:amt,date:now};
+      await update(ref(db),updates); 
+      window.showToast('✓ '+tgt.name+' ထံ ငွေလွှဲပြီးပါပြီ','success');
+      window.saveRecentTx(tp, tgt.name);
+      document.getElementById('txPhone').value='';document.getElementById('txAmount').value='';
+      document.getElementById('txReceiverName').style.display='none';
+    }catch(e){console.error(e);}
+  } else if(pendingTxType === 'order') {
+    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0); let deliFee = deliveryType === 'deli' ? 500 : 0; let total = sub + deliFee;
+    let isCash = (deliveryType === 'pickup' && document.getElementById('payAtShop').checked);
+    let addr = 'ဆိုင်တွင်လာယူမည်' + (isCash ? ' (ဆိုင်မှ ငွေရှင်းမည်)' : ' (KPay/Wallet ဖြင့်ရှင်းပြီး)');
+    let orderName = cu.name; let orderPhone = cu.phone;
+    if(deliveryType === 'deli') { orderName = document.getElementById('deliName').value.trim(); orderPhone = document.getElementById('deliPhone').value.trim(); addr = document.getElementById('deliAddress').value.trim(); }
+    let orderId = 'ord_' + Date.now(); let orderText = cart.map(c => `${c.qty}x ${c.name}`).join(', ');
+    try{
+      if(!isCash) updates[`customers/${cu.phone}/balance`] = cu.balance - total;
+      updates[`customers/${cu.phone}/history/${orderId}`] = { type: 'food', title: isCash ? 'Food Order (Cash)' : 'Food Order', amount: total, extra: orderText, date: now };
+      updates[`food_orders/${orderId}`] = { id: orderId, name: orderName, phone: orderPhone, items: cart, subtotal: sub, deliFee: deliFee, total: total, type: deliveryType, address: addr, payment_method: isCash ? 'cash' : 'wallet', date: now, status: 'pending' };
+      await update(ref(db), updates); window.showToast('🍔 Order တင်ခြင်း အောင်မြင်ပါသည်!', 'success');
+      cart = []; document.getElementById('cartCount').textContent = 0; document.getElementById('cartFloat').style.display = 'none';
+      document.getElementById('deliAddress').value = '';
+    }catch(e){console.error(e);}
+  }
+};
+
+// 🌟 SPIN WHEEL INTEGRATION 🌟
 const wheel = document.getElementById('wheel');
 const spinBtn = document.getElementById('spinBtn');
 let currentDeg = 0;
@@ -425,7 +1003,7 @@ spinBtn.addEventListener('click', async () => {
 
   let cumulative = 0;
   if (rand < (cumulative += ADMIN_WIN_RATES.tryAgain)) {
-    sliceCenter = Math.random() > 0.5 ? 240 : 120; prizeName = "Try Again"; isWin = false; // Adjusted for V4 layout
+    sliceCenter = Math.random() > 0.5 ? 240 : 120; prizeName = "Try Again"; isWin = false; 
   } 
   else if (rand < (cumulative += ADMIN_WIN_RATES.min5)) { sliceCenter = 60; prizeName = "5 Mins"; dbFolder = "Free_5Mins"; } 
   else if (rand < (cumulative += ADMIN_WIN_RATES.min30)) { sliceCenter = 0; prizeName = "30 Mins"; dbFolder = "Free_30Mins"; } 
@@ -435,7 +1013,6 @@ spinBtn.addEventListener('click', async () => {
   let prizeCode = "";
   let finalArr = [];
   
-  // ဆုပေါက်ရင် Database ထဲမှာ Code အရင်စစ်မယ်
   if (isWin) {
       try {
           const invSnap = await get(ref(db, 'spin_inventory/' + dbFolder));
@@ -445,16 +1022,15 @@ spinBtn.addEventListener('click', async () => {
           if (!finalArr.length) {
               window.showToast('ဆုမဲ ကုန်နေပါသည်၊ နောက်မှ ပြန်လှည့်ပါ 😢', 'error');
               spinBtn.disabled = false; spinBtn.innerText = "လှည့်မည် (Spin)";
-              return; // လက်မှတ် မဖြတ်ပါ
+              return; 
           }
-          const v = finalArr.shift(); // Code ယူမယ်
+          const v = finalArr.shift();
           prizeCode = v.code;
       } catch (e) {
           window.showToast('စနစ်ချို့ယွင်းနေပါသည်', 'error'); spinBtn.disabled = false; return;
       }
   }
 
-  // အကုန်သေချာပြီဆိုမှ လက်မှတ် ၁ ကတ် ဖြတ်မယ်
   await update(ref(db, `customers/${cu.phone}`), { spinTickets: cu.spinTickets - 1 });
   spinBtn.innerText = "လှည့်နေသည်...";
 
@@ -481,9 +1057,8 @@ spinBtn.addEventListener('click', async () => {
         desc.innerText = `${prizeName} Free WiFi Code ကို ရရှိပါသည်!`;
         codeBox.style.display = 'block'; codeBox.innerText = prizeCode;
         
-        // Database ကို Update လုပ်ပြီး History သိမ်းမယ်
         let u = {};
-        u['spin_inventory/' + dbFolder] = finalArr; // ကျန်တဲ့ code တွေ ပြန်ထည့်မယ်
+        u['spin_inventory/' + dbFolder] = finalArr; 
         u[`customers/${cu.phone}/history/spin_${Date.now()}`] = { type: 'gift_in', title: prizeName + ' (Spin)', extra: prizeCode, date: new Date().toLocaleString() };
         await update(ref(db), u);
     } else {
@@ -497,7 +1072,6 @@ spinBtn.addEventListener('click', async () => {
   }, 5200);
 });
 
-// VOUCHER ဝယ်ခြင်း Logic (အရင်အတိုင်း)
 window.buyVoucher = async function(plan, price) {
   if(!cu) return; if(cu.balance < price) return window.showToast('ငွေမလောက်ပါ 😢', 'error');
   if(!confirm(plan + ' Voucher — ' + price.toLocaleString() + ' Ks ဝယ်မည်လား?')) return;
@@ -517,18 +1091,36 @@ window.buyVoucher = async function(plan, price) {
   } catch(e) { window.showToast('ဝယ်ယူမှု မအောင်မြင်ပါ', 'error'); }
 };
 
+window.changePassword=async function(){
+  const o=document.getElementById('oldPass').value;const n=document.getElementById('newPass').value;
+  if(o!==cu.password)return window.showToast('စကားဝှက်အဟောင်း မှားနေပါ','error');
+  if(n.length<4)return window.showToast('အနည်းဆုံး ၄ လုံး ထည့်ပါ','error');
+  await update(ref(db,'customers/'+cu.phone),{password:n});
+  localStorage.setItem('ww',n);window.saveAccountToLocal(cu.phone, cu.name, n);
+  window.showToast('✓ စကားဝှက် ပြောင်းလဲပြီး','success');
+  document.getElementById('oldPass').value='';document.getElementById('newPass').value='';
+};
+
 window.renderHistory=function(){
   const cont=document.getElementById('historyContainer');cont.innerHTML='';
   if(!cu?.history){ cont.innerHTML='<p style="color:gray;text-align:center;margin-top:20px;">မှတ်တမ်း မရှိသေးပါ</p>';return; }
-  const txns=Object.values(cu.history).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const txns=Object.values(cu.history).sort((a,b)=>new Date(b.date)-new Date(a.date)); let tIn=0,tOut=0;
+  document.getElementById('statCount').textContent=txns.length;
   txns.forEach(tx=>{
-    const plus=(tx.type==='tx_in'||tx.type==='gift_in'); let extra='';
-    if(tx.type==='buy' || tx.type==='gift_in') extra=`<div style="color:var(--green); font-family:var(--mono); margin-top:4px;">🔑 ${tx.extra}</div>`;
-    cont.innerHTML+=`<div class="tx-item"><div class="tx-l"><div><div style="font-size:13px;font-weight:bold;color:var(--text);">${tx.title||''}</div><div style="font-size:11px;color:gray;">${tx.date||''}</div>${extra}</div></div><div style="font-size:15px;font-weight:bold;font-family:var(--mono);color:${plus?'var(--green)':'var(--red)'};">${plus?'+':'-'}${(tx.amount||0).toLocaleString()}</div></div>`;
+    if(tx.type==='tx_in'||tx.type==='gift_in')tIn+=tx.amount||0;
+    if(tx.type==='tx_out'||tx.type==='buy'||tx.type==='food')tOut+=tx.amount||0;
+    const im={buy:['buy','fa-wifi'],tx_out:['out','fa-arrow-up'],tx_in:['in','fa-arrow-down'],gift_in:['in','fa-gift'],food:['food','fa-burger']};
+    const[cls,ico]=im[tx.type]||['buy','fa-circle']; const plus=(tx.type==='tx_in'||tx.type==='gift_in'); let extra='';
+    if(tx.type==='buy' || tx.type==='gift_in') extra=`<div class="tx-code" style="color:var(--green); font-family:var(--mono); margin-top:4px;">🔑 ${tx.extra}</div>`;
+    if(tx.type==='food') extra=`<div class="tx-code" style="color:var(--gold); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;"><i class="fa-solid fa-utensils"></i> ${tx.extra}</div>`;
+    cont.innerHTML+=`<div class="tx-item"><div class="tx-l"><div class="tx-ico ${cls}"><i class="fa-solid ${ico}"></i></div><div style="overflow:hidden;"><div class="tx-name">${tx.title||''}</div><div class="tx-date">${tx.date||''}</div>${extra}</div></div><div class="tx-amt ${plus?'plus':'minus'}">${plus?'+':'-'}${(tx.amount||0).toLocaleString()}</div></div>`;
   });
+  document.getElementById('statIn').textContent=tIn.toLocaleString(); document.getElementById('statOut').textContent=tOut.toLocaleString();
 };
 
 window.onload=()=>{
+  document.getElementById('mainApp').style.display='none';
+  window.loadSavedAccounts();
   const ph=localStorage.getItem('wp'),pw=localStorage.getItem('ww');
   if(ph&&pw){document.getElementById('loginPhone').value=ph;document.getElementById('loginPass').value=pw;window.login();}
 };
