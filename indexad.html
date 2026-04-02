@@ -133,14 +133,8 @@
 
             <div id="stockUiSpin" style="display:none;">
                 <div id="spinStockSummary" class="stock-grid"></div>
-                <select id="spinPlan" class="form-control" style="border-color: rgba(34,211,165,0.4); background: rgba(34,211,165,0.05); color: var(--green); font-weight:bold;">
-                    <option value="Free_5Mins">5 Mins Free Code</option>
-                    <option value="Free_30Mins">30 Mins Free Code</option>
-                    <option value="Free_1Hour">1 Hour Free Code</option>
-                    <option value="Free_4Hours">4 Hours Free Code</option>
-                </select>
-                <textarea id="newSpinCodes" class="form-control" style="height:100px; font-family:var(--mono); font-size:13px; border-color:rgba(34,211,165,0.4);" placeholder="Ruijie မှ Spin အတွက် Code များကို ကူးထည့်ပါ..."></textarea>
-                <button class="btn btn-green" onclick="window.addSpinStock()"><i class="fa-solid fa-plus-circle"></i> Spin ဂိုဒေါင်ထဲ ထည့်မည်</button>
+                <textarea id="newSpinCodes" class="form-control" style="height:120px; font-family:var(--mono); font-size:13px; border-color:rgba(34,211,165,0.4);" placeholder="Ruijie မှ Spin Code များကို အကုန်ရောပြီး ကူးထည့်ပါ..."></textarea>
+                <button class="btn btn-green" onclick="window.addSpinStock()"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto ခွဲထုတ်ပြီး ဂိုဒေါင်ထဲထည့်မည်</button>
             </div>
 
             <div style="display:flex; gap:10px; margin-top:15px;">
@@ -350,54 +344,64 @@ function renderStock(){
     if(pSelect.options.length === 0) { ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => pSelect.innerHTML += `<option value="${p}">${p}</option>`); }
 }
 
-// 🌟 SPIN INVENTORY SYSTEM (Ruijie Smart Extracting) 🌟
+// 🌟 2. SPIN INVENTORY SYSTEM (Auto Smart Extracting - Dropdown မလိုတော့ပါ) 🌟
 window.addSpinStock = async () => {
-    const plan = document.getElementById('spinPlan').value;
     const text = document.getElementById('newSpinCodes').value;
     if(!text.trim()) return window.showToast("Code များ ထည့်ပါ");
     
-    // Line ခွဲမည်
     const lines = text.split('\n');
-    let newCodes = [];
+    let inv = JSON.parse(JSON.stringify(window.allSpinInventory || {}));
+    
+    // Structure မရှိသေးရင် ဆောက်မယ်
+    if(!inv["Free_5Mins"]) inv["Free_5Mins"]=[]; 
+    if(!inv["Free_30Mins"]) inv["Free_30Mins"]=[]; 
+    if(!inv["Free_1Hour"]) inv["Free_1Hour"]=[]; 
+    if(!inv["Free_4Hours"]) inv["Free_4Hours"]=[];
+    
+    let existing = new Set();
+    Object.values(inv).forEach(arr => { if(arr) arr.forEach(i => existing.add(i.code)) });
+    
+    let added = { "Free_5Mins":0, "Free_30Mins":0, "Free_1Hour":0, "Free_4Hours":0 }; 
+    let dupCount = 0;
 
     lines.forEach(line => {
-        // Space ဖြင့် Column ခွဲမည်
         let cols = line.trim().split(/\s+/);
-        if(cols.length > 0 && cols[0] !== "") {
-            // ပထမဆုံး Column က Code အသန့်ဖြစ်သည်
-            newCodes.push(cols[0]);
+        if(cols.length >= 2){
+            const code = cols[0]; 
+            const pRaw = cols[1].toLowerCase(); 
+            let p = "";
+            
+            // Ruijie က Plan နာမည်တွေကို အလိုလို ရှာမယ်
+            if(pRaw.includes('5min')) p="Free_5Mins"; 
+            else if(pRaw.includes('30min')) p="Free_30Mins"; 
+            else if(pRaw.includes('1hour')) p="Free_1Hour"; 
+            else if(pRaw.includes('4hour')) p="Free_4Hours";
+
+            if(p) { 
+                if(!existing.has(code)) { 
+                    inv[p].push({code: code}); 
+                    existing.add(code); 
+                    added[p]++; 
+                } else { 
+                    dupCount++; 
+                } 
+            }
         }
     });
 
-    if(newCodes.length === 0) return window.showToast("Code များ မတွေ့ပါ");
-
-    let inv = JSON.parse(JSON.stringify(window.allSpinInventory || {}));
-    if(!inv[plan]) inv[plan] = [];
+    let logDetail = Object.entries(added).filter(a=>a[1]>0).map(a=>`${a[0].replace('Free_','').replace('Mins', ' Mins').replace('Hour', ' Hour')}: ${a[1]} ခု`).join(', ');
     
-    let existing = new Set(inv[plan].map(i => i.code));
-    let addedCount = 0; let dupCount = 0;
-
-    newCodes.forEach(c => {
-        if(!existing.has(c)) {
-            inv[plan].push({ code: c });
-            existing.add(c); addedCount++;
-        } else {
-            dupCount++;
-        }
-    });
-
-    if(addedCount > 0) {
+    if(logDetail) {
         let logs = JSON.parse(JSON.stringify(window.inventoryLog)); 
-        let planName = plan.replace('Free_', '').replace('Mins', ' Mins').replace('Hour', ' Hour');
-        logs.unshift({ date: new Date().toLocaleString(), detail: `Spin ဆုမဲ: ${planName} (${addedCount} ခု)` });
+        logs.unshift({ date: new Date().toLocaleString(), detail: "Spin ဆုမဲ: " + logDetail });
         
-        await update(ref(db), { [`spin_inventory/${plan}`]: inv[plan], inventoryLog: logs });
-        document.getElementById('newSpinCodes').value = '';
-        window.showToast(`✅ ${planName} သို့ Spin Code ${addedCount} ခု ထည့်သွင်းပြီးပါပြီ`);
-    } else if (dupCount > 0) {
-        alert("❌ အသစ်မဝင်ပါ။ Code များ ထပ်နေပါသည်။");
+        await update(ref(db), { spin_inventory: inv, inventoryLog: logs }); 
+        document.getElementById('newSpinCodes').value = ''; 
+        window.showToast("✅ Spin ဂိုဒေါင်ထဲ သိမ်းဆည်းပြီးပါပြီ!");
+    } else if (dupCount > 0) { 
+        alert("❌ အသစ်မဝင်ပါ။ Code များ ထပ်နေပါသည်။"); 
     } else {
-        window.showToast("❌ Code များ မတွေ့ပါ");
+        window.showToast("❌ မှန်ကန်သော Code နှင့် Plan များ မတွေ့ပါ");
     }
 };
 
