@@ -66,6 +66,7 @@
     #toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1px solid var(--primary); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 13px; font-weight: 700; opacity: 0; transition: 0.3s; z-index: 2000; pointer-events: none; }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
 
+    /* Login Screen */
     #loginScreen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; flex-direction: column; justify-content: center; padding: 30px; }
     .login-box { background: var(--surface); border: 1px solid var(--border); border-radius: 25px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 </style>
@@ -107,13 +108,13 @@
         </div>
 
         <div class="section" style="margin-top:20px;">
-            <div class="sec-title"><i class="fa-solid fa-warehouse"></i> ၁။ ဂိုဒေါင် စီမံခန့်ခွဲမှု</div>
+            <div class="sec-title"><i class="fa-solid fa-warehouse"></i> ၁။ ရောင်းမည့် ဂိုဒေါင်</div>
             <div id="stockSummary" class="stock-grid"></div>
             <textarea id="newCodes" class="form-control" style="height:100px; font-family:var(--mono); font-size:12px;" placeholder="Ruijie မှ Code များကို ကူးထည့်ပါ..."></textarea>
             <button class="btn btn-primary" onclick="window.addStock()"><i class="fa-solid fa-download"></i> ဂိုဒေါင်ထဲ ထည့်မည်</button>
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openModal('logModal')"><i class="fa-solid fa-clipboard-list"></i> မှတ်တမ်းကြည့်ရန်</button>
-                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openManageStock()"><i class="fa-solid fa-trash-can"></i> Code များဖျက်ရန်</button>
+                <button class="btn btn-outline btn-sm" style="flex:1;" onclick="window.openModal('manageModal')"><i class="fa-solid fa-trash-can"></i> Code များဖျက်ရန်</button>
             </div>
         </div>
 
@@ -221,7 +222,7 @@ window.switchTab = (tab, el) => { document.querySelectorAll('.tab-content').forE
 window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; if(id === 'logModal') window.renderLog(); if(id === 'manageModal') window.renderManage(); };
 
-// === AUTHENTICATION LOGIC ===
+// 🌟 AUTHENTICATION LOGIC (မူရင်း Firebase) 🌟
 onAuthStateChanged(auth, user => {
     if(user) {
         document.getElementById('loginScreen').style.display = 'none';
@@ -234,7 +235,7 @@ onAuthStateChanged(auth, user => {
 });
 
 window.loginAdmin = () => {
-    const e = document.getElementById('adminEmail').value; const p = document.getElementById('adminPass').value;
+    const e = document.getElementById('adminEmail').value.trim(); const p = document.getElementById('adminPass').value.trim();
     if(!e || !p) return window.showToast("Email နှင့် Password ထည့်ပါ");
     signInWithEmailAndPassword(auth, e, p).catch(err => alert("Login Failed: " + err.message));
 };
@@ -244,9 +245,7 @@ window.logoutAdmin = () => { if(confirm("Log out ထွက်မှာ သေခ
 function startDatabaseListeners() {
     onValue(ref(db, 'customers'), snap => { window.allCustomers = snap.exists() ? snap.val() : {}; renderDash(); renderCusList(); });
     onValue(ref(db, 'inventory'), snap => { window.allInventory = snap.exists() ? snap.val() : { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] }; renderStock(); });
-    // 🌟 Spin Inventory Listener 🌟
     onValue(ref(db, 'spin_inventory'), snap => { window.allSpinInventory = snap.exists() ? snap.val() : {}; renderSpinStock(); });
-    
     onValue(ref(db, 'inventoryLog'), snap => { window.inventoryLog = snap.exists() ? Object.values(snap.val()) : []; if(document.getElementById('logModal').style.display === 'flex') window.renderLog(); });
     onValue(ref(db, 'food_menu'), snap => { window.foodMenu = snap.exists() ? snap.val() : {}; renderMenuLists(); });
     onValue(ref(db, 'drink_options'), snap => { window.drinkOptions = snap.exists() ? snap.val() : {}; renderMenuLists(); });
@@ -314,7 +313,6 @@ function renderStock(){
         let c = (window.allInventory && window.allInventory[p]) ? window.allInventory[p].length : 0;
         cont.innerHTML += `<div class="stock-item"><span><i class="fa-solid fa-wifi"></i> ${p}</span> <b style="color:var(--gold);">${c} ခု</b></div>`;
     });
-    // Update manage select options dynamically
     const pSelect = document.getElementById('pSelect');
     if(pSelect.options.length === 0) { ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => pSelect.innerHTML += `<option value="${p}">${p}</option>`); }
 }
@@ -325,7 +323,6 @@ window.addSpinStock = async () => {
     const text = document.getElementById('newSpinCodes').value;
     if(!text.trim()) return window.showToast("Code များ ထည့်ပါ");
     
-    // ခွဲထုတ်ခြင်း (Line အသစ် ဒါမှမဟုတ် Comma)
     const codes = text.split(/[\n,]+/).map(c => c.trim()).filter(c => c !== "");
     if(codes.length === 0) return;
 
@@ -384,7 +381,7 @@ window.searchCustomer = () => {
         window.currentTopupCus = found; 
         document.getElementById('infoName').innerText = found.name; 
         document.getElementById('infoBal').innerText = (found.balance||0).toLocaleString(); 
-        document.getElementById('infoTickets').innerText = (found.spinTickets||0); // Spin Tickets ပြပေးမည်
+        document.getElementById('infoTickets').innerText = (found.spinTickets||0);
         document.getElementById('cusInfoBox').style.display = 'block';
     } else { alert("❌ ရှာမတွေ့ပါ! အကောင့်မရှိပါ။"); document.getElementById('cusInfoBox').style.display = 'none'; }
 };
@@ -400,16 +397,15 @@ window.doTopup = async (type) => {
     
     u[`customers/${cus.phone}/balance`] = newBal; 
     
-    // 🌟 SPIN TICKET CALCULATION 🌟
     let earnedTickets = 0;
     if (type === 'in') {
-        earnedTickets = Math.floor(amt / 5000); // ၅၀၀၀ လျှင် ၁ ကတ်
+        earnedTickets = Math.floor(amt / 5000);
         if (earnedTickets > 0) {
             u[`customers/${cus.phone}/spinTickets`] = (cus.spinTickets || 0) + earnedTickets;
         }
     }
 
-    u[`customers/${cus.phone}/history/tx_${Date.now()}`] = { type: type==='in'?'topup_in':'deduct_out', title: type==='in'?'Admin Topup':'Admin Deduct', amount: amt, date: now };
+    u[`customers/${cus.phone}/history/admin_tx_${Date.now()}`] = { type: type==='in'?'topup_in':'deduct_out', title: type==='in'?'Admin Topup':'Admin Deduct', amount: amt, date: now };
     
     await update(ref(db), u); 
     
