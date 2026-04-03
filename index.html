@@ -277,6 +277,11 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
         <p id="adBannerText">ကြိုဆိုပါတယ်...</p>
       </div>
 
+      <div id="winnerTickerBox" style="display:none; background:rgba(124,106,255,0.1); border:1px solid var(--border); border-radius:12px; padding:8px 15px; margin-bottom:20px; align-items:center; gap:10px;">
+        <i class="fa-solid fa-gift" style="color:var(--gold);"></i>
+        <marquee id="winnerText" style="color:var(--text); font-size:12px; font-weight:bold; flex:1;"></marquee>
+      </div>
+
       <div class="qa-row">
         <div class="qa-btn" onclick="window.openTopup()"><div class="qa-ico blue"><i class="fa-solid fa-wallet"></i></div><span class="qa-lbl">Top Up</span></div>
         <div class="qa-btn" onclick="window.switchTab('transfer')"><div class="qa-ico green"><i class="fa-solid fa-money-bill-transfer"></i></div><span class="qa-lbl">Transfer</span></div>
@@ -453,9 +458,9 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
     <div style="font-size:40px; color:var(--accent2); margin-bottom:10px;"><i class="fa-solid fa-ticket"></i></div>
     <h3 style="margin-bottom:15px;">Spin လက်မှတ် ဘယ်လိုရနိုင်မလဲ?</h3>
     <div style="text-align:left; font-size:13px; color:var(--text-sub); line-height:1.8; margin-bottom:20px;">
-      <b>၁။ နေ့စဉ်လက်ဆောင် 🎁</b><br>တစ်နေ့လျှင် App ကို ဝင်ရောက်ရုံဖြင့် Free ၁ ကတ် ရရှိပါမည်။<br><br>
-      <b>၂။ ငွေဖြည့်လက်ဆောင် 💰</b><br>ငွေ ၅၀၀၀ ကျပ် ဖြည့်သွင်းတိုင်း Spin ၁ ကတ် ရရှိပါမည်။ (ဥပမာ- ၁၀၀၀၀ ဖြည့်ပါက ၂ ကတ်)<br><br>
-      <b>၃။ မျှဝေခြင်း 🤝</b><br>သူငယ်ချင်းများကို App သို့ Share ခြင်းဖြင့် Spin ၂ ကတ် ရရှိပါမည်။ (တစ်ရက်လျှင် တစ်ကြိမ်သာ)
+      <b>၁။ နေ့စဉ်လက်ဆောင် 🎁</b><br>တစ်နေ့လျှင် App ကို ဝင်ရောက်ရုံဖြင့် (၁) ကြိမ် Free လှည့်ခွင့် ရရှိပါမည်။<br><br>
+      <b>၂။ ငွေဖြည့်လက်ဆောင် 💰</b><br>ငွေ ၅၀၀၀ ကျပ် ဖြည့်သွင်းတိုင်း Spin ၁ ကတ် ရရှိပါမည်။<br><br>
+      <b>၃။ မျှဝေခြင်း 🤝</b><br>သင်၏ Link ဖြင့် သူငယ်ချင်းတစ်ယောက် အကောင့်သစ် လာဖွင့်တိုင်း Spin ၂ ကတ် ရရှိပါမည်။
     </div>
     <button class="btn btn-primary" onclick="document.getElementById('howToSpinOverlay').style.display='none'">ပိတ်မည်</button>
   </div>
@@ -514,7 +519,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
   <div class="share-modal">
     <h3 style="color:var(--text); margin-bottom:15px;">QR Code ဖြင့် မျှဝေမည်</h3>
     <div id="qrcodeCanvas"></div>
-    <p style="font-size:12px; color:var(--text-sub); margin-bottom:20px; line-height:1.6;">သူငယ်ချင်းကို ဤ QR Code အား Scan ဖတ်ခိုင်းခြင်းဖြင့် Wifipay App သို့ အလွယ်တကူ ရောက်ရှိစေနိုင်ပါသည်။</p>
+    <p style="font-size:12px; color:var(--text-sub); margin-bottom:20px; line-height:1.6;">သူငယ်ချင်းကို ဤ QR Code အား Scan ဖတ်ခိုင်းပြီး အကောင့်ဖွင့်ပါက Spin ၂ ကတ် ရရှိမည်။</p>
     <button class="btn btn-primary" onclick="document.getElementById('qrShareOverlay').style.display='none'">ပိတ်မည်</button>
   </div>
 </div>
@@ -573,7 +578,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
       </div>
     </div>
     <button class="btn btn-primary" id="spinBtn" style="width:80%; max-width:300px; margin-bottom:15px;">လှည့်မည် (Spin)</button>
-    <div style="font-size:13px; color:var(--text-dim); margin-bottom: 10px;">လက်ကျန် လက်မှတ်: <span id="spinModalTicketCount" style="color:var(--accent2); font-weight:bold;">0</span> ကတ်</div>
+    <div style="font-size:13px; color:var(--text-dim); margin-bottom: 10px;">လက်ကျန် လက်မှတ်: <span id="spinModalTicketCount" style="color:var(--accent2); font-weight:bold;">0</span> ကတ် <span id="freeSpinBadge" style="color:var(--green); font-size:11px; margin-left:8px; display:none;">(ယနေ့ Free ၁ ခါရမည်)</span></div>
     
     <div style="text-align:center; margin-top: 15px;">
        <span onclick="document.getElementById('howToSpinOverlay').style.display='flex'" style="color:var(--accent2); font-size:12px; cursor:pointer; text-decoration:underline;"><i class="fa-solid fa-circle-info"></i> Spin လက်မှတ် ဘယ်လိုရနိုင်မလဲ?</span>
@@ -595,18 +600,18 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import{getDatabase,ref,get,set,update,onValue}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import{getDatabase,ref,get,set,update,onValue,push}from"https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+// ⚠️ ကိုဝင်းအောင် ရဲ့ FIREBASE CONFIG သေချာ ပြန်ထည့်ပါ ⚠️
 const fc={apiKey:"AIzaSyCWtLbUKGHG6ZHXzU69YLwNvH2Z5EWOyV4",authDomain:"wifipay-ff292.firebaseapp.com",projectId:"wifipay-ff292",storageBucket:"wifipay-ff292.firebasestorage.app",messagingSenderId:"429630230761",appId:"1:429630230761:web:8c7f29457326c1f0c02078",databaseURL:"https://wifipay-ff292-default-rtdb.asia-southeast1.firebasedatabase.app/"};
 const app=initializeApp(fc);const db=getDatabase(app);
 
+const APP_URL = "https://wifipay.store";
 let cu = null;
 let pendingTxType = null; 
 let prevBalance = null; 
 let isFirstLogin = true;
 let qrcode = null;
-
-// 🌟 ADMIN BOARD SETTINGS FOR SPIN 🌟
-const ADMIN_WIN_RATES = { tryAgain: 25, min5: 60, min30: 10, hour1: 4, hour4: 1 };
 
 window.loadSavedAccounts = function() {
   let saved = JSON.parse(localStorage.getItem('wp_accounts') || '[]');
@@ -628,7 +633,6 @@ document.getElementById('loginPhone').addEventListener('input', function(e) {
   let match = saved.find(a => a.phone === val || a.name === val);
   if(match) { document.getElementById('loginPhone').value = match.phone; document.getElementById('loginPass').value = match.pw; }
 });
-
 window.saveRecentTx = function(phone, name) {
   let recents = JSON.parse(localStorage.getItem('wp_recent_tx') || '[]');
   recents = recents.filter(r => r.phone !== phone);
@@ -686,6 +690,7 @@ window.installPWA = async () => { if(deferredPrompt) { deferredPrompt.prompt(); 
 
 window.showToast=function(m,t=''){ const el=document.getElementById('toast'); el.textContent=m;el.className='show '+(t||''); clearTimeout(el._t);el._t=setTimeout(()=>el.className='',2800); };
 window.togglePw=function(id, el){ const inp=document.getElementById(id); if(inp.type==='password'){ inp.type='text'; el.classList.remove('fa-eye');el.classList.add('fa-eye-slash'); el.style.color='var(--accent)'; } else{ inp.type='password'; el.classList.remove('fa-eye-slash');el.classList.add('fa-eye'); el.style.color='var(--text-sub)'; } };
+
 window.switchTab=function(tab,el=null){ document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active')); document.querySelectorAll('.nav-item').forEach(e=>e.classList.remove('active')); document.getElementById(`tab-${tab}`).classList.add('active'); if(el)el.classList.add('active'); else document.querySelector(`.nav-item[onclick*="'${tab}'"]`)?.classList.add('active'); if(tab==='food') window.renderFood(); if(tab==='history') window.renderHistory(); if(tab==='transfer') window.loadRecentTx(); document.getElementById('cartFloat').style.display = (tab==='food' && cart.length>0) ? 'flex' : 'none'; };
 window.openTopup=()=>document.getElementById('topupOverlay').style.display='flex';
 window.copyKpay=()=>{ navigator.clipboard.writeText('09977123184'); window.showToast('✓ ဖုန်းနံပါတ် Copy ကူးပြီးပါပြီ', 'success'); };
@@ -694,35 +699,24 @@ window.showRegister=()=>{document.getElementById('loginScreen').style.display='n
 window.showLogin=()=>{document.getElementById('registerScreen').style.display='none';document.getElementById('loginScreen').style.display='block'; window.loadSavedAccounts(); };
 window.requestNotiPermission = function() { if (!("Notification" in window)) { window.showToast("သင့်ဖုန်းသည် Notification စနစ်ကို မထောက်ပံ့ပါ။", "error"); return; } Notification.requestPermission().then(permission => { if (permission === "granted") window.showToast("✅ Notification ဖွင့်ပြီးပါပြီ။", "success"); else window.showToast("❌ Notification ပိတ်ထားပါသည်။", "error"); }); }
 
-// 🌟 SHARE REWARD LOGIC 🌟
-window.rewardShare = async function() {
-    if(!cu) return;
-    let today = new Date().toLocaleDateString();
-    if(cu.lastShareRewardDate !== today) {
-        let currentTickets = cu.spinTickets || 0;
-        await update(ref(db, `customers/${cu.phone}`), { spinTickets: currentTickets + 2, lastShareRewardDate: today });
-        window.showToast('🎉 မျှဝေပေးတဲ့အတွက် Spin ၂ ကတ် ရရှိပါသည်!', 'success');
-    }
-};
-
-const APP_URL = "https://wifipay.store"; 
-const SHARE_TEXT = "Wifipay Wallet ဖြင့် WiFi Voucher များကို လွယ်ကူလျင်မြန်စွာ ဝယ်ယူနိုင်ပါသည်! အခုပဲ အကောင့်ဖွင့်ပြီး စမ်းသုံးကြည့်ပါ။";
-
+// 🌟 SHARE (INVITE) REWARD LOGIC 🌟
 window.nativeShare = async function() {
+    const myLink = APP_URL + "?ref=" + cu.phone;
+    const shareText = "Wifipay Wallet ဖြင့် WiFi Voucher များကို ဝယ်ယူပါ။ အောက်ပါလင့်ခ်မှ အကောင့်ဖွင့်ပြီး အခမဲ့ Spin လက်မှတ်များ ရယူလိုက်ပါ။\n\n" + myLink;
     if (navigator.share) {
-        try { await navigator.share({ title: 'Wifipay Wallet', text: SHARE_TEXT, url: APP_URL }); window.rewardShare(); } catch (e) { console.error(e); }
+        try { await navigator.share({ title: 'Wifipay Wallet', text: shareText }); } catch (e) { console.error(e); }
     } else {
-        navigator.clipboard.writeText(APP_URL + '\n\n' + SHARE_TEXT);
-        window.showToast('✓ Link ကို Copy ကူးပြီးပါပြီ', 'success'); window.rewardShare();
+        navigator.clipboard.writeText(shareText);
+        window.showToast('✓ Link ကို Copy ကူးပြီးပါပြီ', 'success');
     }
 };
 
 window.openQrShareModal = function() {
+    const myLink = APP_URL + "?ref=" + cu.phone;
     const cont = document.getElementById('qrcodeCanvas');
-    if(!qrcode) { qrcode = new QRCode(cont, { text: APP_URL, width: 160, height: 160, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H }); } 
-    else { qrcode.makeCode(APP_URL); }
+    if(!qrcode) { qrcode = new QRCode(cont, { text: myLink, width: 160, height: 160, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H }); } 
+    else { qrcode.makeCode(myLink); }
     document.getElementById('qrShareOverlay').style.display = 'flex';
-    window.rewardShare();
 };
 
 window.register=async function(){
@@ -733,7 +727,25 @@ window.register=async function(){
   
   await set(ref(db,'customers/'+p),{name:n,phone:p,password:pw,balance:0,hasReceivedBonus:false});
   window.saveAccountToLocal(p, n, pw);
-  window.showToast('အောင်မြင်ပါသည် ✓','success');window.showLogin();
+  window.showToast('အောင်မြင်ပါသည် ✓','success');
+  
+  // 🌟 REFERRAL CHECK 🌟
+  const refP = localStorage.getItem('wp_ref');
+  if (refP && refP !== p) {
+      try {
+          const refSnap = await get(ref(db, 'customers/' + refP));
+          if(refSnap.exists()) {
+              const refCu = refSnap.val();
+              let u = {};
+              u['customers/' + refP + '/spinTickets'] = (refCu.spinTickets || 0) + 2;
+              u[`customers/${refP}/history/ref_${Date.now()}`] = { type: 'gift_in', title: 'Referral Bonus', amount: 0, extra: '2 Tickets', date: new Date().toLocaleString() };
+              await update(ref(db), u);
+          }
+      } catch(e) { console.error(e); }
+      localStorage.removeItem('wp_ref');
+  }
+  
+  window.showLogin();
 };
 
 window.login=async function(){
@@ -746,6 +758,7 @@ window.login=async function(){
   }
   else window.showToast('ဖုန်း သို့မဟုတ် စကားဝှက် မှားနေပါ','error');
 };
+
 window.logout=function(){if(confirm('Log out လုပ်မည်လား?')){localStorage.removeItem('wp');localStorage.removeItem('ww');location.reload();}};
 
 window.loadDash=function(ph){
@@ -758,22 +771,24 @@ window.loadDash=function(ph){
     else { adBox.style.display = 'none'; }
   });
 
+  // 🔥 RECENT WINNERS LISTENER 🔥
+  onValue(ref(db, 'recent_winners'), snap => {
+      const box = document.getElementById('winnerTickerBox');
+      if(snap.exists()) {
+          const wins = Object.values(snap.val()).sort((a,b) => b.date - a.date).slice(0,5);
+          document.getElementById('winnerText').innerText = wins.map(w => `🎉 ${w.name} က ${w.prize} ဆုမဲပေါက်သွားပါသည်!`).join("   ✦   ");
+          box.style.display = 'flex';
+      } else {
+          box.style.display = 'none';
+      }
+  });
+
   onValue(ref(db,'customers/'+ph), async snap=>{
     if(!snap.exists())return; cu=snap.val();
     
-    // 🌟 DAILY FREE TICKET LOGIC 🌟
-    let today = new Date().toLocaleDateString();
-    if (cu.lastFreeTicketDate !== today) {
-        let currentTickets = cu.spinTickets || 0;
-        await update(ref(db, `customers/${cu.phone}`), { spinTickets: currentTickets + 1, lastFreeTicketDate: today });
-        window.showToast('🎁 ဒီနေ့အတွက် Free Spin ၁ ကတ် ရရှိပါသည်!', 'success');
-        return; // Will reload from onValue
-    }
-
     let currentBal = cu.balance || 0;
     document.getElementById('balanceText').textContent=currentBal.toLocaleString();
     
-    // 🌟 TOPUP SPIN TICKET LOGIC 🌟
     if (prevBalance !== null && currentBal > prevBalance) {
         let diff = currentBal - prevBalance;
         window.showToast(`💰 အကောင့်ထဲသို့ ငွေ ${diff.toLocaleString()} Ks ဝင်လာပါပြီ!`, 'success');
@@ -797,25 +812,34 @@ window.loadDash=function(ph){
                 u[`customers/${cu.phone}/history/tx_bonus_${Date.now()}`] = { type: 'gift_in', title: 'Welcome Bonus 🎉', amount: 500, date: now };
                 await update(ref(db), u);
                 window.showToast('🎉 ပထမဆုံးအကြိမ် ငွေဖြည့်သည့်အတွက် 500 Ks Bonus ရရှိပါသည်!', 'success');
-            }, 4500); 
+            }, 4500);
         }
     }
     prevBalance = currentBal;
     isFirstLogin = false;
 
+    // UI Updates
     document.getElementById('userNameDisplay').textContent=cu.name; document.getElementById('userPhoneTail').textContent=ph.slice(-4);
     document.getElementById('settingsName').textContent=cu.name; document.getElementById('settingsPhone').textContent=ph;
-    document.getElementById('editNameInput').value=cu.name; 
+    document.getElementById('editNameInput').value=cu.name;
     
     let tCount = cu.spinTickets || 0;
     document.getElementById('ticketDisplay').innerText = `လက်မှတ်: ${tCount} ကတ်`;
     document.getElementById('spinModalTicketCount').innerText = tCount;
 
+    // Daily Free Spin Badge Update
+    let badge = document.getElementById('freeSpinBadge');
+    if (cu.lastFreeSpinDate !== new Date().toLocaleDateString()) {
+        badge.style.display = 'inline';
+    } else {
+        badge.style.display = 'none';
+    }
+
     if(cu.avatar) {
       document.getElementById('avatarEl').innerHTML = `<img src="${cu.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"><div class="notif-dot"></div>`;
       document.getElementById('settingsAvatar').innerHTML = `<img src="${cu.avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"><div style="position:absolute;bottom:-4px;right:-4px;background:var(--accent);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--surface);"><i class="fa-solid fa-camera"></i></div>`;
     } else {
-      const init=cu.name[0].toUpperCase(); 
+      const init=cu.name[0].toUpperCase();
       document.getElementById('avatarEl').innerHTML = `<span id="avatarInitial">${init}</span><div class="notif-dot"></div>`;
       document.getElementById('settingsAvatar').innerHTML = `${init}<div style="position:absolute;bottom:-4px;right:-4px;background:var(--accent);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--surface);"><i class="fa-solid fa-camera"></i></div>`;
     }
@@ -829,7 +853,7 @@ window.loadDash=function(ph){
     } else { window.foodMenu = [{ id: 'f_drinks', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true }]; }
     if(document.getElementById('tab-food').classList.contains('active')) window.renderFood();
   });
-
+  
   onValue(ref(db, 'drink_options'), snap => { if(snap.exists()) { window.drinkOptions = Object.values(snap.val()); } });
 };
 
@@ -844,17 +868,20 @@ window.updateProfileName=async function(){
 
 window.triggerAvatarUpload=()=>document.getElementById('avatarUpload').click();
 window.handleAvatarChange=function(e){
-  const file = e.target.files[0]; if(!file) return;
+  const file = e.target.files[0];
+  if(!file) return;
   const reader = new FileReader();
   reader.onload = function(event) {
     const img = new Image();
     img.onload = function() {
       const canvas = document.createElement('canvas');
-      const MAX_SIZE = 150; let width = img.width; let height = img.height;
+      const MAX_SIZE = 150;
+      let width = img.width; let height = img.height;
       if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
       else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
       canvas.width = width; canvas.height = height;
-      const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
       update(ref(db, 'customers/' + cu.phone), { avatar: dataUrl }).then(() => { window.showToast('✓ Profile ပုံ ပြောင်းလဲပြီးပါပြီ', 'success'); });
     }
@@ -864,7 +891,8 @@ window.handleAvatarChange=function(e){
 };
 
 window.renderFood = function() {
-  const fg = document.getElementById('foodGrid'); fg.innerHTML = '';
+  const fg = document.getElementById('foodGrid');
+  fg.innerHTML = '';
   window.foodMenu.forEach(f => {
     let priceDisplay = f.isOptions ? f.price : f.price.toLocaleString() + ' Ks';
     let action = f.isOptions ? `window.openDrinkModal()` : `window.addToCart('${f.id}', '${f.name}', ${f.price}, '${f.icon}')`;
@@ -882,7 +910,8 @@ window.openDrinkModal = function() {
 };
 
 window.addToCart = function(id, name, price, icon) {
-  let ex = cart.find(i => i.id === id); if(ex) ex.qty++; else cart.push({id, name, price, icon, qty: 1});
+  let ex = cart.find(i => i.id === id);
+  if(ex) ex.qty++; else cart.push({id, name, price, icon, qty: 1});
   window.showToast(name + ' ကို ခြင်းထဲထည့်လိုက်ပါပြီ', 'success');
   document.getElementById('cartCount').textContent = cart.reduce((sum, i) => sum + i.qty, 0); document.getElementById('cartFloat').style.display = 'flex';
 };
@@ -934,7 +963,8 @@ window.prepareTx = function(type) {
     if(tp === cu.phone) return window.showToast('မိမိကိုယ်တိုင် မလွှဲနိုင်ပါ', 'error');
   } else if(type === 'order') {
     if(cart.length === 0) return window.showToast('ခြင်းတောင်း လွတ်နေပါသည်', 'error');
-    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0); total = sub + (deliveryType === 'deli' ? 500 : 0);
+    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+    total = sub + (deliveryType === 'deli' ? 500 : 0);
     isCash = (deliveryType === 'pickup' && document.getElementById('payAtShop').checked);
     if(deliveryType === 'deli') {
       if(!document.getElementById('deliName').value.trim() || !document.getElementById('deliPhone').value.trim() || !document.getElementById('deliAddress').value.trim()) {
@@ -951,7 +981,7 @@ window.prepareTx = function(type) {
 window.confirmTx = async function() {
   const pw = document.getElementById('modalPinInput').value;
   if(pw !== cu.password) return window.showToast('စကားဝှက် မှားနေပါသည်', 'error');
-  document.getElementById('pinOverlay').style.display = 'none'; 
+  document.getElementById('pinOverlay').style.display = 'none';
   let updates = {}; const now = new Date().toLocaleString();
 
   if(pendingTxType === 'normal') {
@@ -970,79 +1000,113 @@ window.confirmTx = async function() {
       document.getElementById('txReceiverName').style.display='none';
     }catch(e){console.error(e);}
   } else if(pendingTxType === 'order') {
-    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0); let deliFee = deliveryType === 'deli' ? 500 : 0; let total = sub + deliFee;
+    let sub = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+    let deliFee = deliveryType === 'deli' ? 500 : 0; let total = sub + deliFee;
     let isCash = (deliveryType === 'pickup' && document.getElementById('payAtShop').checked);
     let addr = 'ဆိုင်တွင်လာယူမည်' + (isCash ? ' (ဆိုင်မှ ငွေရှင်းမည်)' : ' (KPay/Wallet ဖြင့်ရှင်းပြီး)');
     let orderName = cu.name; let orderPhone = cu.phone;
     if(deliveryType === 'deli') { orderName = document.getElementById('deliName').value.trim(); orderPhone = document.getElementById('deliPhone').value.trim(); addr = document.getElementById('deliAddress').value.trim(); }
-    let orderId = 'ord_' + Date.now(); let orderText = cart.map(c => `${c.qty}x ${c.name}`).join(', ');
+    let orderId = 'ord_' + Date.now();
+    let orderText = cart.map(c => `${c.qty}x ${c.name}`).join(', ');
     try{
       if(!isCash) updates[`customers/${cu.phone}/balance`] = cu.balance - total;
       updates[`customers/${cu.phone}/history/${orderId}`] = { type: 'food', title: isCash ? 'Food Order (Cash)' : 'Food Order', amount: total, extra: orderText, date: now };
       updates[`food_orders/${orderId}`] = { id: orderId, name: orderName, phone: orderPhone, items: cart, subtotal: sub, deliFee: deliFee, total: total, type: deliveryType, address: addr, payment_method: isCash ? 'cash' : 'wallet', date: now, status: 'pending' };
       await update(ref(db), updates); window.showToast('🍔 Order တင်ခြင်း အောင်မြင်ပါသည်!', 'success');
-      cart = []; document.getElementById('cartCount').textContent = 0; document.getElementById('cartFloat').style.display = 'none';
+      cart = [];
+      document.getElementById('cartCount').textContent = 0; document.getElementById('cartFloat').style.display = 'none';
       document.getElementById('deliAddress').value = '';
     }catch(e){console.error(e);}
   }
 };
 
-// 🌟 SPIN WHEEL INTEGRATION 🌟
+// 🌟 SPIN WHEEL & DAILY REWARD LOGIC 🌟
 const wheel = document.getElementById('wheel');
 const spinBtn = document.getElementById('spinBtn');
 let currentDeg = 0;
+let isSpinning = false;
 
 spinBtn.addEventListener('click', async () => {
-  if (!cu || (cu.spinTickets || 0) <= 0) {
-      return window.showToast('Spin လက်မှတ် မရှိတော့ပါ။ ငွေ 5000 ဖြည့်၍ ရယူနိုင်ပါသည်။', 'error');
+  if (!cu || isSpinning) return;
+
+  let todayStr = new Date().toLocaleDateString();
+  let isFreeSpin = (cu.lastFreeSpinDate !== todayStr);
+  let useTicket = false;
+
+  if (!isFreeSpin) {
+      if ((cu.spinTickets || 0) <= 0) {
+          return window.showToast('Spin လက်မှတ် မရှိတော့ပါ။ ငွေ 5000 ဖြည့်၍ ရယူနိုင်ပါသည်။', 'error');
+      }
+      useTicket = true;
   }
 
   spinBtn.disabled = true; spinBtn.innerText = "စစ်ဆေးနေသည်...";
-  const rand = Math.random() * 100;
-  let sliceCenter = 0; let prizeName = ""; let dbFolder = ""; let isWin = true;
+  isSpinning = true;
+  
+  let rand = Math.random() * 100;
+  let prizeName = ""; let dbFolder = ""; let isWin = true;
 
-  let cumulative = 0;
-  if (rand < (cumulative += ADMIN_WIN_RATES.tryAgain)) {
-    sliceCenter = Math.random() > 0.5 ? 240 : 120; prizeName = "Try Again"; isWin = false; 
-  } 
-  else if (rand < (cumulative += ADMIN_WIN_RATES.min5)) { sliceCenter = 60; prizeName = "5 Mins"; dbFolder = "Free_5Mins"; } 
-  else if (rand < (cumulative += ADMIN_WIN_RATES.min30)) { sliceCenter = 0; prizeName = "30 Mins"; dbFolder = "Free_30Mins"; } 
-  else if (rand < (cumulative += ADMIN_WIN_RATES.hour1)) { sliceCenter = -60; prizeName = "1 Hour"; dbFolder = "Free_1Hour"; } 
-  else { sliceCenter = 180; prizeName = "4 Hours"; dbFolder = "Free_4Hours"; }
+  // Probability Logic (70% for Try Again and 5 Mins on Free Spins)
+  if (isFreeSpin) {
+      if (rand < 40) { prizeName = "Try Again"; isWin = false; }
+      else if (rand < 75) { prizeName = "5 Mins"; dbFolder = "Free_5Mins"; }
+      else if (rand < 90) { prizeName = "30 Mins"; dbFolder = "Free_30Mins"; }
+      else if (rand < 98) { prizeName = "1 Hour"; dbFolder = "Free_1Hour"; }
+      else { prizeName = "4 Hours"; dbFolder = "Free_4Hours"; }
+  } else {
+      const ratesSnap = await get(ref(db, 'settings/spin_rates'));
+      let r = ratesSnap.exists() ? ratesSnap.val() : { r_none: 25, r_5m: 60, r_30m: 10, r_1h: 4, r_4h: 1 };
+      
+      if (rand < r.r_none) { prizeName = "Try Again"; isWin = false; }
+      else if (rand < r.r_none + r.r_5m) { prizeName = "5 Mins"; dbFolder = "Free_5Mins"; }
+      else if (rand < r.r_none + r.r_5m + r.r_30m) { prizeName = "30 Mins"; dbFolder = "Free_30Mins"; }
+      else if (rand < r.r_none + r.r_5m + r.r_30m + r.r_1h) { prizeName = "1 Hour"; dbFolder = "Free_1Hour"; }
+      else { prizeName = "4 Hours"; dbFolder = "Free_4Hours"; }
+  }
 
   let prizeCode = "";
   let finalArr = [];
-  
   if (isWin) {
       try {
           const invSnap = await get(ref(db, 'spin_inventory/' + dbFolder));
           let vl = invSnap.exists() ? invSnap.val() : [];
           finalArr = Array.isArray(vl) ? vl : Object.values(vl).filter(x => x !== null);
-          
           if (!finalArr.length) {
-              window.showToast('ဆုမဲ ကုန်နေပါသည်၊ နောက်မှ ပြန်လှည့်ပါ 😢', 'error');
-              spinBtn.disabled = false; spinBtn.innerText = "လှည့်မည် (Spin)";
-              return; 
+              prizeName = "Try Again"; isWin = false; // Code မရှိရင် Try Again ပြောင်းမည်
+          } else {
+              prizeCode = finalArr.shift().code;
           }
-          const v = finalArr.shift();
-          prizeCode = v.code;
       } catch (e) {
-          window.showToast('စနစ်ချို့ယွင်းနေပါသည်', 'error'); spinBtn.disabled = false; return;
+          window.showToast('စနစ်ချို့ယွင်းနေပါသည်', 'error');
+          spinBtn.disabled = false; spinBtn.innerText = "လှည့်မည် (Spin)";
+          isSpinning = false;
+          return;
       }
   }
 
-  await update(ref(db, `customers/${cu.phone}`), { spinTickets: cu.spinTickets - 1 });
-  spinBtn.innerText = "လှည့်နေသည်...";
+  // Calculate Target Rotation for Wheel
+  let targetAngle = 0;
+  if (prizeName === "1 Hour") targetAngle = 330;
+  else if (prizeName === "30 Mins") targetAngle = 270;
+  else if (prizeName === "5 Mins") targetAngle = 210;
+  else if (prizeName === "4 Hours") targetAngle = 90;
+  else if (prizeName === "Try Again") targetAngle = Math.random() > 0.5 ? 150 : 30;
 
-  const randomOffset = Math.floor(Math.random() * 30) - 15; 
-  const targetPoint = sliceCenter + randomOffset;
-  let finalAngle = 360 - targetPoint;
-  
+  const randomOffset = Math.floor(Math.random() * 40) - 20; 
+  targetAngle += randomOffset;
+
   let currentRealAngle = currentDeg % 360;
-  let moveDeg = finalAngle - currentRealAngle;
-  if (moveDeg <= 0) moveDeg += 360; 
+  let moveDeg = targetAngle - currentRealAngle;
+  if (moveDeg <= 0) moveDeg += 360;
+  currentDeg += (5 * 360) + moveDeg; // Add 5 extra spins
 
-  currentDeg += (5 * 360) + moveDeg;
+  // Deduct Ticket or Mark Daily Free
+  let preUpdates = {};
+  if (useTicket) { preUpdates[`customers/${cu.phone}/spinTickets`] = cu.spinTickets - 1; } 
+  else { preUpdates[`customers/${cu.phone}/lastFreeSpinDate`] = todayStr; }
+  await update(ref(db), preUpdates);
+
+  spinBtn.innerText = "လှည့်နေသည်...";
   wheel.style.transform = `rotate(${currentDeg}deg)`;
 
   setTimeout(async () => {
@@ -1052,15 +1116,20 @@ spinBtn.addEventListener('click', async () => {
     const icon = document.getElementById('resIcon');
     const codeBox = document.getElementById('resCodeBox');
 
+    let postUpdates = {};
+
     if(isWin) {
         icon.innerText = "🎉"; title.style.color = "#22d3a5"; title.innerText = "ဂုဏ်ယူပါတယ်!";
         desc.innerText = `${prizeName} Free WiFi Code ကို ရရှိပါသည်!`;
         codeBox.style.display = 'block'; codeBox.innerText = prizeCode;
         
-        let u = {};
-        u['spin_inventory/' + dbFolder] = finalArr; 
-        u[`customers/${cu.phone}/history/spin_${Date.now()}`] = { type: 'gift_in', title: prizeName + ' (Spin)', extra: prizeCode, date: new Date().toLocaleString() };
-        await update(ref(db), u);
+        postUpdates['spin_inventory/' + dbFolder] = finalArr; 
+        postUpdates[`customers/${cu.phone}/history/spin_${Date.now()}`] = { type: 'gift_in', title: prizeName + ' (Spin)', extra: prizeCode, date: new Date().toLocaleString() };
+        
+        const wk = 'win_' + Date.now();
+        postUpdates[`recent_winners/${wk}`] = { name: cu.name, prize: prizeName, date: Date.now() };
+        
+        await update(ref(db), postUpdates);
     } else {
         icon.innerText = "😢"; title.style.color = "#ff6b6b"; title.innerText = "နှမြောစရာပါပဲ";
         desc.innerText = "ဒီနေ့ ကံမကောင်းသေးပါဘူး။ နောက်တစ်ကြိမ် ထပ်မံ ကံစမ်းပေးပါနော်။";
@@ -1069,6 +1138,7 @@ spinBtn.addEventListener('click', async () => {
 
     overlay.style.display = 'flex';
     spinBtn.disabled = false; spinBtn.innerText = "လှည့်မည် (Spin)";
+    isSpinning = false;
   }, 5200);
 });
 
@@ -1086,7 +1156,6 @@ window.buyVoucher = async function(plan, price) {
     u['customers/' + cu.phone + '/balance'] = cu.balance - price;
     u['customers/' + cu.phone + '/history/tx_' + Date.now()] = {type: 'buy', title: plan, amount: price, extra: v.code, date: now};
     u['records/web_' + Date.now()] = {id: 'web_' + Date.now(), date: new Date().toLocaleDateString(), name: 'Customer_(' + cu.phone + ')', plan: plan, qty: 1, totalPrice: price, codes: [v.code]};
-    
     await update(ref(db), u); window.showToast('✓ Code: ' + v.code, 'success');
   } catch(e) { window.showToast('ဝယ်ယူမှု မအောင်မြင်ပါ', 'error'); }
 };
@@ -1104,7 +1173,8 @@ window.changePassword=async function(){
 window.renderHistory=function(){
   const cont=document.getElementById('historyContainer');cont.innerHTML='';
   if(!cu?.history){ cont.innerHTML='<p style="color:gray;text-align:center;margin-top:20px;">မှတ်တမ်း မရှိသေးပါ</p>';return; }
-  const txns=Object.values(cu.history).sort((a,b)=>new Date(b.date)-new Date(a.date)); let tIn=0,tOut=0;
+  const txns=Object.values(cu.history).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  let tIn=0,tOut=0;
   document.getElementById('statCount').textContent=txns.length;
   txns.forEach(tx=>{
     if(tx.type==='tx_in'||tx.type==='gift_in')tIn+=tx.amount||0;
@@ -1120,6 +1190,12 @@ window.renderHistory=function(){
 
 window.onload=()=>{
   document.getElementById('mainApp').style.display='none';
+  
+  // 🌟 Check URL Params for Referral 🌟
+  const urlParams = new URLSearchParams(window.location.search);
+  const refPhone = urlParams.get('ref');
+  if(refPhone) localStorage.setItem('wp_ref', refPhone);
+
   window.loadSavedAccounts();
   const ph=localStorage.getItem('wp'),pw=localStorage.getItem('ww');
   if(ph&&pw){document.getElementById('loginPhone').value=ph;document.getElementById('loginPass').value=pw;window.login();}
