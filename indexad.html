@@ -278,11 +278,11 @@ window.openModal = (id) => {
     if(id === 'logModal') window.renderLog(); 
     if(id === 'manageModal') window.renderManage(); 
     if(id === 'spinControlModal') {
-        document.getElementById('rate_5m').value = window.spinRates.r_5m || 40;
-        document.getElementById('rate_30m').value = window.spinRates.r_30m || 30;
-        document.getElementById('rate_1h').value = window.spinRates.r_1h || 15;
-        document.getElementById('rate_4h').value = window.spinRates.r_4h || 5;
-        document.getElementById('rate_none').value = window.spinRates.r_none || 10;
+        document.getElementById('rate_5m').value = window.spinRates.min5 ?? 35;
+        document.getElementById('rate_30m').value = window.spinRates.min30 ?? 15;
+        document.getElementById('rate_1h').value = window.spinRates.hour1 ?? 10;
+        document.getElementById('rate_4h').value = window.spinRates.hour4 ?? 5;
+        document.getElementById('rate_none').value = window.spinRates.tryAgain ?? 35;
     }
 };
 
@@ -305,6 +305,7 @@ onAuthStateChanged(auth, user => {
     if(user) { document.getElementById('loginScreen').style.display = 'none'; document.getElementById('mainAdminApp').style.display = 'block'; startDatabaseListeners(); } 
     else { document.getElementById('loginScreen').style.display = 'flex'; document.getElementById('mainAdminApp').style.display = 'none'; }
 });
+
 window.loginAdmin = () => { const e = document.getElementById('adminEmail').value.trim(); const p = document.getElementById('adminPass').value.trim(); if(!e || !p) return window.showToast("Email နှင့် Password ထည့်ပါ"); signInWithEmailAndPassword(auth, e, p).catch(err => alert("Login Failed: " + err.message)); };
 window.logoutAdmin = () => { if(confirm("Log out ထွက်မှာ သေချာလား?")) signOut(auth); };
 
@@ -318,7 +319,7 @@ function startDatabaseListeners() {
         if(snap.exists()){
             window.spinRates = snap.val();
         } else {
-            window.spinRates = { r_5m: 40, r_30m: 30, r_1h: 15, r_4h: 5, r_none: 10 };
+            window.spinRates = { min5: 35, min30: 15, hour1: 10, hour4: 5, tryAgain: 35 };
         }
     });
 
@@ -409,18 +410,18 @@ function renderSpinStock() {
 
 // 🔥 Save Spin Rates Function 🔥
 window.saveSpinRates = async () => {
-    let r_5m = parseInt(document.getElementById('rate_5m').value) || 0;
-    let r_30m = parseInt(document.getElementById('rate_30m').value) || 0;
-    let r_1h = parseInt(document.getElementById('rate_1h').value) || 0;
-    let r_4h = parseInt(document.getElementById('rate_4h').value) || 0;
-    let r_none = parseInt(document.getElementById('rate_none').value) || 0;
+    let min5 = parseInt(document.getElementById('rate_5m').value) || 0;
+    let min30 = parseInt(document.getElementById('rate_30m').value) || 0;
+    let hour1 = parseInt(document.getElementById('rate_1h').value) || 0;
+    let hour4 = parseInt(document.getElementById('rate_4h').value) || 0;
+    let tryAgain = parseInt(document.getElementById('rate_none').value) || 0;
 
-    let total = r_5m + r_30m + r_1h + r_4h + r_none;
+    let total = min5 + min30 + hour1 + hour4 + tryAgain;
     if(total !== 100) {
         return alert(`အမှား: ရာခိုင်နှုန်း စုစုပေါင်း 100 ဖြစ်ရပါမည်။ ယခုစုစုပေါင်းမှာ ${total} ဖြစ်နေပါသည်။`);
     }
 
-    await set(ref(db, 'settings/spin_rates'), { r_5m, r_30m, r_1h, r_4h, r_none });
+    await set(ref(db, 'settings/spin_rates'), { min5, min30, hour1, hour4, tryAgain });
     window.closeModal('spinControlModal');
     window.showToast("✅ Spin ပေါက်နိုင်ခြေများ အသစ်ပြောင်းလဲပြီးပါပြီ!");
 };
