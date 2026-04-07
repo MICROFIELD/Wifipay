@@ -112,7 +112,7 @@
             <div class="dash-card c-food"><div class="dash-icon"><i class="fa-solid fa-burger"></i></div><div class="dash-lbl" style="color:var(--red);">Food Sales</div><div class="dash-val" id="statFood">0</div></div>
         </div>
 
-        <!-- 🌟 ကြော်ငြာ (Marquee) ရေးရန် နေရာအသစ် 🌟 -->
+        <!-- 🌟 ကြော်ငြာ (Marquee) ရေးရန် နေရာ 🌟 -->
         <div class="section" style="margin-top:20px;">
             <div class="sec-title"><i class="fa-solid fa-bullhorn"></i> ကြော်ငြာ (စာတန်းပြေး) ရေးရန်</div>
             <textarea id="adBannerInput" class="form-control" style="height:80px; font-size:13px;" placeholder="Customer App တွင် ပေါ်မည့် ကြော်ငြာစာသား ရေးပါ..."></textarea>
@@ -316,10 +316,9 @@ window.logoutAdmin = () => { if(confirm("Log out ထွက်မှာ သေခ
 
 function startDatabaseListeners() {
     onValue(ref(db, 'customers'), snap => { window.allCustomers = snap.exists() ? snap.val() : {}; renderDash(); renderCusList(); });
-    onValue(ref(db, 'inventory'), snap => { window.allInventory = snap.exists() ? snap.val() : { "1 Hour": [], "4 Hours": [], "1 Day": [], "1 Week": [], "1 Month": [] }; renderStock(); });
+    onValue(ref(db, 'inventory'), snap => { window.allInventory = snap.exists() ? snap.val() : {}; renderStock(); });
     onValue(ref(db, 'spin_inventory'), snap => { window.allSpinInventory = snap.exists() ? snap.val() : {}; renderSpinStock(); });
     
-    // 🔥 ကြော်ငြာစာသား ဆွဲယူခြင်း 🔥
     onValue(ref(db, 'settings/ad_banner'), snap => {
         if(snap.exists() && document.getElementById('adBannerInput')) {
             document.getElementById('adBannerInput').value = snap.val();
@@ -362,40 +361,36 @@ function renderDash(){
     Object.values(window.allCustomers).forEach(c => { list.innerHTML += `<option value="${c.phone}">${c.name}</option>`; });
 }
 
-// 🌟 ကြော်ငြာစာသား သိမ်းဆည်းရန် 🌟
 window.saveAdBanner = async () => {
     const text = document.getElementById('adBannerInput').value;
     await set(ref(db, 'settings/ad_banner'), text);
     window.showToast("✅ ကြော်ငြာ သိမ်းဆည်း/လွှင့်တင် ပြီးပါပြီ");
 };
 
-// 🌟 SALE STOCK ERROR FIX 🌟
+// 🌟 ROBUST SALE STOCK LOGIC 🌟
 window.addStock = async () => {
     const text = document.getElementById('newCodes').value; 
     if(!text.trim()) return window.showToast("Code များ ထည့်ပါ");
-    const lines = text.split('\n'); 
-    let inv = JSON.parse(JSON.stringify(window.allInventory || {}));
     
-    // Array အဖြစ်သို့ သေချာအောင်ပြောင်းပေးခြင်း (forEach Error မတက်ရန်)
+    // Array ပြောင်းပေးခြင်း
+    let inv = {};
     ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => {
-        if(!Array.isArray(inv[p])) inv[p] = Object.values(inv[p] || {});
+        inv[p] = window.allInventory[p] ? Object.values(window.allInventory[p]) : [];
     });
 
     let existing = new Set(); 
-    Object.values(inv).forEach(arr => { 
-        if(arr) arr.forEach(i => { if(i && i.code) existing.add(i.code); });
-    });
+    Object.values(inv).forEach(arr => { arr.forEach(i => existing.add(i.code)); });
     
     let added = { "1 Hour":0, "4 Hours":0, "1 Day":0, "1 Week":0, "1 Month":0 }; 
     let dupCount = 0;
     
+    const lines = text.split('\n'); 
     lines.forEach(line => {
         let lineLow = line.toLowerCase();
         let cols = line.trim().split(/\s+/);
         if(cols.length >= 1 && cols[0] !== ""){
             const code = cols[0]; 
             let p = "";
-            // Space ပါသည်ဖြစ်စေ မပါသည်ဖြစ်စေ ဖတ်နိုင်အောင် ပြင်ဆင်ထားသည်
             if(lineLow.includes('1hour') || lineLow.includes('1 hour')) p="1 Hour"; 
             else if(lineLow.includes('4hour') || lineLow.includes('4 hour') || lineLow.includes('4hours') || lineLow.includes('4 hours')) p="4 Hours"; 
             else if(lineLow.includes('1day') || lineLow.includes('1 day')) p="1 Day"; 
@@ -403,7 +398,7 @@ window.addStock = async () => {
             else if(lineLow.includes('1month') || lineLow.includes('1 month')) p="1 Month";
             
             if(p) { 
-                if(!existing.has(code)) { inv[p].push({code, price:0}); existing.add(code); added[p]++; } 
+                if(!existing.has(code)) { inv[p].push({code: code, price:0}); existing.add(code); added[p]++; } 
                 else { dupCount++; } 
             }
         }
@@ -411,7 +406,7 @@ window.addStock = async () => {
     
     let logDetail = Object.entries(added).filter(a=>a[1]>0).map(a=>`${a[0]}: ${a[1]} ခု`).join(', ');
     if(logDetail) { 
-        let logs = JSON.parse(JSON.stringify(window.inventoryLog || [])); 
+        let logs = window.inventoryLog ? Object.values(window.inventoryLog) : []; 
         logs.unshift({ date: new Date().toLocaleString(), detail: "ရောင်းမည့် ကတ်: " + logDetail });
         await update(ref(db), { inventory: inv, inventoryLog: logs }); 
         document.getElementById('newCodes').value = ''; 
@@ -426,42 +421,38 @@ window.addStock = async () => {
 function renderStock(){
     const cont = document.getElementById('stockSummary'); cont.innerHTML = '';
     ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => { 
-        let arr = window.allInventory ? window.allInventory[p] : null;
-        let c = 0;
-        if(arr) { c = Array.isArray(arr) ? arr.length : Object.keys(arr).length; }
+        let arr = window.allInventory[p];
+        let c = arr ? Object.keys(arr).length : 0;
         cont.innerHTML += `<div class="stock-item"><span><i class="fa-solid fa-wifi"></i> ${p}</span> <b>${c} ခု</b></div>`; 
     });
     const pSelect = document.getElementById('pSelect');
     if(pSelect.options.length === 0) { ["1 Hour", "4 Hours", "1 Day", "1 Week", "1 Month"].forEach(p => pSelect.innerHTML += `<option value="${p}">${p}</option>`); }
 }
 
-// 🌟 SPIN STOCK ERROR FIX 🌟
+// 🌟 ROBUST SPIN STOCK LOGIC 🌟
 window.addSpinStock = async () => {
     const text = document.getElementById('newSpinCodes').value; 
     if(!text.trim()) return window.showToast("Code များ ထည့်ပါ");
-    const lines = text.split('\n'); 
-    let inv = JSON.parse(JSON.stringify(window.allSpinInventory || {}));
     
-    // Array အဖြစ်သို့ သေချာအောင်ပြောင်းပေးခြင်း (forEach Error မတက်ရန်)
+    // Array ပြောင်းပေးခြင်း
+    let inv = {};
     ["Free_5Mins", "Free_30Mins", "Free_1Hour", "Free_4Hours"].forEach(p => {
-        if(!Array.isArray(inv[p])) inv[p] = Object.values(inv[p] || {});
+        inv[p] = window.allSpinInventory[p] ? Object.values(window.allSpinInventory[p]) : [];
     });
 
     let existing = new Set(); 
-    Object.values(inv).forEach(arr => { 
-        if(arr) arr.forEach(i => { if(i && i.code) existing.add(i.code); });
-    });
+    Object.values(inv).forEach(arr => { arr.forEach(i => existing.add(i.code)); });
     
     let added = { "Free_5Mins":0, "Free_30Mins":0, "Free_1Hour":0, "Free_4Hours":0 }; 
     let dupCount = 0;
     
+    const lines = text.split('\n'); 
     lines.forEach(line => {
         let lineLow = line.toLowerCase();
         let cols = line.trim().split(/\s+/);
         if(cols.length >= 1 && cols[0] !== ""){
             const code = cols[0]; 
             let p = "";
-            // Space ပါသည်ဖြစ်စေ မပါသည်ဖြစ်စေ ဖတ်နိုင်အောင် ပြင်ဆင်ထားသည်
             if(lineLow.includes('5min') || lineLow.includes('5 min')) p="Free_5Mins"; 
             else if(lineLow.includes('30min') || lineLow.includes('30 min')) p="Free_30Mins"; 
             else if(lineLow.includes('1hour') || lineLow.includes('1 hour')) p="Free_1Hour"; 
@@ -473,9 +464,10 @@ window.addSpinStock = async () => {
             }
         }
     });
+
     let logDetail = Object.entries(added).filter(a=>a[1]>0).map(a=>`${a[0].replace('Free_','').replace('Mins', ' Mins').replace('Hour', ' Hour')}: ${a[1]} ခု`).join(', ');
     if(logDetail) {
-        let logs = JSON.parse(JSON.stringify(window.inventoryLog || [])); 
+        let logs = window.inventoryLog ? Object.values(window.inventoryLog) : []; 
         logs.unshift({ date: new Date().toLocaleString(), detail: "Spin ဆုမဲ: " + logDetail });
         await update(ref(db), { spin_inventory: inv, inventoryLog: logs }); 
         document.getElementById('newSpinCodes').value = ''; 
@@ -491,9 +483,8 @@ function renderSpinStock() {
     const cont = document.getElementById('spinStockSummary'); if(!cont) return; cont.innerHTML = '';
     ["Free_5Mins", "Free_30Mins", "Free_1Hour", "Free_4Hours"].forEach(p => {
         let name = p.replace('Free_', '').replace('Mins', ' Mins').replace('Hour', ' Hour');
-        let arr = window.allSpinInventory ? window.allSpinInventory[p] : null;
-        let c = 0;
-        if(arr) { c = Array.isArray(arr) ? arr.length : Object.keys(arr).length; }
+        let arr = window.allSpinInventory[p];
+        let c = arr ? Object.keys(arr).length : 0;
         cont.innerHTML += `<div class="stock-item spin-item"><span><i class="fa-solid fa-gift"></i> ${name}</span> <b>${c} ခု</b></div>`;
     });
 }
@@ -516,8 +507,8 @@ window.saveSpinRates = async () => {
 };
 
 window.renderLog = () => { const lb = document.getElementById('logBody'); lb.innerHTML = ''; if(window.inventoryLog.length === 0) { lb.innerHTML = '<p style="color:var(--text-sub); font-size:12px; text-align:center;">မှတ်တမ်း မရှိသေးပါ</p>'; return; } window.inventoryLog.forEach(l => { lb.innerHTML += `<div style="padding:12px; border-bottom:1px solid var(--border); font-size:12px;"><b style="color:var(--gold);">${l.date}</b><br>${l.detail}</div>`; }); };
-window.renderManage = () => { const p = document.getElementById('pSelect').value; const mb = document.getElementById('manageBody'); mb.innerHTML = ''; let items = window.allInventory ? window.allInventory[p] : []; if(!items || items.length === 0) { mb.innerHTML = '<p style="color:var(--text-sub); font-size:12px; text-align:center;">Code များ မရှိပါ</p>'; return; } items.forEach((item, i) => { mb.innerHTML += `<div class="item-card"><span style="font-family:var(--mono);">${item.code}</span><button class="btn btn-sm btn-danger" onclick="window.delCode('${p}',${i})"><i class="fa-solid fa-trash"></i> ဖျက်မည်</button></div>`; }); };
-window.delCode = async (p, i) => { let inv = window.allInventory[p]; inv.splice(i, 1); await set(ref(db, `inventory/${p}`), inv); window.renderManage(); };
+window.renderManage = () => { const p = document.getElementById('pSelect').value; const mb = document.getElementById('manageBody'); mb.innerHTML = ''; let items = window.allInventory ? window.allInventory[p] : []; if(!items || Object.keys(items).length === 0) { mb.innerHTML = '<p style="color:var(--text-sub); font-size:12px; text-align:center;">Code များ မရှိပါ</p>'; return; } Object.values(items).forEach((item, i) => { mb.innerHTML += `<div class="item-card"><span style="font-family:var(--mono);">${item.code}</span><button class="btn btn-sm btn-danger" onclick="window.delCode('${p}',${i})"><i class="fa-solid fa-trash"></i> ဖျက်မည်</button></div>`; }); };
+window.delCode = async (p, i) => { let inv = Object.values(window.allInventory[p]); inv.splice(i, 1); await set(ref(db, `inventory/${p}`), inv); window.renderManage(); };
 
 window.searchCustomer = () => {
     const val = document.getElementById('topupPhone').value.trim(); if(!val) return window.showToast("ဖုန်းနံပါတ် သို့မဟုတ် အမည် ထည့်ပါ"); let found = null;
