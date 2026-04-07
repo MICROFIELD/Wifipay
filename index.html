@@ -468,7 +468,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
     <div style="font-size:40px; color:var(--accent2); margin-bottom:10px;"><i class="fa-solid fa-ticket"></i></div>
     <h3 style="margin-bottom:15px;">Spin လက်မှတ် ဘယ်လိုရနိုင်မလဲ?</h3>
     <div style="text-align:left; font-size:13px; color:var(--text-sub); line-height:1.8; margin-bottom:20px;">
-      <b>၁။ နေ့စဉ်လက်ဆောင် 🎁</b><br>တစ်နေ့လျှင် App ကို ဝင်ရောက်ရုံဖြင့် Free ၁ ကတ် ရရှိပါမည်။<br><br>
+      <b>၁။ နေ့စဉ်လက်ဆောင် 🎁</b><br>တစ်နေ့လျှင် App ကို ဝင်ရောက်ရုံဖြင့် Free ၁ ကတ် ရရှိပါမည်。<br><br>
       <b>၂။ ငွေဖြည့်လက်ဆောင် 💰</b><br>ငွေ ၅၀၀၀ ကျပ် ဖြည့်သွင်းတိုင်း Spin ၁ ကတ် ရရှိပါမည်။ (ဥပမာ- ၁၀၀၀၀ ဖြည့်ပါက ၂ ကတ်)<br><br>
       <b>၃။ မျှဝေခြင်း 🤝</b><br>သင်မျှဝေလိုက်သော Link သို့မဟုတ် QR Code ဖြင့် သူငယ်ချင်းမှ အကောင့်သစ်လာဖွင့်ပါက Spin ၂ ကတ် ရရှိပါမည်။
     </div>
@@ -730,7 +730,7 @@ window.showRegister=()=>{document.getElementById('loginScreen').style.display='n
 window.showLogin=()=>{document.getElementById('registerScreen').style.display='none';document.getElementById('loginScreen').style.display='block'; window.loadSavedAccounts(); };
 window.requestNotiPermission = function() { if (!("Notification" in window)) { window.showToast("သင့်ဖုန်းသည် Notification စနစ်ကို မထောက်ပံ့ပါ။", "error"); return; } Notification.requestPermission().then(permission => { if (permission === "granted") window.showToast("✅ Notification ဖွင့်ပြီးပါပြီ။", "success"); else window.showToast("❌ Notification ပိတ်ထားပါသည်။", "error"); }); }
 
-// 🌟 SHARE REWARD LOGIC (ဖိတ်ခေါ်ခံရသူ အကောင့်သစ်ဖွင့်မှသာ ရမည်) 🌟
+// 🌟 SHARE REWARD LOGIC 🌟
 const APP_URL = "https://wifipay.store"; 
 const SHARE_TEXT = "Wifipay Wallet ဖြင့် WiFi Voucher များကို လွယ်ကူလျင်မြန်စွာ ဝယ်ယူနိုင်ပါသည်! အခုပဲ အကောင့်ဖွင့်ပြီး စမ်းသုံးကြည့်ပါ။";
 
@@ -757,7 +757,7 @@ window.register=async function(){
   const n=document.getElementById('regName').value.trim(); const p=document.getElementById('regPhone').value.trim(); const pw=document.getElementById('regPass').value.trim();
   if(!n||!p||!pw)return window.showToast('အချက်အလက် ဖြည့်ပါ','error');
   
-  // 🔒 ဖုန်းတစ်လုံးကို အကောင့်တစ်ခုပဲ သုံးခွင့်ပြုမယ့် စစ်ဆေးရေး 🔒
+  // 🔒 Device Lock စစ်ဆေးခြင်း 🔒
   const boundPhone = localStorage.getItem('wp_device_bound');
   if(boundPhone && boundPhone !== p) return window.showToast('ဒီဖုန်းတွင် အကောင့်တစ်ခုသာ သုံးခွင့်ရှိပါသည် ❌', 'error');
 
@@ -766,7 +766,7 @@ window.register=async function(){
   
   await set(ref(db,'customers/'+p),{name:n,phone:p,password:pw,balance:0,hasReceivedBonus:false});
   window.saveAccountToLocal(p, n, pw);
-  localStorage.setItem('wp_device_bound', p); // Lock device
+  localStorage.setItem('wp_device_bound', p); 
   window.showToast('အောင်မြင်ပါသည် ✓','success');
 
   // 🌟 REFERRAL CHECK 🌟
@@ -788,12 +788,13 @@ window.register=async function(){
   window.showLogin();
 };
 
+// 🌟 LOGIN LOGIC အသစ် (ERROR ကို ပြပေးမည့် စနစ်ပါဝင်သည်) 🌟
 window.login = async function() {
   try {
     const p = document.getElementById('loginPhone').value.trim(); 
     const pw = document.getElementById('loginPass').value.trim();
     
-    // 🌟 ဖုန်းနံပါတ်နေရာတွင် "reset" ဟုရိုက်ထည့်ပါက Device Lock အားလုံး ရှင်းလင်းပေးမည် 🌟
+    // ဖုန်းနံပါတ်နေရာတွင် "reset" ဟုရိုက်ထည့်ပါက Device Lock အားလုံး ရှင်းလင်းပေးမည်
     if(p.toLowerCase() === 'reset') {
         localStorage.clear();
         document.getElementById('loginPhone').value = '';
@@ -809,27 +810,22 @@ window.login = async function() {
         return window.showToast('ဒီဖုန်းတွင် အကောင့်တစ်ခုသာ သုံးခွင့်ရှိပါသည် ❌', 'error');
     }
 
-    // Firebase မှ Data ယူခြင်း
     const snap = await get(ref(db, 'customers/' + p));
     
     if (snap.exists() && snap.val().password === pw) { 
         localStorage.setItem('wp', p);
         localStorage.setItem('ww', pw);
         window.saveAccountToLocal(p, snap.val().name || "User", pw);
-        localStorage.setItem('wp_device_bound', p); // Lock device
+        localStorage.setItem('wp_device_bound', p); 
         window.loadDash(p); 
     } else { 
         window.showToast('ဖုန်း သို့မဟုတ် စကားဝှက် မှားနေပါ', 'error'); 
     }
 
   } catch (error) {
-    // Error တက်ပါက ဘာကြောင့်တက်လဲဆိုတာ မျက်နှာပြင်ပေါ်တွင် အတိအကျ ပြပေးမည်
     console.error(error);
-    alert('အကောင့်ဝင်ရန် ချို့ယွင်းနေပါသည်: \n' + error.message);
+    alert('အကောင့်ဝင်ရန် ချို့ယွင်းနေပါသည် (Firebase Rule ကြောင့် ဖြစ်နိုင်သည်): \n' + error.message);
   }
-};
-
-  else window.showToast('ဖုန်း သို့မဟုတ် စကားဝှက် မှားနေပါ','error');
 };
 
 window.logout=function(){if(confirm('Log out လုပ်မည်လား?')){localStorage.removeItem('wp');localStorage.removeItem('ww');location.reload();}};
@@ -1283,3 +1279,4 @@ window.onload=()=>{
 </script>
 </body>
 </html>
+
