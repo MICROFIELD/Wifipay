@@ -242,7 +242,7 @@ html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:#000;d
   <div class="auth-logo"><span class="logo-mark">Wifipay</span><p>Digital Wallet</p></div>
   <div class="auth-card">
     <h2>ကြိုဆိုပါတယ် 👋</h2><p class="sub">အကောင့်ဝင်ပြီး ဆက်ရှေ့ဆောင်ရွက်ပါ</p>
-    <div class="field"><label>ဖုန်းနံပါတ် (သို့) အမည်</label><div class="fi"><input type="tel" id="loginPhone" list="savedUsers" placeholder="09xxxxxxxxx သို့ အမည်ရိုက်ပါ"><i class="fa-solid fa-phone"></i></div><datalist id="savedUsers"></datalist></div>
+    <div class="field"><label>ဖုန်းနံပါတ် (သို့) အမည်</label><div class="fi"><input type="text" id="loginPhone" list="savedUsers" placeholder="09xxxxxxxxx သို့ အမည်ရိုက်ပါ"><i class="fa-solid fa-phone"></i></div><datalist id="savedUsers"></datalist></div>
     <div class="field"><label>စကားဝှက်</label><div class="fi"><input type="password" id="loginPass" placeholder="••••••••"><i class="fa-solid fa-eye btn-eye" onclick="window.togglePw('loginPass', this)"></i></div></div>
     <button class="btn btn-primary" onclick="window.login()"><i class="fa-solid fa-arrow-right-to-bracket"></i> &nbsp;အကောင့်ဝင်မည်</button>
     <p class="auth-link">အကောင့်မရှိသေးဘူးလား? <b onclick="window.showRegister()">အကောင့်သစ်ဖွင့်ရန်</b></p>
@@ -623,14 +623,15 @@ const firebaseConfig = {
   appId: "1:429630230761:web:8c7f29457326c1f0c02078"
 };
 
+// 🌟 Error ရှင်းထားသော Firebase Initialization 🌟
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const ref = firebase.database.ref;
-const get = firebase.database.get;
-const set = firebase.database.set;
-const update = firebase.database.update;
-const onValue = firebase.database.onValue;
-const push = firebase.database.push;
+const ref = (database, path) => path ? database.ref(path) : database.ref();
+const get = (dbRef) => dbRef.once('value');
+const set = (dbRef, val) => dbRef.set(val);
+const update = (dbRef, val) => dbRef.update(val);
+const onValue = (dbRef, callback) => dbRef.on('value', callback);
+const push = (dbRef, val) => dbRef.push(val);
 
 let cu = null;
 let pendingTxType = null; 
@@ -788,7 +789,7 @@ window.register=async function(){
   window.showLogin();
 };
 
-// 🌟 LOGIN LOGIC အသစ် (ERROR ကို ပြပေးမည့် စနစ်ပါဝင်သည်) 🌟
+// 🌟 LOGIN LOGIC (ERROR ကို ပြပေးမည့် စနစ်ပါဝင်သည်) 🌟
 window.login = async function() {
   try {
     const p = document.getElementById('loginPhone').value.trim(); 
@@ -1261,22 +1262,5 @@ window.renderHistory=function(){
     if(tx.type==='food') extra=`<div class="tx-code" style="color:var(--gold); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;"><i class="fa-solid fa-utensils"></i> ${tx.extra}</div>`;
     cont.innerHTML+=`<div class="tx-item"><div class="tx-l"><div class="tx-ico ${cls}"><i class="fa-solid ${ico}"></i></div><div style="overflow:hidden;"><div class="tx-name">${tx.title||''}</div><div class="tx-date">${tx.date||''}</div>${extra}</div></div><div class="tx-amt ${plus?'plus':'minus'}">${plus?'+':'-'}${(tx.amount||0).toLocaleString()}</div></div>`;
   });
-  document.getElementById('statIn').textContent=tIn.toLocaleString(); document.getElementById('statOut').textContent=tOut.toLocaleString();
-};
-
-window.onload=()=>{
-  document.getElementById('mainApp').style.display='none';
-  
-  // 🌟 Check URL Params for Referral 🌟
-  const urlParams = new URLSearchParams(window.location.search);
-  const refPhone = urlParams.get('ref');
-  if(refPhone) localStorage.setItem('wp_ref', refPhone);
-
-  window.loadSavedAccounts();
-  const ph=localStorage.getItem('wp'),pw=localStorage.getItem('ww');
-  if(ph&&pw){document.getElementById('loginPhone').value=ph;document.getElementById('loginPass').value=pw;window.login();}
-};
-</script>
-</body>
-</html>
+  document.getElementById('statIn').textContent=t
 
