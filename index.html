@@ -623,15 +623,9 @@ const firebaseConfig = {
   appId: "1:429630230761:web:8c7f29457326c1f0c02078"
 };
 
-// 🌟 Error ရှင်းထားသော Firebase Initialization 🌟
+// 🌟 Firebase ၏ မူရင်း Native Syntax အတိုင်း အသုံးပြုထားပါသည် 🌟
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const ref = (database, path) => path ? database.ref(path) : database.ref();
-const get = (dbRef) => dbRef.once('value');
-const set = (dbRef, val) => dbRef.set(val);
-const update = (dbRef, val) => dbRef.update(val);
-const onValue = (dbRef, callback) => dbRef.on('value', callback);
-const push = (dbRef, val) => dbRef.push(val);
 
 let cu = null;
 let pendingTxType = null; 
@@ -639,7 +633,6 @@ let prevBalance = null;
 let isFirstLogin = true;
 let qrcode = null;
 
-// 🌟 ADMIN BOARD SETTINGS FOR SPIN 🌟
 const ADMIN_WIN_RATES = { tryAgain: 25, min5: 60, min30: 10, hour1: 4, hour4: 1 };
 
 window.loadSavedAccounts = function() {
@@ -698,7 +691,7 @@ window.verifyTxPhone = async function() {
   if(cu && tp === cu.phone) { nameDisplay.style.display = 'block'; nameDisplay.style.color = 'var(--red)'; nameDisplay.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> မိမိကိုယ်တိုင် မလွှဲနိုင်ပါ'; return; }
   try {
     nameDisplay.style.display = 'block'; nameDisplay.style.color = 'var(--text-sub)'; nameDisplay.textContent = 'ရှာဖွေနေပါသည်...';
-    const snap = await get(ref(db, 'customers/' + tp));
+    const snap = await db.ref('customers/' + tp).once('value');
     if(snap.exists()) { const tgt = snap.val(); nameDisplay.style.color = 'var(--green)'; nameDisplay.innerHTML = '<i class="fa-solid fa-circle-check"></i> လက်ခံမည့်သူ: ' + tgt.name; } 
     else { nameDisplay.style.color = 'var(--red)'; nameDisplay.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ဒီဖုန်းနံပါတ်ဖြင့် အကောင့်မရှိပါ'; }
   } catch(e) { console.error(e); window.showToast('ချိတ်ဆက်မှု အခက်အခဲဖြစ်နေပါသည်', 'error'); }
@@ -758,29 +751,27 @@ window.register=async function(){
   const n=document.getElementById('regName').value.trim(); const p=document.getElementById('regPhone').value.trim(); const pw=document.getElementById('regPass').value.trim();
   if(!n||!p||!pw)return window.showToast('အချက်အလက် ဖြည့်ပါ','error');
   
-  // 🔒 Device Lock စစ်ဆေးခြင်း 🔒
   const boundPhone = localStorage.getItem('wp_device_bound');
   if(boundPhone && boundPhone !== p) return window.showToast('ဒီဖုန်းတွင် အကောင့်တစ်ခုသာ သုံးခွင့်ရှိပါသည် ❌', 'error');
 
-  const snap=await get(ref(db,'customers/'+p));
+  const snap = await db.ref('customers/'+p).once('value');
   if(snap.exists())return window.showToast('အကောင့်ရှိပြီးသားပါ','error');
   
-  await set(ref(db,'customers/'+p),{name:n,phone:p,password:pw,balance:0,hasReceivedBonus:false});
+  await db.ref('customers/'+p).set({name:n,phone:p,password:pw,balance:0,hasReceivedBonus:false});
   window.saveAccountToLocal(p, n, pw);
   localStorage.setItem('wp_device_bound', p); 
   window.showToast('အောင်မြင်ပါသည် ✓','success');
 
-  // 🌟 REFERRAL CHECK 🌟
   const refP = localStorage.getItem('wp_ref');
   if (refP && refP !== p) {
       try {
-          const refSnap = await get(ref(db, 'customers/' + refP));
+          const refSnap = await db.ref('customers/' + refP).once('value');
           if(refSnap.exists()) {
               const refCu = refSnap.val();
               let u = {};
               u['customers/' + refP + '/spinTickets'] = (refCu.spinTickets || 0) + 2; 
               u[`customers/${refP}/history/ref_${Date.now()}`] = { type: 'gift_in', title: 'Referral Bonus', amount: 0, extra: '2 Tickets', date: new Date().toLocaleString() };
-              await update(ref(db), u);
+              await db.ref().update(u);
           }
       } catch(e) { console.error(e); }
       localStorage.removeItem('wp_ref'); 
@@ -789,13 +780,11 @@ window.register=async function(){
   window.showLogin();
 };
 
-// 🌟 LOGIN LOGIC (ERROR ကို ပြပေးမည့် စနစ်ပါဝင်သည်) 🌟
 window.login = async function() {
   try {
     const p = document.getElementById('loginPhone').value.trim(); 
     const pw = document.getElementById('loginPass').value.trim();
     
-    // ဖုန်းနံပါတ်နေရာတွင် "reset" ဟုရိုက်ထည့်ပါက Device Lock အားလုံး ရှင်းလင်းပေးမည်
     if(p.toLowerCase() === 'reset') {
         localStorage.clear();
         document.getElementById('loginPhone').value = '';
@@ -805,13 +794,12 @@ window.login = async function() {
 
     if(!p || !pw) return window.showToast('ဖုန်းနံပါတ်နှင့် စကားဝှက် ထည့်ပါ', 'error');
 
-    // 🔒 Device Lock စစ်ဆေးခြင်း
     const boundPhone = localStorage.getItem('wp_device_bound');
     if(boundPhone && boundPhone !== p) {
         return window.showToast('ဒီဖုန်းတွင် အကောင့်တစ်ခုသာ သုံးခွင့်ရှိပါသည် ❌', 'error');
     }
 
-    const snap = await get(ref(db, 'customers/' + p));
+    const snap = await db.ref('customers/' + p).once('value');
     
     if (snap.exists() && snap.val().password === pw) { 
         localStorage.setItem('wp', p);
@@ -825,7 +813,7 @@ window.login = async function() {
 
   } catch (error) {
     console.error(error);
-    alert('အကောင့်ဝင်ရန် ချို့ယွင်းနေပါသည် (Firebase Rule ကြောင့် ဖြစ်နိုင်သည်): \n' + error.message);
+    alert('အကောင့်ဝင်ရန် ချို့ယွင်းနေပါသည်: \n' + error.message);
   }
 };
 
@@ -835,14 +823,13 @@ window.loadDash=function(ph){
   document.getElementById('loginScreen').style.display='none'; document.getElementById('registerScreen').style.display='none';
   const ma=document.getElementById('mainApp');ma.style.display='flex';ma.style.flexDirection='column';ma.style.height='100%';
   
-  onValue(ref(db, 'settings/ad_banner'), snap => {
+  db.ref('settings/ad_banner').on('value', snap => {
     let adBox = document.getElementById('adBannerBox'); let adText = document.getElementById('adBannerText');
     if(snap.exists() && snap.val().trim() !== "") { adText.textContent = snap.val(); adBox.style.display = 'flex'; } 
     else { adBox.style.display = 'none'; }
   });
 
-  // 🔥 RECENT WINNERS LISTENER 🔥
-  onValue(ref(db, 'recent_winners'), snap => {
+  db.ref('recent_winners').on('value', snap => {
       const box = document.getElementById('winnerTickerBox');
       if(snap.exists()) {
           const wins = Object.values(snap.val()).sort((a,b) => b.date - a.date).slice(0,5);
@@ -853,14 +840,13 @@ window.loadDash=function(ph){
       }
   });
 
-  onValue(ref(db,'customers/'+ph), async snap=>{
+  db.ref('customers/'+ph).on('value', async snap=>{
     if(!snap.exists())return; cu=snap.val();
     
-    // 🌟 DAILY FREE TICKET LOGIC 🌟
     let today = new Date().toLocaleDateString();
     if (cu.lastFreeTicketDate !== today) {
         let currentTickets = cu.spinTickets || 0;
-        await update(ref(db, `customers/${cu.phone}`), { spinTickets: currentTickets + 1, lastFreeTicketDate: today });
+        await db.ref(`customers/${cu.phone}`).update({ spinTickets: currentTickets + 1, lastFreeTicketDate: today });
         window.showToast('🎁 ဒီနေ့အတွက် Free Spin ၁ ကတ် ရရှိပါသည်!', 'success');
         return; 
     }
@@ -868,7 +854,6 @@ window.loadDash=function(ph){
     let currentBal = cu.balance || 0;
     document.getElementById('balanceText').textContent=currentBal.toLocaleString();
     
-    // 🌟 TOPUP SPIN TICKET LOGIC 🌟
     if (prevBalance !== null && currentBal > prevBalance) {
         let diff = currentBal - prevBalance;
         window.showToast(`💰 အကောင့်ထဲသို့ ငွေ ${diff.toLocaleString()} Ks ဝင်လာပါပြီ!`, 'success');
@@ -879,7 +864,7 @@ window.loadDash=function(ph){
         if (earnedTickets > 0) {
             setTimeout(async () => {
                 let newTickets = (cu.spinTickets || 0) + earnedTickets;
-                await update(ref(db, `customers/${cu.phone}`), { spinTickets: newTickets });
+                await db.ref(`customers/${cu.phone}`).update({ spinTickets: newTickets });
                 window.showToast(`🎉 ငွေဖြည့်သည့်အတွက် Spin လက်မှတ် ${earnedTickets} ကတ် ရရှိပါသည်!`, 'success');
             }, 2500); 
         }
@@ -890,7 +875,7 @@ window.loadDash=function(ph){
                 u[`customers/${cu.phone}/balance`] = currentBal + 500;
                 u[`customers/${cu.phone}/hasReceivedBonus`] = true;
                 u[`customers/${cu.phone}/history/tx_bonus_${Date.now()}`] = { type: 'gift_in', title: 'Welcome Bonus 🎉', amount: 500, date: now };
-                await update(ref(db), u);
+                await db.ref().update(u);
                 window.showToast('🎉 ပထမဆုံးအကြိမ် ငွေဖြည့်သည့်အတွက် 500 Ks Bonus ရရှိပါသည်!', 'success');
             }, 4500);
         }
@@ -915,7 +900,7 @@ window.loadDash=function(ph){
     }
   });
 
-  onValue(ref(db, 'food_menu'), snap => {
+  db.ref('food_menu').on('value', snap => {
     if(snap.exists()) {
       window.foodMenu = Object.values(snap.val());
       let hasDrinks = window.foodMenu.find(f => f.isOptions);
@@ -923,13 +908,13 @@ window.loadDash=function(ph){
     } else { window.foodMenu = [{ id: 'f_drinks', name: 'အအေးဘူးများ', price: 'ရွေးချယ်ရန်', icon: '🥤', isOptions: true }]; }
     if(document.getElementById('tab-food').classList.contains('active')) window.renderFood();
   });
-  onValue(ref(db, 'drink_options'), snap => { if(snap.exists()) { window.drinkOptions = Object.values(snap.val()); } });
+  db.ref('drink_options').on('value', snap => { if(snap.exists()) { window.drinkOptions = Object.values(snap.val()); } });
 };
 
 window.updateProfileName=async function(){
   const newName=document.getElementById('editNameInput').value.trim();
   if(!newName)return window.showToast('နာမည် အသစ်ထည့်ပါ','error');
-  await update(ref(db,'customers/'+cu.phone),{name:newName});
+  await db.ref('customers/'+cu.phone).update({name:newName});
   window.saveAccountToLocal(cu.phone, newName, cu.password);
   window.showToast('✓ နာမည် ပြောင်းလဲပြီးပါပြီ','success');
   document.getElementById('profileSection').style.display='none';
@@ -952,7 +937,7 @@ window.handleAvatarChange=function(e){
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, width, height);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-      update(ref(db, 'customers/' + cu.phone), { avatar: dataUrl }).then(() => { window.showToast('✓ Profile ပုံ ပြောင်းလဲပြီးပါပြီ', 'success'); });
+      db.ref('customers/' + cu.phone).update({ avatar: dataUrl }).then(() => { window.showToast('✓ Profile ပုံ ပြောင်းလဲပြီးပါပြီ', 'success'); });
     }
     img.src = event.target.result;
   }
@@ -1056,13 +1041,14 @@ window.confirmTx = async function() {
   if(pendingTxType === 'normal') {
     const tp=document.getElementById('txPhone').value.trim(); const amt=parseInt(document.getElementById('txAmount').value);
     try{
-      const snap=await get(ref(db,'customers/'+tp)); if(!snap.exists())return window.showToast('အကောင့်မရှိပါ','error');
+      const snap=await db.ref('customers/'+tp).once('value'); 
+      if(!snap.exists())return window.showToast('အကောင့်မရှိပါ','error');
       const tgt=snap.val();
       updates[`customers/${cu.phone}/balance`]=cu.balance-amt;
       updates[`customers/${cu.phone}/history/tx_out_${Date.now()}`]={type:'tx_out',title:'To: '+tgt.name,amount:amt,date:now};
       updates[`customers/${tp}/balance`]=(tgt.balance||0)+amt;
       updates[`customers/${tp}/history/tx_in_${Date.now()}`]={type:'tx_in',title:'From: '+cu.name,amount:amt,date:now};
-      await update(ref(db),updates); 
+      await db.ref().update(updates); 
       window.showToast('✓ '+tgt.name+' ထံ ငွေလွှဲပြီးပါပြီ','success');
       window.saveRecentTx(tp, tgt.name);
       document.getElementById('txPhone').value='';document.getElementById('txAmount').value='';
@@ -1081,7 +1067,7 @@ window.confirmTx = async function() {
       if(!isCash) updates[`customers/${cu.phone}/balance`] = cu.balance - total;
       updates[`customers/${cu.phone}/history/${orderId}`] = { type: 'food', title: isCash ? 'Food Order (Cash)' : 'Food Order', amount: total, extra: orderText, date: now };
       updates[`food_orders/${orderId}`] = { id: orderId, name: orderName, phone: orderPhone, items: cart, subtotal: sub, deliFee: deliFee, total: total, type: deliveryType, address: addr, payment_method: isCash ? 'cash' : 'wallet', date: now, status: 'pending' };
-      await update(ref(db), updates); window.showToast('🍔 Order တင်ခြင်း အောင်မြင်ပါသည်!', 'success');
+      await db.ref().update(updates); window.showToast('🍔 Order တင်ခြင်း အောင်မြင်ပါသည်!', 'success');
       cart = [];
       document.getElementById('cartCount').textContent = 0; document.getElementById('cartFloat').style.display = 'none';
       document.getElementById('deliAddress').value = '';
@@ -1089,13 +1075,10 @@ window.confirmTx = async function() {
   }
 };
 
-// 🌟 SPIN WHEEL & DAILY REWARD LOGIC (Limits ပါဝင်သည်) 🌟
 const wheel = document.getElementById('wheel');
 const spinBtn = document.getElementById('spinBtn');
 let currentDeg = 0;
 let isSpinning = false;
-
-// နေ့စဉ် ဆုမဲ အကန့်အသတ် (Limits)
 const DAILY_LIMITS = { "5 Mins": 5, "30 Mins": 3, "1 Hour": 2, "4 Hours": 2 };
 
 spinBtn.addEventListener('click', async () => {
@@ -1107,10 +1090,9 @@ spinBtn.addEventListener('click', async () => {
   
   let rand = Math.random() * 100;
   let sliceCenter = 0; let prizeName = ""; let dbFolder = ""; let isWin = true;
-  let todayStr = new Date().toLocaleDateString('en-CA'); // e.g. "2023-10-25"
+  let todayStr = new Date().toLocaleDateString('en-CA'); 
   let isFreeSpinUsage = (cu.lastFreeTicketDate === new Date().toLocaleDateString() && cu.spinTickets === 1);
 
-  // 1. မူလ Probability တွက်ချက်ခြင်း
   if (isFreeSpinUsage) {
       if (rand < 35) { sliceCenter = Math.random() > 0.5 ? 240 : 120; prizeName = "Try Again"; isWin = false; }
       else if (rand < 75) { sliceCenter = 60; prizeName = "5 Mins"; dbFolder = "Free_5Mins"; }
@@ -1118,7 +1100,7 @@ spinBtn.addEventListener('click', async () => {
       else if (rand < 98) { sliceCenter = -60; prizeName = "1 Hour"; dbFolder = "Free_1Hour"; }
       else { sliceCenter = 180; prizeName = "4 Hours"; dbFolder = "Free_4Hours"; }
   } else {
-      const ratesSnap = await get(ref(db, 'settings/spin_rates'));
+      const ratesSnap = await db.ref('settings/spin_rates').once('value');
       let r = ratesSnap.exists() ? ratesSnap.val() : { r_none: 25, r_5m: 60, r_30m: 10, r_1h: 4, r_4h: 1 };
       if (rand < r.r_none) { sliceCenter = Math.random() > 0.5 ? 240 : 120; prizeName = "Try Again"; isWin = false; }
       else if (rand < r.r_none + r.r_5m) { sliceCenter = 60; prizeName = "5 Mins"; dbFolder = "Free_5Mins"; }
@@ -1131,25 +1113,21 @@ spinBtn.addEventListener('click', async () => {
   let finalArr = [];
   let limitReachedForToday = false;
 
-  // 2. ပေါက်ပြီဆိုပါက Daily Limit ပြည့်မပြည့် စစ်ဆေးခြင်း
   if (isWin) {
       try {
-          // ယနေ့ Limit ကို စစ်ဆေးမည်
-          const statSnap = await get(ref(db, `spin_daily_stats/${todayStr}/${dbFolder}`));
+          const statSnap = await db.ref(`spin_daily_stats/${todayStr}/${dbFolder}`).once('value');
           let wonTodayCount = statSnap.exists() ? statSnap.val() : 0;
 
           if (wonTodayCount >= DAILY_LIMITS[prizeName]) {
-              // Limit ပြည့်သွားပါက ဆုမရတော့ပါ။ Try Again ဘက်သို့ အတင်းလွှဲချမည်။
               limitReachedForToday = true;
               isWin = false;
               sliceCenter = Math.random() > 0.5 ? 240 : 120;
           } else {
-              // Limit မပြည့်သေးရင် Code ရှိမရှိ ထပ်စစ်မည်
-              const invSnap = await get(ref(db, 'spin_inventory/' + dbFolder));
+              const invSnap = await db.ref('spin_inventory/' + dbFolder).once('value');
               let vl = invSnap.exists() ? invSnap.val() : [];
               finalArr = Array.isArray(vl) ? vl : Object.values(vl).filter(x => x !== null);
               if (!finalArr.length) {
-                  limitReachedForToday = true; // ကုဒ် ကုန်သွားရင်လည်း ဆုကုန်သွားကြောင်းပြမည်
+                  limitReachedForToday = true; 
                   isWin = false;
                   sliceCenter = Math.random() > 0.5 ? 240 : 120;
               } else {
@@ -1163,8 +1141,7 @@ spinBtn.addEventListener('click', async () => {
       }
   }
 
-  // လက်မှတ်နုတ်မည်
-  await update(ref(db, `customers/${cu.phone}`), { spinTickets: cu.spinTickets - 1 });
+  await db.ref(`customers/${cu.phone}`).update({ spinTickets: cu.spinTickets - 1 });
 
   const randomOffset = Math.floor(Math.random() * 30) - 15; 
   const targetPoint = sliceCenter + randomOffset;
@@ -1192,18 +1169,16 @@ spinBtn.addEventListener('click', async () => {
         let u = {};
         u['spin_inventory/' + dbFolder] = finalArr; 
         
-        // 🌟 ယနေ့ ပေါက်သွားသော အရေအတွက်ကို Firebase တွင် မှတ်သားမည် 🌟
-        const currentStatSnap = await get(ref(db, `spin_daily_stats/${todayStr}/${dbFolder}`));
+        const currentStatSnap = await db.ref(`spin_daily_stats/${todayStr}/${dbFolder}`).once('value');
         let count = currentStatSnap.exists() ? currentStatSnap.val() : 0;
         u[`spin_daily_stats/${todayStr}/${dbFolder}`] = count + 1;
 
         u[`customers/${cu.phone}/history/spin_${Date.now()}`] = { type: 'gift_in', title: prizeName + ' (Spin)', extra: prizeCode, date: new Date().toLocaleString() };
         const wk = 'win_' + Date.now();
         u[`recent_winners/${wk}`] = { name: cu.name, prize: prizeName, date: Date.now() };
-        await update(ref(db), u);
+        await db.ref().update(u);
     } else {
         if (limitReachedForToday) {
-            // ဆုကုန်သွားကြောင်း သတိပေးခြင်း
             icon.innerText = "⏳"; title.style.color = "#f7c948"; title.innerText = "ဆုမဲများ ကုန်သွားပါပြီ!";
             desc.innerText = "ဒီနေ့အတွက် ပေါက်နိုင်သော ဆုမဲအရေအတွက် ကုန်သွားပါပြီ။ မနက်ဖြန် စောစောလာလှည့်ပေးပါနော်! 😢";
         } else {
@@ -1223,7 +1198,7 @@ window.buyVoucher = async function(plan, price) {
   if(!cu) return; if(cu.balance < price) return window.showToast('ငွေမလောက်ပါ 😢', 'error');
   if(!confirm(plan + ' Voucher — ' + price.toLocaleString() + ' Ks ဝယ်မည်လား?')) return;
   try {
-    const inv = await get(ref(db, 'inventory/' + plan)); 
+    const inv = await db.ref('inventory/' + plan).once('value'); 
     let vl = inv.exists() ? inv.val() : [];
     let arr = Array.isArray(vl) ? vl : Object.values(vl).filter(x => x !== null);
     if(!arr.length) return window.showToast('Code ကုန်နေပါသည်', 'error');
@@ -1233,7 +1208,7 @@ window.buyVoucher = async function(plan, price) {
     u['customers/' + cu.phone + '/balance'] = cu.balance - price;
     u['customers/' + cu.phone + '/history/tx_' + Date.now()] = {type: 'buy', title: plan, amount: price, extra: v.code, date: now};
     u['records/web_' + Date.now()] = {id: 'web_' + Date.now(), date: new Date().toLocaleDateString(), name: 'Customer_(' + cu.phone + ')', plan: plan, qty: 1, totalPrice: price, codes: [v.code]};
-    await update(ref(db), u); window.showToast('✓ Code: ' + v.code, 'success');
+    await db.ref().update(u); window.showToast('✓ Code: ' + v.code, 'success');
   } catch(e) { window.showToast('ဝယ်ယူမှု မအောင်မြင်ပါ', 'error'); }
 };
 
@@ -1241,7 +1216,7 @@ window.changePassword=async function(){
   const o=document.getElementById('oldPass').value;const n=document.getElementById('newPass').value;
   if(o!==cu.password)return window.showToast('စကားဝှက်အဟောင်း မှားနေပါ','error');
   if(n.length<4)return window.showToast('အနည်းဆုံး ၄ လုံး ထည့်ပါ','error');
-  await update(ref(db,'customers/'+cu.phone),{password:n});
+  await db.ref('customers/'+cu.phone).update({password:n});
   localStorage.setItem('ww',n);window.saveAccountToLocal(cu.phone, cu.name, n);
   window.showToast('✓ စကားဝှက် ပြောင်းလဲပြီး','success');
   document.getElementById('oldPass').value='';document.getElementById('newPass').value='';
@@ -1262,5 +1237,21 @@ window.renderHistory=function(){
     if(tx.type==='food') extra=`<div class="tx-code" style="color:var(--gold); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:200px;"><i class="fa-solid fa-utensils"></i> ${tx.extra}</div>`;
     cont.innerHTML+=`<div class="tx-item"><div class="tx-l"><div class="tx-ico ${cls}"><i class="fa-solid ${ico}"></i></div><div style="overflow:hidden;"><div class="tx-name">${tx.title||''}</div><div class="tx-date">${tx.date||''}</div>${extra}</div></div><div class="tx-amt ${plus?'plus':'minus'}">${plus?'+':'-'}${(tx.amount||0).toLocaleString()}</div></div>`;
   });
-  document.getElementById('statIn').textContent=t
+  document.getElementById('statIn').textContent=tIn.toLocaleString(); document.getElementById('statOut').textContent=tOut.toLocaleString();
+};
+
+window.onload=()=>{
+  document.getElementById('mainApp').style.display='none';
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const refPhone = urlParams.get('ref');
+  if(refPhone) localStorage.setItem('wp_ref', refPhone);
+
+  window.loadSavedAccounts();
+  const ph=localStorage.getItem('wp'),pw=localStorage.getItem('ww');
+  if(ph&&pw){document.getElementById('loginPhone').value=ph;document.getElementById('loginPass').value=pw;window.login();}
+};
+</script>
+</body>
+</html>
 
