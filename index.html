@@ -788,20 +788,47 @@ window.register=async function(){
   window.showLogin();
 };
 
-window.login=async function(){
-  const p=document.getElementById('loginPhone').value.trim(); const pw=document.getElementById('loginPass').value.trim();
-  
-  // 🔒 ဖုန်းတစ်လုံးကို အကောင့်တစ်ခုပဲ သုံးခွင့်ပြုမယ့် စစ်ဆေးရေး 🔒
-  const boundPhone = localStorage.getItem('wp_device_bound');
-  if(boundPhone && boundPhone !== p) return window.showToast('ဒီဖုန်းတွင် အကောင့်တစ်ခုသာ သုံးခွင့်ရှိပါသည် ❌', 'error');
+window.login = async function() {
+  try {
+    const p = document.getElementById('loginPhone').value.trim(); 
+    const pw = document.getElementById('loginPass').value.trim();
+    
+    // 🌟 ဖုန်းနံပါတ်နေရာတွင် "reset" ဟုရိုက်ထည့်ပါက Device Lock အားလုံး ရှင်းလင်းပေးမည် 🌟
+    if(p.toLowerCase() === 'reset') {
+        localStorage.clear();
+        document.getElementById('loginPhone').value = '';
+        document.getElementById('loginPass').value = '';
+        return alert('✅ ဖုန်းထဲရှိ မှတ်သားထားသော အကောင့်နှင့် Device Lock များ ရှင်းလင်းပြီးပါပြီ။ အကောင့်ပြန်ဝင်ကြည့်ပါ။');
+    }
 
-  const snap=await get(ref(db,'customers/'+p));
-  if(snap.exists()&&snap.val().password===pw){ 
-      localStorage.setItem('wp',p);localStorage.setItem('ww',pw);
-      window.saveAccountToLocal(p, snap.val().name, pw);
-      localStorage.setItem('wp_device_bound', p); // Lock device
-      window.loadDash(p); 
+    if(!p || !pw) return window.showToast('ဖုန်းနံပါတ်နှင့် စကားဝှက် ထည့်ပါ', 'error');
+
+    // 🔒 Device Lock စစ်ဆေးခြင်း
+    const boundPhone = localStorage.getItem('wp_device_bound');
+    if(boundPhone && boundPhone !== p) {
+        return window.showToast('ဒီဖုန်းတွင် အကောင့်တစ်ခုသာ သုံးခွင့်ရှိပါသည် ❌', 'error');
+    }
+
+    // Firebase မှ Data ယူခြင်း
+    const snap = await get(ref(db, 'customers/' + p));
+    
+    if (snap.exists() && snap.val().password === pw) { 
+        localStorage.setItem('wp', p);
+        localStorage.setItem('ww', pw);
+        window.saveAccountToLocal(p, snap.val().name || "User", pw);
+        localStorage.setItem('wp_device_bound', p); // Lock device
+        window.loadDash(p); 
+    } else { 
+        window.showToast('ဖုန်း သို့မဟုတ် စကားဝှက် မှားနေပါ', 'error'); 
+    }
+
+  } catch (error) {
+    // Error တက်ပါက ဘာကြောင့်တက်လဲဆိုတာ မျက်နှာပြင်ပေါ်တွင် အတိအကျ ပြပေးမည်
+    console.error(error);
+    alert('အကောင့်ဝင်ရန် ချို့ယွင်းနေပါသည်: \n' + error.message);
   }
+};
+
   else window.showToast('ဖုန်း သို့မဟုတ် စကားဝှက် မှားနေပါ','error');
 };
 
